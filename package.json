@@ -1,0 +1,82 @@
+{
+  "name": "microproxy",
+  "description": "A toolkit for developing microservices.",
+  "version": "1.0.0",
+  "scripts": {
+    "lint": "eslint .",
+    "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
+    "test": "jest",
+    "example": "node ./bin/microproxy.js",
+    "preexample": "yarn run build",
+    "build": "tsc -d",
+    "prebuild": "rimraf dist",
+    "prepublishOnly": "yarn run build"
+  },
+  "bin": {
+    "microproxy": "./bin/microproxy.js"
+  },
+  "main": "dist/index.js",
+  "author": "Alex Mendes",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/alexandermendes/microproxy.git"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
+    }
+  },
+  "files": [
+    "src",
+    "dist",
+    "bin"
+  ],
+  "peerDependencies": {
+    "next": ">=9"
+  },
+  "dependencies": {
+    "app-root-path": "^3.0.0",
+    "chokidar": "^3.5.2",
+    "commander": "^8.1.0",
+    "cosmiconfig": "^7.0.0",
+    "fast-glob": "^3.2.7",
+    "http-graceful-shutdown": "^3.1.3",
+    "http-proxy": "^1.18.1",
+    "nodemon": "^2.0.12",
+    "path-to-regexp": "^6.2.0"
+  },
+  "devDependencies": {
+    "@commitlint/config-conventional": "^8.3.4",
+    "@semantic-release/changelog": "^5.0.1",
+    "@semantic-release/commit-analyzer": "^8.0.1",
+    "@semantic-release/git": "^9.0.0",
+    "@semantic-release/github": "^7.2.3",
+    "@semantic-release/npm": "^7.1.3",
+    "@semantic-release/release-notes-generator": "^9.0.3",
+    "@testing-library/dom": "^8.1.0",
+    "@types/app-root-path": "^1.2.4",
+    "@types/http-proxy": "^1.17.7",
+    "@types/jest": "^26.0.24",
+    "@typescript-eslint/eslint-plugin": "^4.29.0",
+    "@typescript-eslint/parser": "^4.29.0",
+    "commitlint": "^8.3.5",
+    "eslint": "^7.5.0",
+    "eslint-plugin-import": "^2.24.0",
+    "eslint-plugin-jest": "^24.4.0",
+    "get-port": "^5.1.1",
+    "husky": "^4.2.5",
+    "jest": "^27.0.6",
+    "mock-fs": "^5.0.0",
+    "nock": "^13.1.1",
+    "node-fetch": "^2.6.1",
+    "prettier": "^2.3.2",
+    "rimraf": "^3.0.2",
+    "semantic-release": "^17.4.4",
+    "ts-jest": "^27.0.4",
+    "typescript": "^4.3.5"
+  }
+}
