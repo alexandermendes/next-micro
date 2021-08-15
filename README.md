@@ -2,32 +2,9 @@
 
 [![npm version](https://badge.fury.io/js/microproxy.svg)](https://badge.fury.io/js/microproxy)
 
-A reverse-proxy for composing micro-services.
+An HTTP router and reverse-proxy for composing micro-services.
 
-**Table of Contents**
-
-- [Overview](#overview)
-- [Getting Started](#getting-started)
-
-## Overview
-
-Microservices are all the rage, with it not being uncommon for a website
-nowadays to be built up from various services, each serving different sections
-of that site. Despite the benefits this may bring, managing all of these services
-during local local development can bbe a bit of a hassle. Ideally, when a new
-developer joins a project, rather than giving them a long list of repositories
-to clone and setup we would like to be able to point them to a single core
-repository and give them a small set of commands to get the whole site
-up and running. This is what Microproxy aims to help with.
-
-Given some configuration details for each service, such as the routes they serve,
-Microproxy launches a proxy server that becomes the entry point via which all
-underlying services are accessed. When a route is hit Microproxy will
-automatically launch the service responsible for serving that route. To help
-manage resources each service is given a (configurable) time to live. Once the
-service has not been accessed for this length of time it will be shut down.
-
-## Getting Started
+## Installation
 
 Install Microproxy using your favourite package manager:
 
@@ -39,10 +16,32 @@ npm install microproxy -D
 yarn install microproxy -D
 ```
 
-
 ## Configuration
 
-The
+Microproxy can be configured from a `microproxy.config.js`, or `microproxy.config.ts`
+file in the root of your repository, or via the `microproxy` property of your
+`package.json` file.
+
+A basic TypeScript example is shown below (for vanilla JS just exclude the
+import and type assertion).
+
+```ts
+import { MicroproxyConfig } from 'microproxy';
+
+// microproxy.config.ts
+module.exports = <MicroproxyConfig>{
+  services: [
+    {
+      name: 'my-first-service',
+      port: 7000,
+      routes: [
+        '/some/pages/.*'
+        '/some/more/pages/.*'
+      ],
+    },
+  ]
+};
+```
 
 ## Commands
 
