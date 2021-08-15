@@ -6,11 +6,11 @@ import { createServices } from './services/create';
 /**
  * Launch the proxy server.
  */
-export const launch = async (): Promise<void> => {
+export const launch = async (): Promise<ProxyServer> => {
   const config = await loadConfig();
   const services = createServices(config.services);
   const router = new Router(services);
   const server = new ProxyServer(router);
 
-  await server.launch(config.port);
+  return server.launch(config.port);
 };

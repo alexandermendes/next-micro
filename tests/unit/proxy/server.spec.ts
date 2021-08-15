@@ -19,6 +19,9 @@ const serverMock = {
   listen: jest.fn((host, port, cb) => {
     cb();
   }),
+  close: jest.fn((cb) => {
+    cb()
+  }),
 } as unknown as Server;
 
 createServerMock.mockReturnValue(serverMock);
@@ -31,25 +34,53 @@ const proxyMock = {
 createProxyMock.mockReturnValue(proxyMock);
 
 describe('Proxy: Server', () => {
-  it('launches the server with the given port', async () => {
-    const router = new Router([]);
-    const proxyServer = new ProxyServer(router);
-    const port = 3000;
+  describe('launch', () => {
+    it('launches the server with the given port', async () => {
+      const router = new Router([]);
+      const proxyServer = new ProxyServer(router);
+      const port = 3000;
 
-    await proxyServer.launch(port);
+      await proxyServer.launch(port);
 
-    expect(serverMock.listen).toHaveBeenCalledTimes(1);
-    expect(serverMock.listen).toHaveBeenCalledWith('http://127.0.0.1', port, expect.any(Function));
-  });
+      expect(serverMock.listen).toHaveBeenCalledTimes(1);
+      expect(serverMock.listen).toHaveBeenCalledWith(port, '127.0.0.1', expect.any(Function));
+    });
 
-  it('initiates graceful shutdown', async () => {
-    const router = new Router([]);
-    const proxyServer = new ProxyServer(router);
+    it('initiates graceful shutdown', async () => {
+      const router = new Router([]);
+      const proxyServer = new ProxyServer(router);
 
-    await proxyServer.launch(3000);
+      await proxyServer.launch(3000);
 
-    expect(gracefulShutdown).toHaveBeenCalledTimes(1);
-    expect(gracefulShutdown).toHaveBeenCalledWith(serverMock);
+      expect(gracefulShutdown).toHaveBeenCalledTimes(1);
+      expect(gracefulShutdown).toHaveBeenCalledWith(serverMock);
+    });
+
+    it('throws if launching the server fails', async () => {
+      const router = new Router([]);
+      const proxyServer = new ProxyServer(router);
+      const port = 3000;
+
+      const listenSpy = jest.spyOn(serverMock, 'listen');
+
+      listenSpy.mockReturnValueOnce({
+        on: jest.fn((evt, cb) => {
+          if (evt === 'error') {
+            cb(new Error('Bad thing'))
+          }
+        }),
+      } as never);
+
+      let error;
+
+      try {
+        await proxyServer.launch(port);
+      } catch (err) {
+        error = err;
+      }
+
+      expect(error.message).toBe('Bad thing');
+    });
   });
 
   describe('controllers', () => {
@@ -88,6 +119,26 @@ describe('Proxy: Server', () => {
       });
 
       expect(proxyMock.on).toHaveBeenCalledWith('proxyRes', proxyResHandlerMock)
+    });
+  });
+
+  describe('close', () => {
+    it('closes the server', async () => {
+      const router = new Router([]);
+      const proxyServer = new ProxyServer(router);
+
+      await proxyServer.launch(3000);
+      await proxyServer.close();
+
+      expect(serverMock.close).toHaveBeenCalledTimes(1);
+    });
+
+    it('does nothing if the server is not running', async () => {
+      const router = new Router([]);
+      const proxyServer = new ProxyServer(router);
+      await proxyServer.close();
+
+      expect(serverMock.close).not.toHaveBeenCalled();
     });
   });
 });

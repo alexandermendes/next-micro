@@ -2,7 +2,7 @@ export interface ServiceConfig {
   name: string;
   port: number;
   routes: string[];
-  script: string;
+  script?: string;
   watch?: boolean;
   ttl?: number;
 }
@@ -11,7 +11,7 @@ export class Service implements ServiceConfig {
   readonly name: string;
   readonly port: number;
   readonly routes: string[];
-  readonly script: string;
+  readonly script: string | undefined;
   readonly watch: boolean;
   readonly ttl: number | undefined;
 
