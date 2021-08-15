@@ -1,4 +1,4 @@
-import { IncomingMessage } from 'http';
+import httpMocks from 'node-mocks-http';
 import { Router } from '../../src/router';
 import { Service, ServiceConfig } from '../../src/services/service';
 
@@ -14,7 +14,7 @@ describe('Router', () => {
       routes: ['/route/two/.*'],
     } as ServiceConfig);
 
-    const req = { url: '/route/one/here' } as IncomingMessage;
+    const req = httpMocks.createRequest({ url: '/route/one/here' });
     const router = new Router([serviceOne, serviceTwo]);
     const foundService = router.getServiceFromRequest(req);
 
@@ -33,7 +33,7 @@ describe('Router', () => {
       routes: ['/route/two/.*'],
     } as ServiceConfig);
 
-    const req = { headers: { referer: '/route/two/here' } } as IncomingMessage;
+    const req = httpMocks.createRequest({ headers: { referer: '/route/two/here' } });
     const router = new Router([serviceOne, serviceTwo]);
     const foundService = router.getServiceFromRequest(req);
 
@@ -47,7 +47,7 @@ describe('Router', () => {
       routes: ['/route'],
     } as ServiceConfig);
 
-    const req = { url: '/unknown' } as IncomingMessage;
+    const req = httpMocks.createRequest({ url: '/unknown' });
     const router = new Router([service]);
     const foundService = router.getServiceFromRequest(req);
 

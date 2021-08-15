@@ -78,14 +78,10 @@ Microproxy can be configured from a `microproxy.config.js`, or
 `microproxy.config.ts` file in the root of your repository, or via the
 `microproxy` property of your `package.json` file.
 
-A basic TypeScript example is shown below (for vanilla JS just exclude the
-import and type assertion).
-
 ```ts
-import { MicroproxyConfig } from 'microproxy';
-
-// microproxy.config.ts
-module.exports = <MicroproxyConfig>{
+// microproxy.config.js
+module.exports = {
+  port: 3000,
   services: [
     {
       name: 'my-first-service',

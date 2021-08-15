@@ -1,64 +1,50 @@
+import Joi from 'joi';
 import { MicroproxyConfig } from '../types/config';
 
-class MicroproxyConfigError extends Error {}
+class MicroproxyConfigError extends Error {
+  constructor(
+    message: string,
+    details: Joi.ValidationErrorItem | undefined = undefined,
+  ) {
+    let finalMessage = `Microproxy Config Error: ${message}`;
 
-/**
- * Check that all values of a property are unique across service configs.
- */
-const validateUniqueProperty = (
+    // Specify the field within an array that failed uniqueness validation.
+    if (details?.type === 'array.unique' && !!details.context?.path) {
+      finalMessage += ` for "${details.context.path}"`;
+    }
+
+    super(finalMessage);
+  }
+}
+
+const uniqueRootPort = (
   config: MicroproxyConfig,
-  key: string,
-): void => {
-  const values = config.services.map(({ [key]: value }) => value);
-
-  const duplicateValues = values.filter(
-    (item, index) => values.indexOf(item) !== index,
+  helpers: Joi.CustomHelpers,
+) => {
+  const collidingIndex = config?.services.findIndex(
+    ({ port }) => port === config.port,
   );
 
-  const uniqueDuplicateValues = Array.from(new Set(duplicateValues));
-
-  if (uniqueDuplicateValues.length) {
-    throw new MicroproxyConfigError(
-      `Duplicate ${key}(s) found in service configs: ${uniqueDuplicateValues.join(
-        ', ',
-      )}`,
-    );
+  if (collidingIndex > -1) {
+    return helpers.message({
+      custom: `"port" collides with "services[${collidingIndex}].port"`,
+    });
   }
+
+  return config;
 };
 
-/**
- * Check that various properties are unique across service configs.
- */
-const validateUniqueProperties = (config: MicroproxyConfig): void => {
-  ['name', 'port'].forEach((key) => {
-    validateUniqueProperty(config, key);
-  });
-};
+const serviceSchema = Joi.object().keys({
+  name: Joi.string().required(),
+  port: Joi.number().positive().required(),
+  routes: Joi.array().required().items(Joi.string()),
+});
 
-/**
- * Check that a required property is present across all service configs.
- */
-const validateRequiredProperty = (
-  config: MicroproxyConfig,
-  key: string,
-): void => {
-  config.services.forEach((serviceConfig) => {
-    if (!serviceConfig[key]) {
-      throw new MicroproxyConfigError(
-        `All service configs must include the "${key}" property.`,
-      );
-    }
-  });
-};
-
-/**
- * Check that any required properties are present.
- */
-const validateRequiredProperties = (config: MicroproxyConfig): void => {
-  ['name', 'port'].forEach((key) => {
-    validateRequiredProperty(config, key);
-  });
-};
+// routes must be an array
+const schema = Joi.object({
+  port: Joi.number().positive().required(),
+  services: Joi.array().items(serviceSchema).unique('port').unique('name'),
+}).custom(uniqueRootPort);
 
 /**
  * Validate a microproxy config.
@@ -68,9 +54,13 @@ export const validate = (
   dir: string,
 ): void => {
   if (!config) {
-    throw new MicroproxyConfigError(`No config could be loaded from ${dir}`);
+    throw new MicroproxyConfigError(`config could be loaded from ${dir}`);
   }
 
-  validateRequiredProperties(config);
-  validateUniqueProperties(config);
+  const validationResult = schema.validate(config);
+  const errorDetails = validationResult.error?.details[0];
+
+  if (errorDetails) {
+    throw new MicroproxyConfigError(errorDetails.message, errorDetails);
+  }
 };

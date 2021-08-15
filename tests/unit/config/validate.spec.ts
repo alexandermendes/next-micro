@@ -5,77 +5,165 @@ describe('Config: Validate', () => {
   describe('no config', () => {
     it('throws if no config file was given', async () => {
       expect(() => validate(undefined, '/root')).toThrow(
-        'No config could be loaded from /root'
+        'Microproxy Config Error: config could be loaded from /root'
       );
     });
   });
 
-  describe('name', () => {
-    it('throws if a name is missing', async () => {
+  describe('names', () => {
+    it.each([
+      undefined,
+      null,
+      42,
+    ])('throws if a service has a name with the value "%s"', async (name) => {
       const config = {
+        port: 3000,
         services: [
           {
-            port: 3000,
+            name,
+            port: 3001,
+            routes: ['/one'],
           },
         ],
-      } as MicroproxyConfig;
+      } as unknown as MicroproxyConfig;
 
       expect(() => validate(config, '/root')).toThrow(
-        'All service configs must include the "name" property.'
+        /Microproxy Config Error: "services\[0\].name".*/
       );
     });
 
     it('throws if two services have the same name', async () => {
       const config = {
+        port: 3000,
         services: [
           {
             name: 'my-service',
-            port: 3000,
+            port: 3001,
+            routes: ['/one'],
           },
           {
             name: 'my-service',
-            port: 3001,
+            port: 3002,
+            routes: ['/two'],
           },
         ],
       } as MicroproxyConfig;
 
       expect(() => validate(config, '/root')).toThrow(
-        'Duplicate name(s) found in service configs: my-service'
+        'Microproxy Config Error: "services[1]" contains a duplicate value for "name"'
       );
     });
   });
 
-  describe('port', () => {
-    it('throws if a port is missing', async () => {
+  describe('ports', () => {
+    it.each([
+      undefined,
+      null,
+      -1,
+      'not-a-number',
+    ])('throws if the root port has the value "%s"', async (port) => {
       const config = {
-        services: [
-          {
-            name: 'my-service',
-          },
-        ],
+        port,
+        services: [],
       } as MicroproxyConfig;
 
       expect(() => validate(config, '/root')).toThrow(
-        'All service configs must include the "port" property.'
+        /Microproxy Config Error: "port".*/
+      );
+    });
+
+    it.each([
+      undefined,
+      null,
+      -1,
+      'not-a-number',
+    ])('throws if a service has a port with the value "%s"', async (port) => {
+      const config = {
+        port: 3000,
+        services: [
+          {
+            name: 'my-service',
+            port,
+            routes: ['/one'],
+          },
+        ],
+      } as unknown as MicroproxyConfig;
+
+      expect(() => validate(config, '/root')).toThrow(
+        /Microproxy Config Error: "services\[0\].port".*/
       );
     });
 
     it('throws if two services have the same port', async () => {
       const config = {
+        port: 3000,
         services: [
           {
             name: 'service-one',
-            port: 1234,
+            port: 3001,
+            routes: ['/one'],
           },
           {
             name: 'service-two',
-            port: 1234,
+            port: 3001,
+            routes: ['/two'],
           },
         ],
       } as MicroproxyConfig;
 
       expect(() => validate(config, '/root')).toThrow(
-        'Duplicate port(s) found in service configs: 1234'
+        'Microproxy Config Error: "services[1]" contains a duplicate value for "port"'
+      );
+    });
+
+    it('throws if the root port is missing', async () => {
+      const config = {} as MicroproxyConfig;
+
+      expect(() => validate(config, '/root')).toThrow(
+        'Microproxy Config Error: "port" is required'
+      );
+    });
+
+    it('throws if the root port collides with a service port', async () => {
+      const config = {
+        port: 3000,
+        services: [
+          {
+            name: 'my-service',
+            port: 3000,
+            routes: ['/one'],
+          }
+        ],
+      } as MicroproxyConfig;
+
+      expect(() => validate(config, '/root')).toThrow(
+        'Microproxy Config Error: "port" collides with "services[0].port"'
+      );
+    });
+  });
+
+  describe('routes', () => {
+    it.each([
+      undefined,
+      null,
+      'string',
+      42,
+      [42],
+      [{}],
+    ])('throws if a service has routes with the value "%s"', async (routes) => {
+      const config = {
+        port: 3000,
+        services: [
+          {
+            name: 'my-service',
+            port: 3001,
+            routes,
+          },
+        ],
+      } as unknown as MicroproxyConfig;
+
+      expect(() => validate(config, '/root')).toThrow(
+        /Microproxy Config Error: "services\[0\].routes.*/
       );
     });
   });

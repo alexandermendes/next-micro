@@ -1,5 +1,4 @@
 export interface ServiceConfig {
-  [index: string]: unknown;
   name: string;
   port: number;
   routes: string[];
@@ -9,7 +8,6 @@ export interface ServiceConfig {
 }
 
 export class Service implements ServiceConfig {
-  [index: string]: unknown;
   readonly name: string;
   readonly port: number;
   readonly routes: string[];
