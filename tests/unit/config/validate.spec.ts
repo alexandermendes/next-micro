@@ -1,3 +1,4 @@
+import path from 'path';
 import { validate } from '../../../src/config/validate';
 import { MicroproxyConfig } from '../../../src/types/config';
 
@@ -7,6 +8,23 @@ describe('Config: Validate', () => {
       expect(() => validate(undefined, '/root')).toThrow(
         'Microproxy Config Error: config could be loaded from /root'
       );
+    });
+  });
+
+  describe('valid config', () => {
+    it('does not throw for a valid config', async () => {
+      const config = {
+        port: 3000,
+        services: [
+          {
+            name: 'my-service',
+            port: 3001,
+            routes: ['/one'],
+          },
+        ],
+      } as MicroproxyConfig;
+
+      expect(() => validate(config, '/root')).not.toThrow();
     });
   });
 
@@ -164,6 +182,31 @@ describe('Config: Validate', () => {
 
       expect(() => validate(config, '/root')).toThrow(
         /Microproxy Config Error: "services\[0\].routes.*/
+      );
+    });
+  });
+
+  describe('start script', () => {
+    it.each([
+      null,
+      42,
+      {},
+      path.join(__dirname, 'nowhere'),
+    ])('throws if a service has a start script with the value "%s"', async (start) => {
+      const config = {
+        port: 3000,
+        services: [
+          {
+            name: 'my-service',
+            port: 3001,
+            routes: ['/one'],
+            start,
+          },
+        ],
+      } as unknown as MicroproxyConfig;
+
+      expect(() => validate(config, '/root')).toThrow(
+        /Microproxy Config Error: "services\[0\].start.*/
       );
     });
   });

@@ -35,7 +35,9 @@ export class ProxyServer {
     gracefulShutdown(this.server);
 
     await new Promise((resolve, reject) => {
-      this.server?.listen(port, host, resolve as () => void).on('error', reject);
+      this.server
+        ?.listen(port, host, resolve as () => void)
+        .on('error', reject);
     });
 
     return this;
@@ -47,7 +49,7 @@ export class ProxyServer {
     }
 
     await new Promise((resolve) => {
-      this.server?.close(resolve as () => void)
+      this.server?.close(resolve as () => void);
     });
 
     this.server = null;
