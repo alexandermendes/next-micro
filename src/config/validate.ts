@@ -5,7 +5,10 @@ class MicroproxyConfigError extends Error {}
 /**
  * Check that all values of a property are unique across service configs.
  */
-const validateUniqueProperty = (config: MicroproxyConfig, key: string): void => {
+const validateUniqueProperty = (
+  config: MicroproxyConfig,
+  key: string,
+): void => {
   const values = config.services.map(({ [key]: value }) => value);
 
   const duplicateValues = values.filter(
@@ -16,7 +19,9 @@ const validateUniqueProperty = (config: MicroproxyConfig, key: string): void => 
 
   if (uniqueDuplicateValues.length) {
     throw new MicroproxyConfigError(
-      `Duplicate ${key}(s) found in service configs: ${uniqueDuplicateValues.join(', ')}`,
+      `Duplicate ${key}(s) found in service configs: ${uniqueDuplicateValues.join(
+        ', ',
+      )}`,
     );
   }
 };
@@ -33,10 +38,15 @@ const validateUniqueProperties = (config: MicroproxyConfig): void => {
 /**
  * Check that a required property is present across all service configs.
  */
-const validateRequiredProperty = (config: MicroproxyConfig, key: string): void => {
+const validateRequiredProperty = (
+  config: MicroproxyConfig,
+  key: string,
+): void => {
   config.services.forEach((serviceConfig) => {
     if (!serviceConfig[key]) {
-      throw new MicroproxyConfigError(`All service configs must include the "${key}" property.`);
+      throw new MicroproxyConfigError(
+        `All service configs must include the "${key}" property.`,
+      );
     }
   });
 };

@@ -1,7 +1,7 @@
 import { validate } from '../../../src/config/validate';
 import { MicroproxyConfig } from '../../../src/types/config';
 
-describe('Config', () => {
+describe('Config: Validate', () => {
   describe('no config', () => {
     it('throws if no config file was given', async () => {
       expect(() => validate(undefined, '/root')).toThrow(

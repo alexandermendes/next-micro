@@ -1,13 +1,4 @@
-export type ServiceConfig = {
-  [index:string]: unknown;
-  name: string;
-  location?: string;
-  port: number;
-  routes: string[];
-  script: string;
-  watch?: boolean | true;
-  ttl?: number;
-};
+import { ServiceConfig } from '../services/service';
 
 export type MicroproxyConfig = {
   services: ServiceConfig[];

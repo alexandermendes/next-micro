@@ -17,7 +17,7 @@ const getCosmiconfigExplorerMock = () => ({
   clearCaches: jest.fn(),
 });
 
-describe('Config', () => {
+describe('Config: Load', () => {
   it('loads the config from file', async () => {
     const explorerMock = getCosmiconfigExplorerMock();
     const config = {
