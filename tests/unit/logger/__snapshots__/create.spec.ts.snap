@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Logger logs debug to stdout 1`] = `
+Array [
+  "[37m› Hello[39m
+",
+]
+`;
+
+exports[`Logger logs errors to stderr 1`] = `"[31m✗ bad thing[39m"`;
+
+exports[`Logger logs info to stdout 1`] = `
+Array [
+  "[36mℹ Hello[39m
+",
+]
+`;
+
+exports[`Logger logs log to stdout 1`] = `
+Array [
+  "[37mHello[39m
+",
+]
+`;
+
+exports[`Logger logs success to stdout 1`] = `
+Array [
+  "[32m✔ Hello[39m
+",
+]
+`;
+
+exports[`Logger logs warn to stdout 1`] = `
+Array [
+  "[33m⚠ Hello[39m
+",
+]
+`;

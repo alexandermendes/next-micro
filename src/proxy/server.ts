@@ -1,6 +1,7 @@
 import http from 'http';
 import gracefulShutdown from 'http-graceful-shutdown';
 import HttpProxy from 'http-proxy';
+import { logger } from '../logger';
 import { Router } from '../router';
 import {
   ControllerContext,
@@ -39,6 +40,8 @@ export class ProxyServer {
         ?.listen(port, host, resolve as () => void)
         .on('error', reject);
     });
+
+    logger.success(`Server listening on http://${host}:${port}`);
 
     return this;
   }
