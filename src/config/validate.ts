@@ -77,10 +77,7 @@ const serviceSchema = Joi.object().keys({
 // routes must be an array
 const schema = Joi.object({
   port: Joi.number().positive().required(),
-  services: Joi.array()
-    .items(serviceSchema)
-    .unique('port')
-    .unique('name'),
+  services: Joi.array().items(serviceSchema).unique('port').unique('name'),
 }).custom(uniqueRootPort);
 
 /**
