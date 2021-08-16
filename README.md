@@ -4,12 +4,23 @@
 
 An HTTP router and reverse-proxy for composing microservices.
 
+**Features:**
+
+- Launches services automatically in development mode if not already running
+and brings them down after a given time to live (TTL) to save resources.
+- Enables static or dynamic routing logic (e.g. based on settings retrieved via
+an API call).
+- Includes a plugin system to auto-detect routes for particular applications,
+such as those built with Next.js.
+
 ## Getting Started
 
 Depending on how you prefer to organise your code you may choose to install
 Microproxy in a standalone repo that contains just the routing logic for your
 microservices, or you may choose to install it in a monorepo that you use to
-manage multiple microservices. In either case, install Microproxy using yourfavourite package manager:
+manage multiple microservices.
+
+In either case, install Microproxy using your favourite package manager:
 
 ```sh
 # npm
@@ -19,18 +30,20 @@ npm install microproxy -D
 yarn install microproxy -D
 ```
 
-Add the following section to your `package.json` (you may choose to get more
-specific about mapping Microproxy commands in future):
+Add the following section to your `package.json`:
 
 ```json
 {
   "scripts": {
-    "microproxy": "microproxy"
+    "dev": "microproxy dev",
+    "build": "microproxy build",
+    "start": "microproxy start",
   }
 }
 ```
 
 We now need to tell Microproxy about the services we would like it to manage.
+
 Let's assume we have two microservices, running at `http://127.0.0.1:7000` and
 `http://127.0.0.1:7001`. A basic configuration file might look something like
 this:
@@ -60,17 +73,9 @@ To bring Microproxy up in development mode run:
 yarn microproxy dev
 ```
 
-Now, when we make a request to `http://127.0.0.1:3000` it will route all traffic
-that matches `/some/pages/.*` to the first service and all traffic that matches
-`/some/more/pages/.*` to the second.
-
-There are many more options available, such as:
-- Launching a service automatically in development mode if not already running
-and bringing it down after a given Time to Live (TTL) to save resources.
-- Integration of dynamic routing logic, based on settings retrieved via an API
-call, for example.
-- Using a plugin system to auto-detect routes for particular applications,
-such as those built with Next.js.
+Now, when we make a request to `http://127.0.0.1:3000` all traffic
+that matches `/some/pages/.*` will be routed to the first service and all
+traffic that matches `/some/more/pages/.*` to the second.
 
 ## Configuration
 
@@ -118,6 +123,8 @@ module.exports = {
 - Check for clashing package names
 - Use workspaces option for monorepos
 - microproxy --init to generate a basic config file
+- The plugin system might use something like process.register/microproxy.register
+to register the routes.
 
 ## Service Configuration
 
