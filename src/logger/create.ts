@@ -3,7 +3,13 @@ import { format } from 'util';
 import chalk from 'chalk';
 import figures from 'figures';
 
-type ConsoleArg = string | Error;
+type ConsoleArg =
+  | string
+  | number
+  | boolean
+  | bigint
+  | Record<string, unknown>
+  | Error;
 
 type LogFunction = {
   (...args: ConsoleArg[]): void;

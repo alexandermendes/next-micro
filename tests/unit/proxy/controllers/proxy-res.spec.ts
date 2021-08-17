@@ -23,6 +23,7 @@ describe('Proxy: Controllers - Proxy Res', () => {
       const handler = getProxyResHandler({
         router,
         proxy: proxyMock,
+        devMode: false,
       });
 
       const proxyRes = httpMocks.createRequest();
@@ -47,6 +48,7 @@ describe('Proxy: Controllers - Proxy Res', () => {
       const handler = getProxyResHandler({
         router,
         proxy: proxyMock,
+        devMode: false,
       });
 
       const proxyRes = httpMocks.createRequest();

@@ -22,13 +22,13 @@ describe('Proxy: Controllers - Main', () => {
     const handler = getMainRequestHandler({
       router,
       proxy: proxyMock,
+      devMode: false,
     });
 
     const req = httpMocks.createRequest();
     const res = httpMocks.createResponse();
     const service = {
       port: 1234,
-      isRunning: () => true
     } as Service;
 
     router.getServiceFromRequest.mockReturnValue(service);
@@ -47,6 +47,7 @@ describe('Proxy: Controllers - Main', () => {
     const handler = getMainRequestHandler({
       router,
       proxy: proxyMock,
+      devMode: false,
     });
 
     const req = httpMocks.createRequest();
@@ -54,15 +55,10 @@ describe('Proxy: Controllers - Main', () => {
 
     router.getServiceFromRequest.mockReturnValue(null);
 
-    let error;
+    handler(req, res);
 
-    try {
-      handler(req, res);
-    } catch (err) {
-      error = err;
-    }
-
-    expect(error.statusCode).toBe(404);
+    expect(res._isEndCalled()).toBe(true);
+    expect(res._getStatusCode()).toBe(404);
     expect(proxyMock.web).not.toHaveBeenCalled();
   });
 });

@@ -97,6 +97,7 @@ describe('Proxy: Server', () => {
       expect(mockControllers.getMainRequestHandler).toHaveBeenCalledWith({
         router,
         proxy: proxyMock,
+        devMode: false,
       });
 
       expect(createServer).toHaveBeenCalledTimes(1);
@@ -116,9 +117,26 @@ describe('Proxy: Server', () => {
       expect(mockControllers.getProxyResHandler).toHaveBeenCalledWith({
         router,
         proxy: proxyMock,
+        devMode: false,
       });
 
       expect(proxyMock.on).toHaveBeenCalledWith('proxyRes', proxyResHandlerMock)
+    });
+
+    it('initialises controllers in dev mode', async () => {
+      const router = new Router([]);
+      const proxyServer = new ProxyServer(router, true);
+      const port = 3000;
+      const proxyResHandlerMock = jest.fn();
+
+      mockControllers.getProxyResHandler.mockReturnValueOnce(proxyResHandlerMock);
+      await proxyServer.launch(port);
+
+      expect(mockControllers.getMainRequestHandler).toHaveBeenCalledTimes(1);
+      expect(mockControllers.getMainRequestHandler.mock.calls[0][0].devMode).toBe(true);
+
+      expect(mockControllers.getProxyResHandler).toHaveBeenCalledTimes(1);
+      expect(mockControllers.getProxyResHandler.mock.calls[0][0].devMode).toBe(true);
     });
   });
 

@@ -1,21 +1,17 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { ControllerContext } from './index';
+import { Controller, ControllerContext } from './index';
 import { abort } from '../abort';
 
 export const getMainRequestHandler =
-  (ctx: ControllerContext) =>
+  (ctx: ControllerContext): Controller =>
   (req: IncomingMessage, res: ServerResponse): void => {
     const { router, proxy } = ctx;
     const service = router.getServiceFromRequest(req);
 
     if (!service) {
-      abort(404);
+      abort(404, res);
 
       return;
-    }
-
-    if (!service.isRunning()) {
-      // TODO: Launch service
     }
 
     proxy.web(req, res, {
