@@ -76,8 +76,6 @@ The port that the proxy server should listen for requests on.
 
 ### `autostart` [boolean]
 
-Default: `true`
-
 In development mode, if a route is hit for a service that is not accepting
 requests then, when this setting is enabled, the service will be started
 automatically using the script defined by the [`service.script`](#servicescript-string)
