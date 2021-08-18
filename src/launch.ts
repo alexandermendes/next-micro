@@ -10,7 +10,7 @@ export const launch = async (devMode = false): Promise<ProxyServer> => {
   const config = await loadConfig();
   const services = createServices(config.services);
   const router = new Router(services);
-  const server = new ProxyServer(router, devMode);
+  const server = new ProxyServer(router, devMode, config.autostart);
 
   return server.launch(config.port);
 };

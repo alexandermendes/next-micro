@@ -2,6 +2,7 @@ const path = require('path');
 
 module.exports = {
   port: 3000,
+  autostart: true,
   services: [
     {
       name: 'products',

@@ -15,12 +15,14 @@ export class ProxyServer {
   private proxy: HttpProxy;
   private server: http.Server | null;
   private devMode: boolean;
+  private autostart: boolean;
 
-  constructor(router: Router, devMode = false) {
+  constructor(router: Router, devMode = false, autostart = false) {
     this.router = router;
     this.proxy = HttpProxy.createProxyServer();
     this.server = null;
     this.devMode = devMode;
+    this.autostart = autostart;
   }
 
   async launch(port: number): Promise<ProxyServer> {
@@ -28,6 +30,7 @@ export class ProxyServer {
       router: this.router,
       proxy: this.proxy,
       devMode: this.devMode,
+      autostart: this.autostart,
     };
 
     this.server = http.createServer(getMainRequestHandler(controllerContext));

@@ -23,6 +23,7 @@ describe('Proxy: Controllers - Main', () => {
       router,
       proxy: proxyMock,
       devMode: false,
+      autostart: false,
     });
 
     const req = httpMocks.createRequest();
@@ -48,6 +49,7 @@ describe('Proxy: Controllers - Main', () => {
       router,
       proxy: proxyMock,
       devMode: false,
+      autostart: false,
     });
 
     const req = httpMocks.createRequest();

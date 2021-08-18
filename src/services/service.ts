@@ -43,9 +43,7 @@ export class Service implements ServiceConfig {
     // TODO: decide what to do when no script
     // TODO: Watch in dev mode, or with watch option.
     if (!this.script) {
-      logger.error(
-        new Error(`Service has no startup script: ${this.name}`),
-      );
+      logger.error(new Error(`Service has no startup script: ${this.name}`));
 
       return;
     }

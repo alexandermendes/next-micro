@@ -5,6 +5,7 @@ export type ControllerContext = {
   router: Router;
   proxy: HttpProxy;
   devMode: boolean;
+  autostart: boolean;
 };
 
 export { getMainRequestHandler } from './main';

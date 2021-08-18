@@ -98,6 +98,7 @@ describe('Proxy: Server', () => {
         router,
         proxy: proxyMock,
         devMode: false,
+        autostart: false,
       });
 
       expect(createServer).toHaveBeenCalledTimes(1);
@@ -124,6 +125,7 @@ describe('Proxy: Server', () => {
           router,
           proxy: proxyMock,
           devMode: false,
+          autostart: false,
         });
       });
 
@@ -138,6 +140,19 @@ describe('Proxy: Server', () => {
 
         expect(controller).toHaveBeenCalledTimes(1);
         expect(controller.mock.calls[0][0].devMode).toBe(true);
+      });
+
+      it('initialises the controller in autostart mode', async () => {
+        const router = new Router([]);
+        const proxyServer = new ProxyServer(router, false, true);
+        const port = 3000;
+        const handler = jest.fn();
+
+        controller.mockReturnValueOnce(handler);
+        await proxyServer.launch(port);
+
+        expect(controller).toHaveBeenCalledTimes(1);
+        expect(controller.mock.calls[0][0].autostart).toBe(true);
       });
     });
   });

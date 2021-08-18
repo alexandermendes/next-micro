@@ -1,6 +1,7 @@
 import { IncomingMessage, ServerResponse } from 'http';
 import { ControllerContext } from './index';
 import { abort } from '../abort';
+import { logger } from '../../logger';
 
 export const getProxyErrorHandler =
   (ctx: ControllerContext) =>
@@ -9,7 +10,7 @@ export const getProxyErrorHandler =
     req: IncomingMessage,
     res: ServerResponse,
   ): Promise<void> => {
-    const { router, proxy } = ctx;
+    const { router, proxy, autostart, devMode } = ctx;
     const service = router.getServiceFromRequest(req);
 
     if (!service) {
@@ -18,7 +19,16 @@ export const getProxyErrorHandler =
       return;
     }
 
-    if (err.code === 'ECONNREFUSED') {
+    const shouldRunScript = autostart && devMode && err.code === 'ECONNREFUSED';
+    const canRunScript = shouldRunScript && service.script;
+
+    if (shouldRunScript && !canRunScript) {
+      logger.warn(
+        `Service cannot be started automatically as no script was defined: ${service.name}`
+      );
+    }
+
+    if (canRunScript) {
       await service.launch();
 
       proxy.web(req, res, {

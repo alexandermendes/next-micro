@@ -15,6 +15,7 @@ describe('Config: Validate', () => {
     it('does not throw for a valid config', async () => {
       const config = {
         port: 3000,
+        autostart: true,
         services: [
           {
             name: 'my-service',
@@ -22,7 +23,7 @@ describe('Config: Validate', () => {
             routes: ['/one'],
           },
         ],
-      } as MicroproxyConfig;
+      } as unknown as MicroproxyConfig;
 
       expect(() => validate(config, '/root')).not.toThrow();
     });
@@ -65,10 +66,33 @@ describe('Config: Validate', () => {
             routes: ['/two'],
           },
         ],
-      } as MicroproxyConfig;
+      } as unknown as MicroproxyConfig;
 
       expect(() => validate(config, '/root')).toThrow(
         'Microproxy Config Error: "services[1]" contains a duplicate value for "name"'
+      );
+    });
+  });
+
+  describe('autostart', () => {
+    it.each([
+      null,
+      42,
+    ])('throws for a value of "%s"', async (autostart) => {
+      const config = {
+        port: 3000,
+        autostart,
+        services: [
+          {
+            name: 'my-service',
+            port: 3001,
+            routes: ['/one'],
+          },
+        ],
+      } as unknown as MicroproxyConfig;
+
+      expect(() => validate(config, '/root')).toThrow(
+        /Microproxy Config Error: "autostart".*/
       );
     });
   });
@@ -83,7 +107,7 @@ describe('Config: Validate', () => {
       const config = {
         port,
         services: [],
-      } as MicroproxyConfig;
+      } as unknown as MicroproxyConfig;
 
       expect(() => validate(config, '/root')).toThrow(
         /Microproxy Config Error: "port".*/
@@ -127,7 +151,7 @@ describe('Config: Validate', () => {
             routes: ['/two'],
           },
         ],
-      } as MicroproxyConfig;
+      } as unknown as MicroproxyConfig;
 
       expect(() => validate(config, '/root')).toThrow(
         'Microproxy Config Error: "services[1]" contains a duplicate value for "port"'
@@ -135,7 +159,7 @@ describe('Config: Validate', () => {
     });
 
     it('throws if the root port is missing', async () => {
-      const config = {} as MicroproxyConfig;
+      const config = {} as unknown as MicroproxyConfig;
 
       expect(() => validate(config, '/root')).toThrow(
         'Microproxy Config Error: "port" is required'
@@ -152,7 +176,7 @@ describe('Config: Validate', () => {
             routes: ['/one'],
           }
         ],
-      } as MicroproxyConfig;
+      } as unknown as MicroproxyConfig;
 
       expect(() => validate(config, '/root')).toThrow(
         'Microproxy Config Error: "port" collides with "services[0].port"'
