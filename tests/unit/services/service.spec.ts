@@ -4,6 +4,7 @@ import { logger } from '../../../src/logger';
 import { Service, ServiceConfig } from '../../../src/services/service';
 
 jest.mock('child_process');
+jest.useFakeTimers();
 
 const mockChildProcess = {
   stdout: { pipe: jest.fn() },
@@ -18,6 +19,10 @@ mockSpawn.mockReturnValue(mockChildProcess as unknown as ChildProcess);
 const originalLoggerError = logger.error;
 
 describe('Services: Service', () => {
+  beforeEach(() => {
+    mockChildProcess.on.mockImplementation(() => null);
+  });
+
   afterEach(() => {
     logger.error = originalLoggerError;
   });
@@ -38,8 +43,9 @@ describe('Services: Service', () => {
         }
       });
 
-      await service.launch();
+      const launched = await service.launch();
 
+      expect(launched).toBe(true);
       expect(spawn).toHaveBeenCalledTimes(1);
       expect(spawn).toHaveBeenCalledWith('node', [serviceConfig.script], {
         stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
@@ -50,7 +56,7 @@ describe('Services: Service', () => {
       });
     });
 
-    it('logs an error if the process was already started', async () => {
+    it('does not attempt to launch the service twice', async () => {
       logger.error = jest.fn();
 
       const serviceConfig = {
@@ -67,9 +73,11 @@ describe('Services: Service', () => {
         }
       });
 
-      await service.launch();
-      await service.launch();
+      const launchedOne = await service.launch();
+      const launchedTwo = await service.launch();
 
+      expect(launchedOne).toBe(true);
+      expect(launchedTwo).toBe(false);
       expect(spawn).toHaveBeenCalledTimes(1);
       expect(logger.error).toHaveBeenCalledTimes(1);
       expect(logger.error).toHaveBeenCalledWith(
@@ -93,13 +101,53 @@ describe('Services: Service', () => {
         }
       });
 
-      await service.launch();
+      const launched = await service.launch();
 
+      expect(launched).toBe(false);
       expect(spawn).not.toHaveBeenCalled();
       expect(logger.error).toHaveBeenCalledTimes(1);
       expect(logger.error).toHaveBeenCalledWith(
         new Error('Service has no startup script: service-one')
       );
+    });
+
+    it('times out after 60 seconds by default when launching a service with no ready signal', async () => {
+      const serviceConfig = {
+        port: 1234,
+        name: 'service-one',
+        script: '/path/to/script.js',
+      } as ServiceConfig;
+
+      const service = new Service(serviceConfig);
+
+      const promise = service.launch();
+
+      expect(promise).toBeInstanceOf(Object);
+      expect(promise.then).toBeInstanceOf(Function);
+
+      jest.advanceTimersByTime(60000);
+
+      expect(await promise).toBe(false);
+    });
+
+    it('times out after a custom duration when launching a service with no ready signal', async () => {
+      const serviceConfig = {
+        port: 1234,
+        name: 'service-one',
+        script: '/path/to/script.js',
+        scriptWaitTimeout: 5000,
+      } as ServiceConfig;
+
+      const service = new Service(serviceConfig);
+
+      const promise = service.launch();
+
+      expect(promise).toBeInstanceOf(Object);
+      expect(promise.then).toBeInstanceOf(Function);
+
+      jest.advanceTimersByTime(5000);
+
+      expect(await promise).toBe(false);
     });
   });
 });

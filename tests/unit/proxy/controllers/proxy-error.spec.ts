@@ -63,7 +63,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const service = {
         name: 'my-service',
         port: 1234,
-        launch: jest.fn(),
+        launch: jest.fn(() => true),
         script: '/path/to/script.js',
       } as unknown as Service;
 
@@ -99,7 +99,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const service = {
         name: 'my-service',
         port: 1234,
-        launch: jest.fn(),
+        launch: jest.fn(() => true),
       } as unknown as Service;
 
       err.code = 'ECONNREFUSED';
@@ -109,6 +109,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
 
       expect(res._isEndCalled()).toBe(true);
       expect(service.launch).not.toHaveBeenCalled();
+      expect(proxyMock.web).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledTimes(1);
       expect(logger.warn).toHaveBeenCalledWith(
         'Service cannot be started automatically as no script was defined: my-service'
@@ -131,7 +132,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const service = {
         name: 'my-service',
         port: 1234,
-        launch: jest.fn(),
+        launch: jest.fn(() => true),
         script: '/path/to/script',
       } as unknown as Service;
 
@@ -142,6 +143,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
 
       expect(res._isEndCalled()).toBe(true);
       expect(service.launch).not.toHaveBeenCalled();
+      expect(proxyMock.web).not.toHaveBeenCalled();
     });
 
     it('does not attempt to launch the service if not in automock mode', async () => {
@@ -160,7 +162,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const service = {
         name: 'my-service',
         port: 1234,
-        launch: jest.fn(),
+        launch: jest.fn(() => true),
         script: '/path/to/script',
       } as unknown as Service;
 
@@ -171,6 +173,37 @@ describe('Proxy: Controllers - Proxy Error', () => {
 
       expect(res._isEndCalled()).toBe(true);
       expect(service.launch).not.toHaveBeenCalled();
+      expect(proxyMock.web).not.toHaveBeenCalled();
+    });
+
+    it('does not redirect via the proxy if the launch failed', async () => {
+      const router = mocked(new Router([]));
+
+      const handler = getProxyErrorHandler({
+        router,
+        proxy: proxyMock,
+        devMode: true,
+        autostart: true,
+      });
+
+      const req = httpMocks.createRequest();
+      const res = httpMocks.createResponse();
+      const err = new Error() as NodeJS.ErrnoException;
+      const service = {
+        name: 'my-service',
+        port: 1234,
+        launch: jest.fn(() => false),
+        script: '/path/to/script',
+      } as unknown as Service;
+
+      err.code = 'ECONNREFUSED';
+      router.getServiceFromRequest.mockReturnValue(service);
+
+      await handler(err, req, res);
+
+      expect(res._isEndCalled()).toBe(true);
+      expect(service.launch).toHaveBeenCalledTimes(1);
+      expect(proxyMock.web).not.toHaveBeenCalled();
     });
   });
 });

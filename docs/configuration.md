@@ -67,6 +67,7 @@ The following configuration options are available:
 - [`service.port`](#serviceport-number)
 - [`service.routes`](#serviceroutes-array)
 - [`service.script`](#servicescript-string)
+- [`service.scriptWaitTimeout`](#servicescriptwaittimeout-number)
 
 ## Reference
 
@@ -114,3 +115,12 @@ const { serve } = require('./serve');
   }
 })();
 ```
+
+If the ready signal is not sent the request will remain pending until the
+time defined by the [`service.script`](#servicescript-string) setting.
+
+### `service.scriptWaitTimeout` [number]
+
+Default: `60000`
+
+The length of time to wait when starting a service before timing out.

@@ -29,14 +29,16 @@ export const getProxyErrorHandler =
     }
 
     if (canRunScript) {
-      await service.launch();
+      const launched = await service.launch();
 
-      proxy.web(req, res, {
-        target: `http://127.0.0.1:${service.port}`,
-        autoRewrite: true,
-      });
+      if (launched) {
+        proxy.web(req, res, {
+          target: `http://127.0.0.1:${service.port}`,
+          autoRewrite: true,
+        });
 
-      return;
+        return;
+      }
     }
 
     // TODO: Handle possible scenarios:

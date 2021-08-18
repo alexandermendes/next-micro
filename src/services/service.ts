@@ -6,6 +6,7 @@ export interface ServiceConfig {
   port: number;
   routes: string[];
   script?: string;
+  scriptWaitTimeout: number,
   watch?: boolean;
   ttl?: number;
 }
@@ -15,6 +16,7 @@ export class Service implements ServiceConfig {
   readonly port: number;
   readonly routes: string[];
   readonly script: string | undefined;
+  readonly scriptWaitTimeout: number;
   readonly watch: boolean;
   readonly ttl: number | undefined;
 
@@ -28,16 +30,17 @@ export class Service implements ServiceConfig {
     this.script = serviceConfig.script;
     this.watch = serviceConfig.watch || false;
     this.ttl = serviceConfig.ttl;
+    this.scriptWaitTimeout = serviceConfig.scriptWaitTimeout || 60000;
 
     this.childLogger = createLogger({ tag: `service: ${this.name}` });
   }
 
-  async launch(): Promise<void> {
+  async launch(): Promise<boolean> {
     // TODO: Handle calls in quick succession - redirect
     if (this.childProcess) {
       logger.error(new Error(`Service is already running: ${this.name}`));
 
-      return;
+      return false;
     }
 
     // TODO: decide what to do when no script
@@ -45,7 +48,7 @@ export class Service implements ServiceConfig {
     if (!this.script) {
       logger.error(new Error(`Service has no startup script: ${this.name}`));
 
-      return;
+      return false;
     }
 
     logger.info(`Launching service: ${this.name}`);
@@ -71,11 +74,18 @@ export class Service implements ServiceConfig {
     this.childProcess.stderr?.pipe(createLogStream(this.childLogger.error));
 
     return new Promise((resolve) => {
+      const scriptWaitTimer = setTimeout(() => {
+        logger.debug(`Timed out while waiting for service to launch: ${this.name}`);
+
+        resolve(false);
+      }, this.scriptWaitTimeout);
+
       this.childProcess?.on('message', (event: Serializable) => {
         if (event === 'ready') {
           logger.success(`Service launched: ${this.name}`);
 
-          resolve();
+          clearTimeout(scriptWaitTimer);
+          resolve(true);
         }
       });
     });
