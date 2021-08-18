@@ -25,7 +25,7 @@ export class ProxyServer {
     this.autostart = autostart;
   }
 
-  async launch(port: number): Promise<ProxyServer> {
+  async launch(port = 3000): Promise<ProxyServer> {
     const controllerContext: ControllerContext = {
       router: this.router,
       proxy: this.proxy,

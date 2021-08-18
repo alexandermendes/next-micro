@@ -19,7 +19,7 @@ const getMicroproxyConfig = async () => ({
       routes: ['/accounts'],
     },
   ],
-});
+} as unknown as MicroproxyConfig);
 
 nock(`http://127.0.0.1:3001`)
   .persist()

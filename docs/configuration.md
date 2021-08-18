@@ -73,9 +73,13 @@ The following configuration options are available:
 
 ### `port` [number]
 
+Default: `3000`
+
 The port that the proxy server should listen for requests on.
 
 ### `autostart` [boolean]
+
+Default: `false`
 
 In development mode, if a route is hit for a service that is not accepting
 requests then, when this setting is enabled, the service will be started
@@ -84,19 +88,26 @@ setting.
 
 ### `service.name` [string]
 
-A unique name for the service. This is used in log messages and CLI commands
-such as `microproxy dev my-service`.
+Default: `undefined`
+
+A unique name for the service. This is used in log messages and CLI commands.
 
 ### `service.port` [number]
+
+Default: `undefined`
 
 A unique port for the service to listen for requests on.
 
 ### `service.routes` [array]
 
+Default: `undefined`
+
 An array of regular expression patterns denoting the routes served by the
 service. Any routes not defined here will not be made available via the proxy.
 
 ### `service.script` [string]
+
+Default: `undefined`
 
 A path to a script used to launch the service. This is required for
 [`autostart`](#autostart-boolean) to work.
