@@ -104,39 +104,41 @@ describe('Proxy: Server', () => {
       expect(createServer).toHaveBeenCalledWith(mainRequestHandlerMock);
     });
 
-    it('initialises the proxy res handler', async () => {
-      const router = new Router([]);
-      const proxyServer = new ProxyServer(router);
-      const port = 3000;
-      const proxyResHandlerMock = jest.fn();
+    describe.each`
+      scope         | controller
+      ${'proxyRes'} | ${mockControllers.getProxyResHandler}
+      ${'error'}    | ${mockControllers.getProxyErrorHandler}
+    `('proxy on.$scope', ({ scope, controller }) => {
+      it('initialises the controller', async () => {
+        const router = new Router([]);
+        const proxyServer = new ProxyServer(router);
+        const port = 3000;
+        const handler = jest.fn();
 
-      mockControllers.getProxyResHandler.mockReturnValueOnce(proxyResHandlerMock);
-      await proxyServer.launch(port);
+        controller.mockReturnValueOnce(handler);
+        await proxyServer.launch(port);
 
-      expect(mockControllers.getProxyResHandler).toHaveBeenCalledTimes(1);
-      expect(mockControllers.getProxyResHandler).toHaveBeenCalledWith({
-        router,
-        proxy: proxyMock,
-        devMode: false,
+        expect(proxyMock.on).toHaveBeenCalledWith(scope, handler);
+        expect(controller).toHaveBeenCalledTimes(1);
+        expect(controller).toHaveBeenCalledWith({
+          router,
+          proxy: proxyMock,
+          devMode: false,
+        });
       });
 
-      expect(proxyMock.on).toHaveBeenCalledWith('proxyRes', proxyResHandlerMock)
-    });
+      it('initialises the controller in dev mode', async () => {
+        const router = new Router([]);
+        const proxyServer = new ProxyServer(router, true);
+        const port = 3000;
+        const handler = jest.fn();
 
-    it('initialises controllers in dev mode', async () => {
-      const router = new Router([]);
-      const proxyServer = new ProxyServer(router, true);
-      const port = 3000;
-      const proxyResHandlerMock = jest.fn();
+        controller.mockReturnValueOnce(handler);
+        await proxyServer.launch(port);
 
-      mockControllers.getProxyResHandler.mockReturnValueOnce(proxyResHandlerMock);
-      await proxyServer.launch(port);
-
-      expect(mockControllers.getMainRequestHandler).toHaveBeenCalledTimes(1);
-      expect(mockControllers.getMainRequestHandler.mock.calls[0][0].devMode).toBe(true);
-
-      expect(mockControllers.getProxyResHandler).toHaveBeenCalledTimes(1);
-      expect(mockControllers.getProxyResHandler.mock.calls[0][0].devMode).toBe(true);
+        expect(controller).toHaveBeenCalledTimes(1);
+        expect(controller.mock.calls[0][0].devMode).toBe(true);
+      });
     });
   });
 

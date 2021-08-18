@@ -6,7 +6,7 @@ module.exports = {
     {
       name: 'products',
       port: 3001,
-      start: path.join(__dirname, 'example', 'products', 'start.js'),
+      script: path.join(__dirname, 'example', 'products', 'start.js'),
       routes: ['/products/.*'],
     },
   ],

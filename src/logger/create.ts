@@ -1,29 +1,7 @@
 import { sep } from 'path';
 import { format } from 'util';
 import chalk from 'chalk';
-import figures from 'figures';
-
-type ConsoleArg =
-  | string
-  | number
-  | boolean
-  | bigint
-  | Record<string, unknown>
-  | Error;
-
-type LogFunction = {
-  (...args: ConsoleArg[]): void;
-};
-
-export type Logger = {
-  [index: string]: LogFunction;
-  error: LogFunction;
-  warn: LogFunction;
-  info: LogFunction;
-  success: LogFunction;
-  log: LogFunction;
-  debug: LogFunction;
-};
+import { LogFunction, Logger, ConsoleArg } from './types';
 
 enum LogLevel {
   ERROR,
@@ -34,13 +12,13 @@ enum LogLevel {
   DEBUG,
 }
 
-export type LogLevelStrings = keyof typeof LogLevel;
+type LogLevelStrings = keyof typeof LogLevel;
 
-export type LoggerOptions =
+type LoggerOptions =
   | Record<string, never>
   | {
+      tag?: string;
       logLevel?: string;
-      icons?: boolean;
       colours?: boolean;
     };
 
@@ -84,17 +62,12 @@ const getActiveLogLevel = (logOpts: LoggerOptions): LogLevel => {
 };
 
 const createLogFunction =
-  (
-    logOpts: LoggerOptions,
-    level: LogLevel,
-    icon: string | null = null,
-    color = chalk.white,
-  ): LogFunction =>
+  (logOpts: LoggerOptions, level: LogLevel, color = chalk.white): LogFunction =>
   (...args: ConsoleArg[]) => {
     let message = formatArgs(args);
 
-    if (icon && logOpts.icons) {
-      message = `${figures(icon)} ${message}`;
+    if (logOpts.tag) {
+      message = `[${logOpts.tag}] ${message}`;
     }
 
     if (logOpts.colours) {
@@ -121,11 +94,11 @@ export const createLogger = (logOpts: LoggerOptions = {}): Logger => {
   const opts = Object.assign({}, defaultLogOpts, logOpts);
 
   return {
-    error: createLogFunction(opts, LogLevel.ERROR, '✗', chalk.red),
-    warn: createLogFunction(opts, LogLevel.WARN, '⚠', chalk.yellow),
-    info: createLogFunction(opts, LogLevel.INFO, 'ℹ', chalk.cyan),
-    success: createLogFunction(opts, LogLevel.SUCCESS, '✔', chalk.green),
+    error: createLogFunction(opts, LogLevel.ERROR, chalk.red),
+    warn: createLogFunction(opts, LogLevel.WARN, chalk.yellow),
+    info: createLogFunction(opts, LogLevel.INFO, chalk.cyan),
+    success: createLogFunction(opts, LogLevel.SUCCESS, chalk.green),
     log: createLogFunction(opts, LogLevel.LOG),
-    debug: createLogFunction(opts, LogLevel.DEBUG, '›'),
+    debug: createLogFunction(opts, LogLevel.DEBUG),
   };
 };

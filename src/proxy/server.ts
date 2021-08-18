@@ -7,6 +7,7 @@ import {
   ControllerContext,
   getMainRequestHandler,
   getProxyResHandler,
+  getProxyErrorHandler,
 } from './controllers';
 
 export class ProxyServer {
@@ -32,7 +33,7 @@ export class ProxyServer {
     this.server = http.createServer(getMainRequestHandler(controllerContext));
     const host = '127.0.0.1';
 
-    // proxy.on('error', getProxyErrorHandler(routes, serviceConfigs));
+    this.proxy.on('error', getProxyErrorHandler(controllerContext));
     this.proxy.on('proxyRes', getProxyResHandler(controllerContext));
     // server.on('close', getShutdownHandler(proxy, watcher));
 

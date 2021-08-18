@@ -2,16 +2,16 @@
 
 exports[`Logger logs debug to stdout 1`] = `
 Array [
-  "[37m› Hello[39m
+  "[37mHello[39m
 ",
 ]
 `;
 
-exports[`Logger logs errors to stderr 1`] = `"[31m✗ bad thing[39m"`;
+exports[`Logger logs errors to stderr 1`] = `"[31mbad thing[39m"`;
 
 exports[`Logger logs info to stdout 1`] = `
 Array [
-  "[36mℹ Hello[39m
+  "[36mHello[39m
 ",
 ]
 `;
@@ -25,14 +25,14 @@ Array [
 
 exports[`Logger logs success to stdout 1`] = `
 Array [
-  "[32m✔ Hello[39m
+  "[32mHello[39m
 ",
 ]
 `;
 
 exports[`Logger logs warn to stdout 1`] = `
 Array [
-  "[33m⚠ Hello[39m
+  "[33mHello[39m
 ",
 ]
 `;

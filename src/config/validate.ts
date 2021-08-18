@@ -71,7 +71,7 @@ const serviceSchema = Joi.object().keys({
   name: Joi.string().required(),
   port: Joi.number().positive().required(),
   routes: Joi.array().required().items(Joi.string()),
-  start: Joi.string().custom(file),
+  script: Joi.string().custom(file),
 });
 
 // routes must be an array

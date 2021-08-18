@@ -132,7 +132,7 @@ A service config file contains the following properties.
 
 | name  | description |
 |-------|-------------|
-| start | A function to call when launching the service. |
+| script | A function to call when launching the service. |
 | close | A function to call when closing the service.   |
 | port  | The preferred port for the service.            |
 | watch |

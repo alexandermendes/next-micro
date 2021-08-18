@@ -186,13 +186,13 @@ describe('Config: Validate', () => {
     });
   });
 
-  describe('start script', () => {
+  describe('script', () => {
     it.each([
       null,
       42,
       {},
       path.join(__dirname, 'nowhere'),
-    ])('throws if a service has a start script with the value "%s"', async (start) => {
+    ])('throws if a service has a script with the value "%s"', async (script) => {
       const config = {
         port: 3000,
         services: [
@@ -200,13 +200,13 @@ describe('Config: Validate', () => {
             name: 'my-service',
             port: 3001,
             routes: ['/one'],
-            start,
+            script,
           },
         ],
       } as unknown as MicroproxyConfig;
 
       expect(() => validate(config, '/root')).toThrow(
-        /Microproxy Config Error: "services\[0\].start.*/
+        /Microproxy Config Error: "services\[0\].script.*/
       );
     });
   });

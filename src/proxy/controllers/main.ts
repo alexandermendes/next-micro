@@ -1,9 +1,9 @@
 import { IncomingMessage, ServerResponse } from 'http';
-import { Controller, ControllerContext } from './index';
+import { ControllerContext } from './index';
 import { abort } from '../abort';
 
 export const getMainRequestHandler =
-  (ctx: ControllerContext): Controller =>
+  (ctx: ControllerContext) =>
   (req: IncomingMessage, res: ServerResponse): void => {
     const { router, proxy } = ctx;
     const service = router.getServiceFromRequest(req);

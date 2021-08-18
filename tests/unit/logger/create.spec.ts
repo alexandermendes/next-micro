@@ -58,12 +58,11 @@ describe('Logger', () => {
     expect(writeSpy).toHaveBeenCalled();
   });
 
-  it('disables icons and colours', () => {
+  it('disables colours', () => {
     const writeSpy = jest.spyOn(process.stdout, 'write');
 
     const logger = createLogger({
       logLevel: 'LOG',
-      icons: false,
       colours: false
     });
 
