@@ -4,8 +4,6 @@
 
 An HTTP router and reverse-proxy for composing microservices.
 
-[**View the docs**](https://pages.github.com/alexandermendes/microproxy)
-
 **Features:**
 
 - Provides a single portal for accessing a site built from multiple microservices.
@@ -15,6 +13,8 @@ and brings them down after a given time to live (TTL) to save resources.
 an API call).
 - Includes a plugin system to auto-detect routes for particular applications,
 such as those built with Next.js.
+
+[**View the docs**](https://pages.github.com/alexandermendes/microproxy)
 
 ## Getting Started
 
@@ -73,5 +73,5 @@ requests to this address all traffic that matches `/some/pages/.*` will be
 routed to the first service and all traffic that matches `/some/more/pages/.*`
 to the second.
 
-[View the docs](https://pages.github.com/alexandermendes/microproxy) for more
+[View the full docs](https://pages.github.com/alexandermendes/microproxy) for more
 details of the available features.
