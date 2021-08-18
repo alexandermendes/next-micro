@@ -10,6 +10,7 @@
     "preexample": "yarn run build",
     "build": "tsc -d",
     "prebuild": "rimraf dist",
+    "docsify": "docsify",
     "prepublishOnly": "yarn run build"
   },
   "bin": {
@@ -64,6 +65,7 @@
     "@typescript-eslint/eslint-plugin": "^4.29.0",
     "@typescript-eslint/parser": "^4.29.0",
     "commitlint": "^8.3.5",
+    "docsify-cli": "^4.4.3",
     "eslint": "^7.5.0",
     "eslint-plugin-import": "^2.24.0",
     "eslint-plugin-jest": "^24.4.0",
