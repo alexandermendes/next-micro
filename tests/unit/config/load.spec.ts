@@ -18,7 +18,7 @@ const getCosmiconfigExplorerMock = () => ({
 });
 
 describe('Config: Load', () => {
-  it('loads the config from file', async () => {
+  it('loads the config from file with any expected defaults', async () => {
     const explorerMock = getCosmiconfigExplorerMock();
     const config = {
       services: [
@@ -31,11 +31,21 @@ describe('Config: Load', () => {
     cosmiconfigMock.mockReturnValue(explorerMock);
     explorerMock.search.mockResolvedValue({ config });
 
-    expect(await loadConfig()).toEqual(config);
+    await loadConfig();
+
     expect(cosmiconfig).toHaveBeenCalledTimes(1);
     expect(cosmiconfig).toHaveBeenCalledWith('microproxy', { stopDir: appRoot.path });
     expect(explorerMock.search).toHaveBeenCalledTimes(1);
     expect(explorerMock.search).toHaveBeenCalledWith(appRoot.path);
+    expect(await loadConfig()).toEqual({
+      port: 3000,
+      autostart: false,
+      services: [
+        {
+          name: 'my-service',
+        },
+      ],
+    });
   });
 
   it('validates the config', async () => {
@@ -54,6 +64,14 @@ describe('Config: Load', () => {
     await loadConfig();
 
     expect(validate).toHaveBeenCalledTimes(1);
-    expect(validate).toHaveBeenCalledWith(config, appRoot.path);
+    expect(validate).toHaveBeenCalledWith({
+      port: 3000,
+      autostart: false,
+      services: [
+        {
+          name: 'my-service',
+        },
+      ],
+    });
   });
 });

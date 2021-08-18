@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import fs from 'fs';
-import { MicroproxyConfig } from '../types/config';
+import { ConcreteMicroproxyConfig, MicroproxyConfig } from '../config';
 
 class MicroproxyConfigError extends Error {
   constructor(
@@ -84,14 +84,7 @@ const schema = Joi.object({
 /**
  * Validate a microproxy config.
  */
-export const validate = (
-  config: MicroproxyConfig | undefined,
-  dir: string,
-): void => {
-  if (!config) {
-    throw new MicroproxyConfigError(`config could be loaded from ${dir}`);
-  }
-
+export const validate = (config: ConcreteMicroproxyConfig): void => {
   const validationResult = schema.validate(config);
   const errorDetails = validationResult.error?.details[0];
 

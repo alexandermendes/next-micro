@@ -1,3 +1,3 @@
 export { cli } from './cli';
 
-export { MicroproxyConfig } from './types/config';
+export { MicroproxyConfig } from './config';

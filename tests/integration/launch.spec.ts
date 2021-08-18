@@ -3,7 +3,7 @@ import fetch from 'node-fetch';
 import getPort from 'get-port';
 import { launch } from '../../src/launch';
 import { ProxyServer } from '../../src/proxy/server';
-import { MicroproxyConfig } from '../../src/types/config';
+import { MicroproxyConfig } from '../../src/config';
 
 const getMicroproxyConfig = async () => ({
   port: await getPort(),

@@ -1,16 +1,8 @@
 import path from 'path';
 import { validate } from '../../../src/config/validate';
-import { MicroproxyConfig } from '../../../src/types/config';
+import { ConcreteMicroproxyConfig } from '../../../src/config';
 
 describe('Config: Validate', () => {
-  describe('no config', () => {
-    it('throws if no config file was given', async () => {
-      expect(() => validate(undefined, '/root')).toThrow(
-        'Microproxy Config Error: config could be loaded from /root'
-      );
-    });
-  });
-
   describe('valid config', () => {
     it('does not throw for a valid config', async () => {
       const config = {
@@ -23,9 +15,9 @@ describe('Config: Validate', () => {
             routes: ['/one'],
           },
         ],
-      } as unknown as MicroproxyConfig;
+      } as unknown as ConcreteMicroproxyConfig;
 
-      expect(() => validate(config, '/root')).not.toThrow();
+      expect(() => validate(config)).not.toThrow();
     });
   });
 
@@ -44,9 +36,9 @@ describe('Config: Validate', () => {
             routes: ['/one'],
           },
         ],
-      } as unknown as MicroproxyConfig;
+      } as unknown as ConcreteMicroproxyConfig;
 
-      expect(() => validate(config, '/root')).toThrow(
+      expect(() => validate(config)).toThrow(
         /Microproxy Config Error: "services\[0\].name".*/
       );
     });
@@ -66,9 +58,9 @@ describe('Config: Validate', () => {
             routes: ['/two'],
           },
         ],
-      } as unknown as MicroproxyConfig;
+      } as unknown as ConcreteMicroproxyConfig;
 
-      expect(() => validate(config, '/root')).toThrow(
+      expect(() => validate(config)).toThrow(
         'Microproxy Config Error: "services[1]" contains a duplicate value for "name"'
       );
     });
@@ -89,9 +81,9 @@ describe('Config: Validate', () => {
             routes: ['/one'],
           },
         ],
-      } as unknown as MicroproxyConfig;
+      } as unknown as ConcreteMicroproxyConfig;
 
-      expect(() => validate(config, '/root')).toThrow(
+      expect(() => validate(config)).toThrow(
         /Microproxy Config Error: "autostart".*/
       );
     });
@@ -99,7 +91,6 @@ describe('Config: Validate', () => {
 
   describe('ports', () => {
     it.each([
-      undefined,
       null,
       -1,
       'not-a-number',
@@ -107,9 +98,9 @@ describe('Config: Validate', () => {
       const config = {
         port,
         services: [],
-      } as unknown as MicroproxyConfig;
+      } as unknown as ConcreteMicroproxyConfig;
 
-      expect(() => validate(config, '/root')).toThrow(
+      expect(() => validate(config)).toThrow(
         /Microproxy Config Error: "port".*/
       );
     });
@@ -129,9 +120,9 @@ describe('Config: Validate', () => {
             routes: ['/one'],
           },
         ],
-      } as unknown as MicroproxyConfig;
+      } as unknown as ConcreteMicroproxyConfig;
 
-      expect(() => validate(config, '/root')).toThrow(
+      expect(() => validate(config)).toThrow(
         /Microproxy Config Error: "services\[0\].port".*/
       );
     });
@@ -151,17 +142,17 @@ describe('Config: Validate', () => {
             routes: ['/two'],
           },
         ],
-      } as unknown as MicroproxyConfig;
+      } as unknown as ConcreteMicroproxyConfig;
 
-      expect(() => validate(config, '/root')).toThrow(
+      expect(() => validate(config)).toThrow(
         'Microproxy Config Error: "services[1]" contains a duplicate value for "port"'
       );
     });
 
     it('throws if the root port is missing', async () => {
-      const config = {} as unknown as MicroproxyConfig;
+      const config = {} as unknown as ConcreteMicroproxyConfig;
 
-      expect(() => validate(config, '/root')).toThrow(
+      expect(() => validate(config)).toThrow(
         'Microproxy Config Error: "port" is required'
       );
     });
@@ -176,9 +167,9 @@ describe('Config: Validate', () => {
             routes: ['/one'],
           }
         ],
-      } as unknown as MicroproxyConfig;
+      } as unknown as ConcreteMicroproxyConfig;
 
-      expect(() => validate(config, '/root')).toThrow(
+      expect(() => validate(config)).toThrow(
         'Microproxy Config Error: "port" collides with "services[0].port"'
       );
     });
@@ -202,9 +193,9 @@ describe('Config: Validate', () => {
             routes,
           },
         ],
-      } as unknown as MicroproxyConfig;
+      } as unknown as ConcreteMicroproxyConfig;
 
-      expect(() => validate(config, '/root')).toThrow(
+      expect(() => validate(config)).toThrow(
         /Microproxy Config Error: "services\[0\].routes.*/
       );
     });
@@ -227,9 +218,9 @@ describe('Config: Validate', () => {
             script,
           },
         ],
-      } as unknown as MicroproxyConfig;
+      } as unknown as ConcreteMicroproxyConfig;
 
-      expect(() => validate(config, '/root')).toThrow(
+      expect(() => validate(config)).toThrow(
         /Microproxy Config Error: "services\[0\].script.*/
       );
     });
