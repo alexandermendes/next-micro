@@ -64,6 +64,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
         name: 'my-service',
         port: 1234,
         launch: jest.fn(() => true),
+        refreshTTL: jest.fn(),
         script: '/path/to/script.js',
       } as unknown as Service;
 
@@ -74,6 +75,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
 
       expect(res._isEndCalled()).toBe(false);
       expect(service.launch).toHaveBeenCalledTimes(1);
+      expect(service.refreshTTL).toHaveBeenCalledTimes(1);
       expect(proxyMock.web).toHaveBeenCalledTimes(1);
       expect(proxyMock.web).toHaveBeenCalledWith(req, res, {
         target: `http://127.0.0.1:${service.port}`,
@@ -112,7 +114,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
       expect(proxyMock.web).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledTimes(1);
       expect(logger.warn).toHaveBeenCalledWith(
-        'Service cannot be started automatically as no script was defined: my-service'
+        'Service is not running and cannot be started automatically as no script was defined: my-service'
       );
     });
 

@@ -2,10 +2,10 @@ import { mocked } from 'ts-jest/utils'
 import { cosmiconfig } from 'cosmiconfig';
 import appRoot from 'app-root-path';
 import { loadConfig } from '../../../src/config/load';
-import { validate } from '../../../src/config/validate';
+import { validate } from '../../../src/config/validation';
 
 jest.mock('cosmiconfig');
-jest.mock('../../../src/config/validate');
+jest.mock('../../../src/config/validation');
 
 const cosmiconfigMock = mocked(cosmiconfig);
 

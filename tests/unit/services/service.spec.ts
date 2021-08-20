@@ -10,6 +10,7 @@ const mockChildProcess = {
   stdout: { pipe: jest.fn() },
   stderr: { pipe: jest.fn() },
   on: jest.fn(),
+  kill: jest.fn(),
 };
 
 const mockSpawn = mocked(spawn);
@@ -17,6 +18,7 @@ const mockSpawn = mocked(spawn);
 mockSpawn.mockReturnValue(mockChildProcess as unknown as ChildProcess);
 
 const originalLoggerError = logger.error;
+const originalLoggerWarn = logger.warn;
 
 describe('Services: Service', () => {
   beforeEach(() => {
@@ -25,6 +27,7 @@ describe('Services: Service', () => {
 
   afterEach(() => {
     logger.error = originalLoggerError;
+    logger.warn = originalLoggerWarn;
   });
 
   describe('launch', () => {
@@ -148,6 +151,108 @@ describe('Services: Service', () => {
       jest.advanceTimersByTime(5000);
 
       expect(await promise).toBe(false);
+    });
+  });
+
+  describe('close', () => {
+    it('kills and relaunches the service', async () => {
+      const serviceConfig = {
+        port: 1234,
+        name: 'service-one',
+        script: '/path/to/script.js',
+      } as ServiceConfig;
+
+      const service = new Service(serviceConfig);
+
+      mockChildProcess.on.mockImplementation((scope, cb) => {
+        if (scope === 'message') {
+          cb('ready');
+        }
+      });
+
+      await service.launch();
+      service.close();
+
+      expect(mockChildProcess.kill).toHaveBeenCalledTimes(1);
+      expect(mockChildProcess.kill).toHaveBeenCalledWith();
+
+      const relaunched = await service.launch();
+
+      expect(relaunched).toBe(true);
+    });
+
+    it('does nothing if the service is not running', async () => {
+      const serviceConfig = {
+        port: 1234,
+        name: 'service-one',
+        script: '/path/to/script.js',
+      } as ServiceConfig;
+
+      const service = new Service(serviceConfig);
+
+      logger.warn = jest.fn();
+      service.close();
+
+      expect(mockChildProcess.kill).not.toHaveBeenCalled();
+      expect(logger.warn).toHaveBeenCalledTimes(1);
+      expect(logger.warn).toHaveBeenCalledWith('Service is not running: service-one');
+    });
+  });
+
+  describe('refreshTTL', () => {
+    it('kills the service after the given TTL', async () => {
+      const serviceConfig = {
+        port: 1234,
+        name: 'service-one',
+        script: '/path/to/script.js',
+        ttl: 1000,
+      } as ServiceConfig;
+
+      const service = new Service(serviceConfig);
+
+      mockChildProcess.on.mockImplementation((scope, cb) => {
+        if (scope === 'message') {
+          cb('ready');
+        }
+      });
+
+      await service.launch();
+      service.refreshTTL();
+
+      expect(mockChildProcess.kill).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(1000);
+
+      expect(mockChildProcess.kill).toHaveBeenCalled();
+    });
+
+    it('refreshes the TTLL', async () => {
+      const serviceConfig = {
+        port: 1234,
+        name: 'service-one',
+        script: '/path/to/script.js',
+        ttl: 1000,
+      } as ServiceConfig;
+
+      const service = new Service(serviceConfig);
+
+      mockChildProcess.on.mockImplementation((scope, cb) => {
+        if (scope === 'message') {
+          cb('ready');
+        }
+      });
+
+      await service.launch();
+      service.refreshTTL();
+      jest.advanceTimersByTime(500);
+      service.refreshTTL();
+      jest.advanceTimersByTime(500);
+
+      expect(mockChildProcess.kill).not.toHaveBeenCalled();
+
+      jest.advanceTimersByTime(500);
+
+      expect(mockChildProcess.kill).toHaveBeenCalled();
     });
   });
 });

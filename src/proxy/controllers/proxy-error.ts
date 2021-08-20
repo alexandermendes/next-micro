@@ -1,4 +1,4 @@
-import { IncomingMessage, ServerResponse } from 'http';
+import { IncomingMessage, Server, ServerResponse } from 'http';
 import { ControllerContext } from './index';
 import { abort } from '../abort';
 import { logger } from '../../logger';
@@ -24,7 +24,7 @@ export const getProxyErrorHandler =
 
     if (shouldRunScript && !canRunScript) {
       logger.warn(
-        `Service cannot be started automatically as no script was defined: ${service.name}`
+        `Service is not running and cannot be started automatically as no script was defined: ${service.name}`,
       );
     }
 
@@ -32,6 +32,8 @@ export const getProxyErrorHandler =
       const launched = await service.launch();
 
       if (launched) {
+        service.refreshTTL();
+
         proxy.web(req, res, {
           target: `http://127.0.0.1:${service.port}`,
           autoRewrite: true,

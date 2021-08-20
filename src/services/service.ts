@@ -1,4 +1,4 @@
-import { spawn, ChildProcess, StdioOptions, Serializable } from 'child_process';
+import { spawn, ChildProcess, Serializable } from 'child_process';
 import { Logger, createLogger, createLogStream, logger } from '../logger';
 
 export interface ServiceConfig {
@@ -6,7 +6,7 @@ export interface ServiceConfig {
   port: number;
   routes: string[];
   script?: string;
-  scriptWaitTimeout: number,
+  scriptWaitTimeout: number;
   watch?: boolean;
   ttl?: number;
 }
@@ -22,6 +22,7 @@ export class Service implements ServiceConfig {
 
   private childLogger: Logger;
   private childProcess: ChildProcess | undefined;
+  private ttlTimer: NodeJS.Timeout | undefined;
 
   constructor(serviceConfig: ServiceConfig) {
     this.name = serviceConfig.name;
@@ -51,17 +52,11 @@ export class Service implements ServiceConfig {
       return false;
     }
 
-    logger.info(`Launching service: ${this.name}`);
-
-    // The ipc option is important so that `process.send` will be available in
-    // the child process (nodemon) so it can communicate back with parent
-    // process (through `.on()`, `.send()`)
-    // https://nodejs.org/api/child_process.html#child_process_options_stdio
-    const stdio: StdioOptions = ['pipe', 'pipe', 'pipe', 'ipc'];
+    logger.debug(`Launching service: ${this.name}`);
 
     // TODO: Add watch mode and --watch flag
     this.childProcess = spawn('node', [this.script], {
-      stdio,
+      stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
       // cwd: serviceConfig.dir, // TODO: Add root dir option to config
       env: {
         // TODO: Pass through other arbritary env vars
@@ -73,9 +68,11 @@ export class Service implements ServiceConfig {
     this.childProcess.stdout?.pipe(createLogStream(this.childLogger.log));
     this.childProcess.stderr?.pipe(createLogStream(this.childLogger.error));
 
-    return new Promise((resolve) => {
+    return await new Promise((resolve) => {
       const scriptWaitTimer = setTimeout(() => {
-        logger.debug(`Timed out while waiting for service to launch: ${this.name}`);
+        logger.debug(
+          `Timed out while waiting for service to launch: ${this.name}`,
+        );
 
         resolve(false);
       }, this.scriptWaitTimeout);
@@ -91,19 +88,30 @@ export class Service implements ServiceConfig {
     });
   }
 
-  // async close(): Promise<void> {
-  //   if (!this.childProcess) {
-  //     logger.warn(`Process is not running: ${this.name}`);
+  close(): void {
+    if (!this.childProcess) {
+      logger.warn(`Service is not running: ${this.name}`);
 
-  //     return;
-  //   }
+      return;
+    }
 
-  //   const promise: Promise<void> = new Promise((resolve) => {
-  //     this.childProcess?.on('exit', resolve);
-  //   });
+    logger.debug(`Shutting down service: ${this.name}`);
 
-  //   this.childProcess.send('quit');
+    this.childProcess.kill();
+    this.childProcess = undefined;
+  }
 
-  //   return promise;
-  // }
+  refreshTTL(): void {
+    if (!this.ttl) {
+      return;
+    }
+
+    if (this.ttlTimer) {
+      clearTimeout(this.ttlTimer);
+    }
+
+    this.ttlTimer = setTimeout(() => {
+      this.close();
+    }, this.ttl);
+  }
 }

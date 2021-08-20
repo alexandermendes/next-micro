@@ -67,6 +67,7 @@ The following configuration options are available:
 - [`service.port`](#serviceport-number)
 - [`service.routes`](#serviceroutes-array)
 - [`service.script`](#servicescript-string)
+- [`service.ttl`](#servicettl-number)
 - [`service.scriptWaitTimeout`](#servicescriptwaittimeout-number)
 
 ## Reference
@@ -128,7 +129,15 @@ const { serve } = require('./serve');
 ```
 
 If the ready signal is not sent the request will remain pending until the
-time defined by the [`service.script`](#servicescript-string) setting.
+time defined by the [`service.scriptWaitTimeout`](#servicewaittimeout-number) setting.
+
+### `service.ttl` [number]
+
+Default: `undefined`
+
+The length of time to keep the service alive after it last received a request.
+Note that this will only work if the service was launched via Microproxy by
+using the [`service.script`](#servicescript-string) setting.
 
 ### `service.scriptWaitTimeout` [number]
 

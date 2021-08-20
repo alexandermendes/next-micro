@@ -30,11 +30,13 @@ describe('Proxy: Controllers - Main', () => {
     const res = httpMocks.createResponse();
     const service = {
       port: 1234,
-    } as Service;
+      refreshTTL: jest.fn(() => true),
+    } as unknown as Service;
 
     router.getServiceFromRequest.mockReturnValue(service);
     handler(req, res);
 
+    expect(service.refreshTTL).toHaveBeenCalledTimes(1);
     expect(proxyMock.web).toHaveBeenCalledTimes(1);
     expect(proxyMock.web).toHaveBeenCalledWith(req, res, {
       target: `http://127.0.0.1:${service.port}`,
