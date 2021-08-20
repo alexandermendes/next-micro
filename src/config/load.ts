@@ -2,7 +2,7 @@ import { cosmiconfig } from 'cosmiconfig';
 import appRoot from 'app-root-path';
 
 import { ConcreteMicroproxyConfig } from '../config';
-import { validate } from './validate';
+import { validate } from './validation';
 import { applyDefaults } from './defaults';
 import { logger } from '../logger';
 

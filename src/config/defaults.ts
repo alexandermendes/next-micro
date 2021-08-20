@@ -8,12 +8,14 @@ const rootDefaults = {
 
 const serviceDefaults = {
   routes: [],
-}
+};
 
 /**
  * Apply defaults to the microproxy config.
  */
-export const applyDefaults = (config: MicroproxyConfig): ConcreteMicroproxyConfig => {
+export const applyDefaults = (
+  config: MicroproxyConfig,
+): ConcreteMicroproxyConfig => {
   const mergedConfig = { ...rootDefaults, ...config };
 
   mergedConfig.services.map((service) => ({
