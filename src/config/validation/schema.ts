@@ -7,6 +7,7 @@ const serviceSchema = Joi.object().keys({
   routes: Joi.array().required().items(Joi.string()),
   script: Joi.string().custom(file),
   ttl: Joi.number().positive(),
+  env: Joi.object(),
 });
 
 export const getSchema = (): Joi.ObjectSchema =>

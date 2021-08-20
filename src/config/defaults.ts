@@ -8,6 +8,8 @@ const rootDefaults = {
 
 const serviceDefaults = {
   routes: [],
+  env: {},
+  scriptWaitTimeout: 60000,
 };
 
 /**

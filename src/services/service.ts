@@ -9,6 +9,7 @@ export interface ServiceConfig {
   scriptWaitTimeout: number;
   watch?: boolean;
   ttl?: number;
+  env?: Record<string, unknown>;
 }
 
 export class Service implements ServiceConfig {
@@ -19,6 +20,7 @@ export class Service implements ServiceConfig {
   readonly scriptWaitTimeout: number;
   readonly watch: boolean;
   readonly ttl: number | undefined;
+  readonly env: Record<string, unknown> | undefined;
 
   private childLogger: Logger;
   private childProcess: ChildProcess | undefined;
@@ -31,7 +33,8 @@ export class Service implements ServiceConfig {
     this.script = serviceConfig.script;
     this.watch = serviceConfig.watch || false;
     this.ttl = serviceConfig.ttl;
-    this.scriptWaitTimeout = serviceConfig.scriptWaitTimeout || 60000;
+    this.scriptWaitTimeout = serviceConfig.scriptWaitTimeout;
+    this.env = serviceConfig.env;
 
     this.childLogger = createLogger({ tag: `service: ${this.name}` });
   }
@@ -44,7 +47,6 @@ export class Service implements ServiceConfig {
       return false;
     }
 
-    // TODO: decide what to do when no script
     // TODO: Watch in dev mode, or with watch option.
     if (!this.script) {
       logger.error(new Error(`Service has no startup script: ${this.name}`));
@@ -59,9 +61,9 @@ export class Service implements ServiceConfig {
       stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
       // cwd: serviceConfig.dir, // TODO: Add root dir option to config
       env: {
-        // TODO: Pass through other arbritary env vars
         ...process.env,
-        PORT: String(this.port),
+        ...this.env,
+        PORT: String(this.port), // TODO: Document or remove
       },
     });
 

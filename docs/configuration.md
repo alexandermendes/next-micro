@@ -69,6 +69,7 @@ The following configuration options are available:
 - [`service.script`](#servicescript-string)
 - [`service.ttl`](#servicettl-number)
 - [`service.scriptWaitTimeout`](#servicescriptwaittimeout-number)
+- [`service.env`](#serviceenv-object)
 
 ## Reference
 
@@ -144,3 +145,9 @@ using the [`service.script`](#servicescript-string) setting.
 Default: `60000`
 
 The length of time to wait when starting a service before timing out.
+
+### `service.env` [object]
+
+Default: `{}`
+
+Environment variables to pass to your service in dev mode.

@@ -10,6 +10,9 @@ module.exports = {
       script: path.join(__dirname, 'example', 'products', 'start.js'),
       routes: ['/products/.*'],
       ttl: 60000,
+      env: {
+        PORT: 3001,
+      },
     },
   ],
 }
