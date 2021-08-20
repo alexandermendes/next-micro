@@ -1,4 +1,4 @@
-import { IncomingMessage, Server, ServerResponse } from 'http';
+import { IncomingMessage, ServerResponse } from 'http';
 import { ControllerContext } from './index';
 import { abort } from '../abort';
 import { logger } from '../../logger';

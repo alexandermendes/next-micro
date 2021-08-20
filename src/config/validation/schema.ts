@@ -9,8 +9,9 @@ const serviceSchema = Joi.object().keys({
   ttl: Joi.number().positive(),
 });
 
-export const getSchema = (): Joi.ObjectSchema => Joi.object({
-  port: Joi.number().positive().required(),
-  autostart: Joi.boolean(),
-  services: Joi.array().items(serviceSchema).unique('port').unique('name'),
-}).custom(uniqueRootPort);
+export const getSchema = (): Joi.ObjectSchema =>
+  Joi.object({
+    port: Joi.number().positive().required(),
+    autostart: Joi.boolean(),
+    services: Joi.array().items(serviceSchema).unique('port').unique('name'),
+  }).custom(uniqueRootPort);
