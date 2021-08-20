@@ -12,5 +12,5 @@ export const abort = (statusCode: number, res: ServerResponse): void => {
   }
 
   res.writeHead(statusCode);
-  res.end(String(statusCode));
+  res.end();
 };

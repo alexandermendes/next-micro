@@ -46,6 +46,6 @@ export const getProxyErrorHandler =
     // TODO: Handle possible scenarios:
     // - Service was launched but not waited for
     // - We could not connect to the service but not because of ECONNREFUSED
-    res.writeHead(400);
-    res.end(`Should be served by ${service.name}`);
+    res.writeHead(404);
+    res.end();
   };
