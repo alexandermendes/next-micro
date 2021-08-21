@@ -1,15 +1,14 @@
 import { cosmiconfig } from 'cosmiconfig';
 import appRoot from 'app-root-path';
 
-import { ConcreteMicroproxyConfig } from '../config';
 import { validate } from './validation';
-import { applyDefaults } from './defaults';
 import { logger } from '../logger';
+import { Config } from './config';
 
 /**
  * Load the microproxy config.
  */
-export const loadConfig = async (): Promise<ConcreteMicroproxyConfig> => {
+export const loadConfig = async (): Promise<Config> => {
   const dir = appRoot.path;
   const explorer = cosmiconfig('microproxy', { stopDir: dir });
   const { config } = (await explorer.search(dir)) || {};
@@ -18,9 +17,7 @@ export const loadConfig = async (): Promise<ConcreteMicroproxyConfig> => {
     logger.warn('No Microproxy config file was detected.');
   }
 
-  const mergedConfig = applyDefaults(config);
+  validate(config);
 
-  validate(mergedConfig);
-
-  return applyDefaults(mergedConfig);
+  return new Config(config);
 };

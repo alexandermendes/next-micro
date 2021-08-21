@@ -1,4 +1,4 @@
-import { loadConfig } from './config/load';
+import { loadConfig } from './config';
 import { ProxyServer } from './proxy/server';
 import { Router } from './router';
 import { createServices } from './services/create';

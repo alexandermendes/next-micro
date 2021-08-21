@@ -1,6 +1,6 @@
 import Joi, { ValidationResult } from 'joi';
 import { mocked } from 'ts-jest/utils';
-import { ConcreteMicroproxyConfig } from '../../../../src/config';
+import { MicroproxyConfig } from '../../../../src/config';
 import { validate } from '../../../../src/config/validation';
 import { getSchema } from '../../../../src/config/validation/schema';
 
@@ -21,13 +21,13 @@ describe('Config: Validation - Validate', () => {
   });
 
   it('does not throw for a valid config', () => {
-    const config = { port: 1234 } as unknown as ConcreteMicroproxyConfig;
+    const config = { port: 1234 } as unknown as MicroproxyConfig;
 
     expect(() => validate(config)).not.toThrow();
   });
 
   it('throws for an invalid config', () => {
-    const config = { port: 1234 } as unknown as ConcreteMicroproxyConfig;
+    const config = { port: 1234 } as unknown as MicroproxyConfig;
 
     mockValidate.mockReturnValue({
       error: {

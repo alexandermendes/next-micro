@@ -51,6 +51,7 @@ describe('Config: Load', () => {
   it('validates the config', async () => {
     const explorerMock = getCosmiconfigExplorerMock();
     const config = {
+      port: 1000,
       services: [
         {
           name: 'my-service',
@@ -65,8 +66,6 @@ describe('Config: Load', () => {
 
     expect(validate).toHaveBeenCalledTimes(1);
     expect(validate).toHaveBeenCalledWith({
-      port: 3000,
-      autostart: false,
       services: [
         {
           name: 'my-service',
