@@ -13,7 +13,7 @@ const getFieldKeyFromState = (state: Joi.State): string => {
     Array.isArray(state.path) ? state.path : [state.path]
   ).filter((part) => typeof part !== 'undefined');
 
-  return arr?.reduce((acc: string, value: string | number) => {
+  return arr.reduce((acc: string, value: string | number) => {
     if (typeof value === 'number') {
       return `${acc}[${value}]`;
     }
@@ -29,7 +29,7 @@ export const uniqueRootPort = (
   config: MicroproxyConfig,
   helpers: Joi.CustomHelpers,
 ): MicroproxyConfig | Joi.ErrorReport => {
-  const collidingIndex = config?.services.findIndex(
+  const collidingIndex = config.services.findIndex(
     ({ port }) => port === config.port,
   );
 

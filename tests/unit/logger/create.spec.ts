@@ -70,4 +70,15 @@ describe('Logger', () => {
 
     expect(writeSpy).toHaveBeenCalledWith('Hello\n');
   });
+
+  it('creates a logger that with some reasonable defauts', () => {
+    const writeSpy = jest.spyOn(process.stdout, 'write');
+    const logger = createLogger();
+
+    logger.log('log');
+    logger.debug('debug');
+
+    expect(writeSpy).toHaveBeenCalledTimes(1);
+    expect(String(writeSpy.mock.calls[0][0])).toContain('log');
+  });
 });

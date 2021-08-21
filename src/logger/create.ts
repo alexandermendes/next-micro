@@ -87,7 +87,6 @@ const createLogFunction =
 export const createLogger = (logOpts: LoggerOptions = {}): Logger => {
   const defaultLogOpts = {
     logLevel: 'log',
-    icons: true,
     colours: true,
   };
 
