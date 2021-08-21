@@ -12,22 +12,21 @@ export class Router {
 
   constructor(services: Service[]) {
     this.services = services;
-    this.routes = this.loadRoutes();
+    this.routes = [];
   }
 
-  private loadRoutes(): Route[] {
-    const routes: Route[] = [];
+  loadRoutes(): void {
+    this.routes = [];
 
     this.services.forEach((service) => {
-      routes.push(
-        ...service.routes.map(
-          (pattern) =>
-            <Route>{
-              pattern,
-              service,
-            },
-        ),
-      );
+      this.routes.push(...this.getRoutesForService(service));
+    });
+  }
+
+  private getRoutesForService(service: Service): Route[] {
+    const routes: Route[] = service.routes.map((pattern) => <Route>{
+      pattern,
+      service,
     });
 
     return routes;

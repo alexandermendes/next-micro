@@ -1,4 +1,4 @@
-import { ServiceConfig } from "../services/service";
+import { ServiceConfig } from '../services/service';
 
 export interface MicroproxyConfig {
   port?: number;
