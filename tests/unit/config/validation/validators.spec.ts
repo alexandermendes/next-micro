@@ -2,7 +2,7 @@ import fs from 'fs';
 import Joi from 'joi';
 import { mocked } from 'ts-jest/utils'
 import { MicroproxyConfig } from '../../../../src/config';
-import { file, uniqueRootPort } from '../../../../src/config/validation/validators';
+import { dir, file, uniqueRootPort } from '../../../../src/config/validation/validators';
 
 jest.mock('fs');
 
@@ -39,7 +39,7 @@ describe('Config: Validation - Validators', () => {
       expect(result).toBe('mock-joi-msg');
       expect(helpers.message).toHaveBeenCalledTimes(1);
       expect(helpers.message).toHaveBeenCalledWith({
-        custom: '"my-field" is not a valid file',
+        custom: '"my-field" is not a file',
       });
     });
 
@@ -54,7 +54,52 @@ describe('Config: Validation - Validators', () => {
       expect(result).toBe('mock-joi-msg');
       expect(helpers.message).toHaveBeenCalledTimes(1);
       expect(helpers.message).toHaveBeenCalledWith({
-        custom: '"arr[1].my-field" is not a valid file',
+        custom: '"arr[1].my-field" is not a file',
+      });
+    });
+  });
+
+  describe('dir', () => {
+    beforeEach(() => {
+      mockFs.lstatSync.mockReturnValue({
+        isFile: () => false,
+      } as unknown as fs.Stats);
+    });
+
+    it('returns a valid path', () => {
+      const helpers = getHelpers({ path: 'my-field' })
+      const result = dir('/path', helpers);
+
+      expect(result).toBe('/path');
+    });
+
+    it('returns the Joi message if the path is a file', () => {
+      mockFs.lstatSync.mockReturnValue({
+        isFile: () => true,
+      } as unknown as fs.Stats);
+
+      const helpers = getHelpers({ path: 'my-field' })
+      const result = dir('/path', helpers);
+
+      expect(result).toBe('mock-joi-msg');
+      expect(helpers.message).toHaveBeenCalledTimes(1);
+      expect(helpers.message).toHaveBeenCalledWith({
+        custom: '"my-field" is not a directory',
+      });
+    });
+
+    it('returns the Joi message if the path does not exist', () => {
+      mockFs.lstatSync.mockImplementation((): fs.Stats => {
+        throw new Error('no good');
+      });
+
+      const helpers = getHelpers({ path: ['arr', 1, 'my-field'] })
+      const result = dir('/path', helpers);
+
+      expect(result).toBe('mock-joi-msg');
+      expect(helpers.message).toHaveBeenCalledTimes(1);
+      expect(helpers.message).toHaveBeenCalledWith({
+        custom: '"arr[1].my-field" is not a directory',
       });
     });
   });

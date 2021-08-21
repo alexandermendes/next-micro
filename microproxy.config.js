@@ -8,6 +8,7 @@ module.exports = {
       name: 'products',
       port: 3001,
       script: path.join(__dirname, 'example', 'products', 'start.js'),
+      rootDir: './example/products',
       routes: ['/products/.*'],
       ttl: 60000,
       env: {

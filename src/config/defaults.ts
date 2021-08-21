@@ -1,15 +1,9 @@
 import { MicroproxyConfig, ConcreteMicroproxyConfig } from '../config';
 
-const rootDefaults = {
+const defaults = {
   port: 3000,
   autostart: false,
   services: [],
-};
-
-const serviceDefaults = {
-  routes: [],
-  env: {},
-  scriptWaitTimeout: 60000,
 };
 
 /**
@@ -17,13 +11,7 @@ const serviceDefaults = {
  */
 export const applyDefaults = (
   config: MicroproxyConfig,
-): ConcreteMicroproxyConfig => {
-  const mergedConfig = { ...rootDefaults, ...config };
-
-  mergedConfig.services.map((service) => ({
-    ...serviceDefaults,
-    ...service,
-  }));
-
-  return mergedConfig;
-};
+): ConcreteMicroproxyConfig => ({
+  ...defaults,
+  ...config,
+});

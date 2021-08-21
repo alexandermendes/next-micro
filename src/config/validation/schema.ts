@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { file, uniqueRootPort } from './validators';
+import { file, dir, uniqueRootPort } from './validators';
 
 const serviceSchema = Joi.object().keys({
   name: Joi.string().required(),
@@ -8,6 +8,7 @@ const serviceSchema = Joi.object().keys({
   script: Joi.string().custom(file),
   ttl: Joi.number().positive(),
   env: Joi.object(),
+  rootDir: Joi.string().custom(dir),
 });
 
 export const getSchema = (): Joi.ObjectSchema =>

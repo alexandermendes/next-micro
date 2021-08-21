@@ -151,3 +151,11 @@ The length of time to wait when starting a service before timing out.
 Default: `{}`
 
 Environment variables to pass to your service in dev mode.
+
+### `service.rootDir` [string]
+
+Default: The root of the current repository
+
+The root directory of your service, to be used when running the
+[`service.script`](#servicescript-string) or running in [`service.watch`](#servicewatch-boolean)
+mode.

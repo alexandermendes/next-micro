@@ -1,3 +1,5 @@
+import path from 'path';
+import appRoot from 'app-root-path';
 import { ChildProcess, spawn } from 'child_process';
 import { mocked } from 'ts-jest/utils';
 import { logger } from '../../../src/logger';
@@ -36,6 +38,7 @@ describe('Services: Service', () => {
         port: 1234,
         name: 'service-one',
         script: '/path/to/script.js',
+        rootDir: '/root',
       } as ServiceConfig;
 
       const service = new Service(serviceConfig);
@@ -50,13 +53,35 @@ describe('Services: Service', () => {
 
       expect(launched).toBe(true);
       expect(spawn).toHaveBeenCalledTimes(1);
-      expect(spawn).toHaveBeenCalledWith('node', [serviceConfig.script], {
+      expect(spawn).toHaveBeenCalledWith('node', ['/root/path/to/script.js'], {
         stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
         env: {
           ...process.env,
           PORT: String(serviceConfig.port),
         },
       });
+    });
+
+    it('runs the script relative to the app root if no rootDir given', async () => {
+      const serviceConfig = {
+        port: 1234,
+        name: 'service-one',
+        script: '/path/to/script.js',
+      } as ServiceConfig;
+
+      const service = new Service(serviceConfig);
+
+      mockChildProcess.on.mockImplementation((scope, cb) => {
+        if (scope === 'message') {
+          cb('ready');
+        }
+      });
+
+      await service.launch();
+
+      expect(mockSpawn.mock.calls[0][1]).toEqual([
+        path.join(appRoot.path, String(serviceConfig.script))
+      ]);
     });
 
     it('does not attempt to launch the service twice', async () => {
@@ -66,6 +91,7 @@ describe('Services: Service', () => {
         port: 1234,
         name: 'service-one',
         script: '/path/to/script.js',
+        rootDir: '/root',
       } as ServiceConfig;
 
       const service = new Service(serviceConfig);
@@ -119,6 +145,7 @@ describe('Services: Service', () => {
         port: 1234,
         name: 'service-one',
         script: '/path/to/script.js',
+        rootDir: '/root',
       } as ServiceConfig;
 
       const service = new Service(serviceConfig);
@@ -138,6 +165,7 @@ describe('Services: Service', () => {
         port: 1234,
         name: 'service-one',
         script: '/path/to/script.js',
+        rootDir: '/root',
         scriptWaitTimeout: 5000,
       } as ServiceConfig;
 
@@ -160,6 +188,7 @@ describe('Services: Service', () => {
         port: 1234,
         name: 'service-one',
         script: '/path/to/script.js',
+        rootDir: '/root',
       } as ServiceConfig;
 
       const service = new Service(serviceConfig);
@@ -186,6 +215,7 @@ describe('Services: Service', () => {
         port: 1234,
         name: 'service-one',
         script: '/path/to/script.js',
+        rootDir: '/root',
       } as ServiceConfig;
 
       const service = new Service(serviceConfig);

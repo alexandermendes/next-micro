@@ -43,6 +43,30 @@ export const uniqueRootPort = (
 };
 
 /**
+ * Assert that a field points to a valid directory.
+ */
+export const dir = (
+  filePath: string,
+  helpers: Joi.CustomHelpers,
+): string | Joi.ErrorReport => {
+  const key = getFieldKeyFromState(helpers.state);
+  const msg = helpers.message({ custom: `"${key}" is not a directory` });
+  let stats;
+
+  try {
+    stats = fs.lstatSync(filePath);
+  } catch (err) {
+    return msg;
+  }
+
+  if (stats.isFile()) {
+    return msg;
+  }
+
+  return filePath;
+};
+
+/**
  * Assert that a field points to a valid file.
  */
 export const file = (
@@ -50,7 +74,7 @@ export const file = (
   helpers: Joi.CustomHelpers,
 ): string | Joi.ErrorReport => {
   const key = getFieldKeyFromState(helpers.state);
-  const msg = helpers.message({ custom: `"${key}" is not a valid file` });
+  const msg = helpers.message({ custom: `"${key}" is not a file` });
   let stats;
 
   try {
