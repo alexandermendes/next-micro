@@ -2,7 +2,7 @@ import http from 'http';
 import gracefulShutdown from 'http-graceful-shutdown';
 import HttpProxy from 'http-proxy';
 import { logger } from '../logger';
-import { Router } from '../router';
+import { Router } from '../router/router';
 import {
   ControllerContext,
   getMainRequestHandler,

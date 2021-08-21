@@ -66,6 +66,7 @@ describe('Config: Load', () => {
 
     expect(validate).toHaveBeenCalledTimes(1);
     expect(validate).toHaveBeenCalledWith({
+      port: 1000,
       services: [
         {
           name: 'my-service',

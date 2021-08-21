@@ -1,5 +1,5 @@
 import { IncomingMessage } from 'http';
-import { Service } from './services/service';
+import { Service } from '../services/service';
 
 type Route = {
   readonly pattern: string | RegExp;

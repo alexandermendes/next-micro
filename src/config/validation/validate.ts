@@ -1,4 +1,4 @@
-import { MicroproxyConfig } from '.config';
+import { MicroproxyConfig } from '../config';
 import { MicroproxyConfigError } from './error';
 import { getSchema } from './schema';
 
