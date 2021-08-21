@@ -2,12 +2,12 @@
 
 [![npm version](https://badge.fury.io/js/microproxy.svg)](https://badge.fury.io/js/microproxy)
 
-An HTTP router and reverse-proxy for composing microservices.
+An HTTP router, reverse-proxy and process manager for composing microservices.
 
 **Features:**
 
 - Provides a single portal for accessing a site built from multiple microservices.
-- Launches services automatically in development mode
+- Launches services automatically in development mode.
 and brings them down after a given time to live (TTL) to save resources.
 - Enables static or dynamic routing (e.g. based on settings retrieved via
 an API call).
