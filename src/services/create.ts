@@ -63,7 +63,6 @@ export const createServices = (
     findNextServices(cwd).forEach((rootDir) => {
       mergedServiceConfigs.push(<ServiceConfig>{
         rootDir,
-        port: 123,
       });
     });
   }

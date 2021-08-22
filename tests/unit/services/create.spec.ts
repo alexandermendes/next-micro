@@ -104,13 +104,11 @@ describe('Services: Create', () => {
     expect(Service).toHaveBeenCalledWith({
       name: 'my-service',
       rootDir: '/one',
-      port: 123,
     });
 
     expect(Service).toHaveBeenCalledWith({
       name: 'my-service',
       rootDir: '/two',
-      port: 123,
     });
   });
 });
