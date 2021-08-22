@@ -1,6 +1,6 @@
 {
-  "name": "nextmicro",
-  "description": "A toolkit for developing microservices.",
+  "name": "next-micro",
+  "description": "An HTTP router, reverse-proxy and process manager for composing Next.js microservices.",
   "version": "1.0.0",
   "scripts": {
     "lint": "eslint .",
@@ -22,7 +22,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/alexandermendes/nextmicro.git"
+    "url": "https://github.com/alexandermendes/next-micro.git"
   },
   "engines": {
     "node": ">=14"
