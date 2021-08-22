@@ -4,8 +4,6 @@
 
 An HTTP router, reverse-proxy and process manager for composing Next.js microservices.
 
-**Features:**
-
 [**View the docs**](https://pages.github.com/alexandermendes/nextmicro)
 
 ## Getting Started
