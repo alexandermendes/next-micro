@@ -1,1 +1,1 @@
-process.env.MICROPROXY_LOG_LEVEL = 'warn';
+process.env.NEXT_MICRO_LOG_LEVEL = 'warn';

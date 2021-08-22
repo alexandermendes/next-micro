@@ -16,14 +16,14 @@ export type ServiceConfig = {
   env?: Record<string, unknown>;
 };
 
-export type MicroproxyConfig = {
+export type NextMicroConfig = {
   port?: number;
   autoload?: boolean;
   autostart?: boolean;
   services?: ServiceConfig[];
 };
 
-export type ConcreteMicroproxyConfig = {
+export type ConcreteNextMicroConfig = {
   port: number;
   autoload: boolean;
   autostart: boolean;
@@ -38,11 +38,11 @@ const defaults = {
 };
 
 /**
- * Load the microproxy config.
+ * Load the nextmicro config.
  */
-export const loadConfig = async (): Promise<ConcreteMicroproxyConfig> => {
+export const loadConfig = async (): Promise<ConcreteNextMicroConfig> => {
   const dir = appRoot.path;
-  const explorer = cosmiconfig('microproxy', { stopDir: dir });
+  const explorer = cosmiconfig('nextmicro', { stopDir: dir });
   const { config } = (await explorer.search(dir)) || {};
 
   validate(config);

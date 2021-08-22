@@ -1,2 +1,2 @@
 export { cli } from './cli';
-export { MicroproxyConfig } from './config';
+export { NextMicroConfig } from './config';

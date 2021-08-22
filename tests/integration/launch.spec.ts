@@ -4,11 +4,11 @@ import fetch from 'node-fetch';
 import getPort from 'get-port';
 import { launch } from '../../src/launch';
 import { ProxyServer } from '../../src/proxy/server';
-import { ConcreteMicroproxyConfig } from '../../src/config';
+import { ConcreteNextMicroConfig } from '../../src/config';
 
 const exampleDir = path.join(__dirname, '..', '..', 'example');
 
-const getMicroproxyConfig = async () => ({
+const getNextMicroConfig = async () => ({
   port: await getPort(),
   services: [
     {
@@ -22,7 +22,7 @@ const getMicroproxyConfig = async () => ({
       rootDir: path.join(exampleDir, 'frontend'),
     },
   ],
-} as unknown as ConcreteMicroproxyConfig);
+} as unknown as ConcreteNextMicroConfig);
 
 nock(`http://127.0.0.1:3001`)
   .persist()
@@ -35,13 +35,13 @@ nock(`http://127.0.0.1:3002`)
   .reply(200, 'service two replied');
 
 describe('Launch', () => {
-  let microproxyConfig: ConcreteMicroproxyConfig;
+  let nextmicroConfig: ConcreteNextMicroConfig;
   let proxyServer: ProxyServer;
 
   beforeAll(async () => {
-    microproxyConfig = await getMicroproxyConfig();
+    nextmicroConfig = await getNextMicroConfig();
 
-    jest.doMock('../../microproxy.config', () => (microproxyConfig))
+    jest.doMock('../../nextmicro.config', () => (nextmicroConfig))
   });
 
   beforeAll(async () => {
@@ -53,10 +53,10 @@ describe('Launch', () => {
   });
 
   it('routes requests to the correct backend', async () => {
-    const resOne = await fetch(`http://127.0.0.1:${microproxyConfig.port}/api/hello`);
+    const resOne = await fetch(`http://127.0.0.1:${nextmicroConfig.port}/api/hello`);
     const textOne = await resOne.text()
 
-    const resTwo = await fetch(`http://127.0.0.1:${microproxyConfig.port}/home`);
+    const resTwo = await fetch(`http://127.0.0.1:${nextmicroConfig.port}/home`);
     const textTwo = await resTwo.text()
 
     expect(textOne).toBe('service one replied');
