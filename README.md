@@ -9,7 +9,7 @@ An HTTP router, reverse-proxy and process manager for composing Next.js microser
 ## Getting Started
 
 Given a monorepo containing multiple Next.js microservices the easiest way
-to get started is to install nextmicro in the root of the monorepo:
+to get started is to install Next Micro in the root of the monorepo:
 
 ```sh
 npm install nextmicro -D
