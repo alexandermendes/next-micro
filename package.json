@@ -1,12 +1,12 @@
 {
-  "name": "nextmicro",
+  "name": "microproxy",
   "description": "A toolkit for developing microservices.",
   "version": "1.0.0",
   "scripts": {
     "lint": "eslint .",
     "format": "prettier --config .prettierrc 'src/**/*.ts' --write",
     "test": "jest",
-    "example": "node -r source-map-support/register ./bin/nextmicro.js",
+    "example": "node -r source-map-support/register ./bin/microproxy.js",
     "dev": "yarn example dev",
     "preexample": "yarn run build",
     "build": "tsc -d",
@@ -15,14 +15,14 @@
     "prepublishOnly": "yarn run build"
   },
   "bin": {
-    "nextmicro": "./bin/nextmicro.js"
+    "microproxy": "./bin/microproxy.js"
   },
   "main": "dist/index.js",
   "author": "Alex Mendes",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/alexandermendes/nextmicro.git"
+    "url": "https://github.com/alexandermendes/microproxy.git"
   },
   "engines": {
     "node": ">=14"

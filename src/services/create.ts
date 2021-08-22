@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import glob from 'glob';
 import { Service } from './service';
-import { ConcreteNextMicroConfig, ServiceConfig } from '../config';
+import { ConcreteMicroproxyConfig, ServiceConfig } from '../config';
 
 type Package = {
   name: string;
@@ -52,7 +52,7 @@ const applyDefaults = (serviceConfig: ServiceConfig): ServiceConfig => {
  * Create the services.
  */
 export const createServices = (
-  config: ConcreteNextMicroConfig,
+  config: ConcreteMicroproxyConfig,
   cwd: string,
 ): Service[] => {
   const { autoload, services } = config;

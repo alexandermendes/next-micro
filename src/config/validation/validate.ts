@@ -1,16 +1,16 @@
-import { NextMicroConfig } from '../index';
-import { NextMicroConfigError } from './error';
+import { MicroproxyConfig } from '../index';
+import { MicroproxyConfigError } from './error';
 import { getSchema } from './schema';
 
 /**
- * Validate a nextmicro config.
+ * Validate a microproxy config.
  */
-export const validate = (config: NextMicroConfig): void => {
+export const validate = (config: MicroproxyConfig): void => {
   const schema = getSchema();
   const validationResult = schema.validate(config);
   const errorDetails = validationResult.error?.details[0];
 
   if (errorDetails) {
-    throw new NextMicroConfigError(errorDetails.message, errorDetails);
+    throw new MicroproxyConfigError(errorDetails.message, errorDetails);
   }
 };

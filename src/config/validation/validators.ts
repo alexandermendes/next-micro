@@ -1,6 +1,6 @@
 import Joi from 'joi';
 import fs from 'fs';
-import { NextMicroConfig } from '../../config';
+import { MicroproxyConfig } from '../../config';
 
 /**
  * Get the key to a field from the Joi state.
@@ -26,9 +26,9 @@ const getFieldKeyFromState = (state: Joi.State): string => {
  * Assert that the root port does not collide with any service ports.
  */
 export const uniqueRootPort = (
-  config: NextMicroConfig,
+  config: MicroproxyConfig,
   helpers: Joi.CustomHelpers,
-): NextMicroConfig | Joi.ErrorReport => {
+): MicroproxyConfig | Joi.ErrorReport => {
   const { services = [] } = config;
   const collidingIndex = services.findIndex(({ port }) => port === config.port);
 

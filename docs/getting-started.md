@@ -1,14 +1,14 @@
 # Getting Started
 
 Depending on how you prefer to organise your code you may choose to install
-Next Micro in a standalone repo containing the routing logic for your
+Microproxy in a standalone repo containing the routing logic for your
 microservices, or you may choose to install it in a monorepo that contains
 the routing logic *and* your microservices.
 
-In either case, install Next Micro as a dev dependency:
+In either case, install Microproxy as a dev dependency:
 
 ```sh
-npm install nextmicro -D
+npm install microproxy -D
 ```
 
 Add the following section to your `package.json`:
@@ -16,9 +16,9 @@ Add the following section to your `package.json`:
 ```json
 {
   "scripts": {
-    "dev": "nextmicro dev",
-    "build": "nextmicro build",
-    "start": "nextmicro start",
+    "dev": "microproxy dev",
+    "build": "microproxy build",
+    "start": "microproxy start",
   }
 }
 ```
@@ -26,7 +26,7 @@ Add the following section to your `package.json`:
 And add a configuration file to the root of your repository (example services shown):
 
 ```js
-// nextmicro.config.js
+// microproxy.config.js
 module.exports = {
   port: 3000,
   services: [
@@ -44,10 +44,10 @@ module.exports = {
 };
 ```
 
-To bring Next Micro up in development mode run:
+To bring Microproxy up in development mode run:
 
 ```sh
-yarn nextmicro dev
+yarn microproxy dev
 ```
 
 The proxy should be up and running at `http://127.0.0.1:3000`. When we make
