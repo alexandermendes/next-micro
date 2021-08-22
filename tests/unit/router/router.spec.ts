@@ -29,7 +29,7 @@ describe('Router', () => {
     const foundService = router.getServiceFromRequest(req);
 
     expect(foundService).not.toBeNull();
-    expect(foundService?.name).toBe('service-one');
+    expect(foundService?.getName()).toBe('service-one');
   });
 
   it('returns the service that matches an incoming request referer header', () => {
@@ -56,7 +56,7 @@ describe('Router', () => {
     const foundService = router.getServiceFromRequest(req);
 
     expect(foundService).not.toBeNull();
-    expect(foundService?.name).toBe('service-two');
+    expect(foundService?.getName()).toBe('service-two');
   });
 
   it('returns null if no service matches a url', () => {

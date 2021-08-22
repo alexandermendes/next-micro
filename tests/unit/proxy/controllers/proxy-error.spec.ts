@@ -60,14 +60,16 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const req = httpMocks.createRequest();
       const res = httpMocks.createResponse();
       const err = new Error() as NodeJS.ErrnoException;
-      const service = {
+      const service = new Service({
         name: 'my-service',
-        port: 1234,
-        launch: jest.fn(() => true),
-        refreshTTL: jest.fn(),
-        getPort: () => 1000,
-        script: '/path/to/script.js',
-      } as unknown as Service;
+        script: 'script.js',
+        rootDir: '/service',
+      });
+
+      const launchSpy = jest.spyOn(service, 'launch');
+      const refreshTTLSpy = jest.spyOn(service, 'refreshTTL');
+
+      launchSpy.mockResolvedValue(true);
 
       err.code = 'ECONNREFUSED';
       router.getServiceFromRequest.mockReturnValue(service);
@@ -75,8 +77,8 @@ describe('Proxy: Controllers - Proxy Error', () => {
       await handler(err, req, res);
 
       expect(res._isEndCalled()).toBe(false);
-      expect(service.launch).toHaveBeenCalledTimes(1);
-      expect(service.refreshTTL).toHaveBeenCalledTimes(1);
+      expect(launchSpy).toHaveBeenCalledTimes(1);
+      expect(refreshTTLSpy).toHaveBeenCalledTimes(1);
       expect(proxyMock.web).toHaveBeenCalledTimes(1);
       expect(proxyMock.web).toHaveBeenCalledWith(req, res, {
         target: `http://127.0.0.1:${service.getPort()}`,
@@ -99,12 +101,12 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const req = httpMocks.createRequest();
       const res = httpMocks.createResponse();
       const err = new Error() as NodeJS.ErrnoException;
-      const service = {
+      const service = new Service({
         name: 'my-service',
-        port: 1234,
-        launch: jest.fn(() => true),
-        getPort: () => 1000,
-      } as unknown as Service;
+        rootDir: '/service',
+      });
+
+      const launchSpy = jest.spyOn(service, 'launch');
 
       err.code = 'ECONNREFUSED';
       router.getServiceFromRequest.mockReturnValue(service);
@@ -112,7 +114,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
       await handler(err, req, res);
 
       expect(res._isEndCalled()).toBe(true);
-      expect(service.launch).not.toHaveBeenCalled();
+      expect(launchSpy).not.toHaveBeenCalled();
       expect(proxyMock.web).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledTimes(1);
       expect(logger.warn).toHaveBeenCalledWith(
@@ -133,13 +135,13 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const req = httpMocks.createRequest();
       const res = httpMocks.createResponse();
       const err = new Error() as NodeJS.ErrnoException;
-      const service = {
+      const service = new Service({
         name: 'my-service',
-        port: 1234,
-        launch: jest.fn(() => true),
-        getPort: () => 1000,
-        script: '/path/to/script',
-      } as unknown as Service;
+        script: 'script.js',
+        rootDir: '/service',
+      });
+
+      const launchSpy = jest.spyOn(service, 'launch');
 
       err.code = 'ECONNREFUSED';
       router.getServiceFromRequest.mockReturnValue(service);
@@ -147,7 +149,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
       await handler(err, req, res);
 
       expect(res._isEndCalled()).toBe(true);
-      expect(service.launch).not.toHaveBeenCalled();
+      expect(launchSpy).not.toHaveBeenCalled();
       expect(proxyMock.web).not.toHaveBeenCalled();
     });
 
@@ -164,13 +166,13 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const req = httpMocks.createRequest();
       const res = httpMocks.createResponse();
       const err = new Error() as NodeJS.ErrnoException;
-      const service = {
+      const service = new Service({
         name: 'my-service',
-        port: 1234,
-        launch: jest.fn(() => true),
-        getPort: () => 1000,
-        script: '/path/to/script',
-      } as unknown as Service;
+        script: 'script.js',
+        rootDir: '/service',
+      });
+
+      const launchSpy = jest.spyOn(service, 'launch');
 
       err.code = 'ECONNREFUSED';
       router.getServiceFromRequest.mockReturnValue(service);
@@ -178,7 +180,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
       await handler(err, req, res);
 
       expect(res._isEndCalled()).toBe(true);
-      expect(service.launch).not.toHaveBeenCalled();
+      expect(launchSpy).not.toHaveBeenCalled();
       expect(proxyMock.web).not.toHaveBeenCalled();
     });
 
@@ -195,21 +197,22 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const req = httpMocks.createRequest();
       const res = httpMocks.createResponse();
       const err = new Error() as NodeJS.ErrnoException;
-      const service = {
+      const service = new Service({
         name: 'my-service',
-        port: 1234,
-        launch: jest.fn(() => false),
-        getPort: () => 1000,
-        script: '/path/to/script',
-      } as unknown as Service;
+        script: 'script.js',
+        rootDir: '/service',
+      });
 
+      const launchSpy = jest.spyOn(service, 'launch');
+
+      launchSpy.mockResolvedValue(false);
       err.code = 'ECONNREFUSED';
       router.getServiceFromRequest.mockReturnValue(service);
 
       await handler(err, req, res);
 
       expect(res._isEndCalled()).toBe(true);
-      expect(service.launch).toHaveBeenCalledTimes(1);
+      expect(launchSpy).toHaveBeenCalledTimes(1);
       expect(proxyMock.web).not.toHaveBeenCalled();
     });
   });

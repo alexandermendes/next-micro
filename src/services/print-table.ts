@@ -17,12 +17,12 @@ export const printServicesTable = (services: Service[]): void => {
   table.addRows(
     services.map((service) => ({
       // id: service.id,
-      name: service.name,
+      name: service.getName(),
       port: service.getPort(),
-      version: service.version || 'unknown',
+      version: service.getVersion(),
       // pid: service.getPid(),
       // status: service.getStatus(),
-      watching: service.watch,
+      // watching: service.watch,
     })),
   );
 

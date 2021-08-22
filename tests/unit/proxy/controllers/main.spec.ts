@@ -28,16 +28,18 @@ describe('Proxy: Controllers - Main', () => {
 
     const req = httpMocks.createRequest();
     const res = httpMocks.createResponse();
-    const service = {
-      port: 1234,
-      refreshTTL: jest.fn(() => true),
-      getPort: () => 1000,
-    } as unknown as Service;
+    const service = new Service({
+      name: 'my-service',
+      port: 1000,
+      rootDir: '/root',
+    });
+
+    const refreshTTLSpy = jest.spyOn(service, 'refreshTTL');
 
     router.getServiceFromRequest.mockReturnValue(service);
     handler(req, res);
 
-    expect(service.refreshTTL).toHaveBeenCalledTimes(1);
+    expect(refreshTTLSpy).toHaveBeenCalledTimes(1);
     expect(proxyMock.web).toHaveBeenCalledTimes(1);
     expect(proxyMock.web).toHaveBeenCalledWith(req, res, {
       target: 'http://127.0.0.1:1000',

@@ -13,7 +13,7 @@ export const getProxyResHandler =
 
     // Assign headers to help us identify the backend service for debugging.
     Object.assign(proxyRes.headers, {
-      'x-service-name': service.name,
+      'x-service-name': service.getName(),
       'x-service-port': service.getPort(),
     });
   };

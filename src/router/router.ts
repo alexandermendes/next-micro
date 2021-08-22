@@ -41,7 +41,7 @@ export class Router {
         const port = await getPort({ port: range });
 
         logger.debug(
-          `Auto-assigning port ${port} to service "${service.name}"`,
+          `Auto-assigning port ${port} to service "${service.getName()}"`,
         );
 
         service.setPort(port);
@@ -64,7 +64,7 @@ export class Router {
    * Get the routes for a service.
    */
   private getRoutesForService(service: Service): Route[] {
-    const routes: Route[] = service.routes.map(
+    const routes: Route[] = service.getRoutes().map(
       (pattern) =>
         <Route>{
           pattern,

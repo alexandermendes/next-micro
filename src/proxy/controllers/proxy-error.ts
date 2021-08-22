@@ -20,11 +20,11 @@ export const getProxyErrorHandler =
     }
 
     const shouldRunScript = autostart && devMode && err.code === 'ECONNREFUSED';
-    const canRunScript = shouldRunScript && service.script;
+    const canRunScript = shouldRunScript && service.hasScript();
 
     if (shouldRunScript && !canRunScript) {
       logger.warn(
-        `Service is not running and cannot be started automatically as no script was defined: ${service.name}`,
+        `Service is not running and cannot be started automatically as no script was defined: ${service.getName()}`,
       );
     }
 

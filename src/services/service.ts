@@ -4,16 +4,16 @@ import { Logger, createLogger, createLogStream, logger } from '../logger';
 import { ServiceConfig } from '../config';
 
 export class Service {
-  readonly name: string | undefined;
-  readonly version: string | undefined;
+  private name: string | undefined;
+  private version: string | undefined;
   private port: number | undefined;
-  readonly routes: string[];
-  readonly script: string | undefined;
-  readonly scriptWaitTimeout: number;
-  readonly rootDir: string;
-  readonly watch: boolean;
-  readonly ttl: number | undefined;
-  readonly env: Record<string, unknown>;
+  private routes: string[];
+  private script: string | undefined;
+  private scriptWaitTimeout: number;
+  private rootDir: string;
+  private watch: boolean;
+  private ttl: number | undefined;
+  private env: Record<string, unknown>;
 
   private childLogger: Logger;
   private childProcess: ChildProcess | undefined;
@@ -122,5 +122,22 @@ export class Service {
 
   setPort(port: number): void {
     this.port = port;
+  }
+
+  // TODO: assign default name, based on assigned id.
+  getName(): string | undefined {
+    return this.name;
+  }
+
+  getRoutes(): string[] {
+    return this.routes;
+  }
+
+  getVersion(): string {
+    return this.version || 'unknown';
+  }
+
+  hasScript(): boolean {
+    return !!this.script;
   }
 }
