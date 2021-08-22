@@ -27,4 +27,3 @@ export const printServicesTable = (services: Service[]): void => {
 
   table.printTable();
 };
-

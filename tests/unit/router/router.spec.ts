@@ -1,7 +1,13 @@
 import httpMocks from 'node-mocks-http';
+import { mocked } from 'ts-jest/utils';
+import chokidar, { FSWatcher } from 'chokidar';
 import { Router } from '../../../src/router';
 import { Service } from '../../../src/services';
 import { ServiceConfig } from '../../../src/config';
+
+jest.mock('chokidar');
+
+const mockChokidar = mocked(chokidar);
 
 const createServices = (serviceConfigs: ServiceConfig[]) =>
   serviceConfigs.map((serviceConfig) => new Service(serviceConfig));
@@ -114,5 +120,42 @@ describe('Router', () => {
 
     expect(services[0].getPort()).toBe(3001);
     expect(services[1].getPort()).toBe(3002);
+  });
+
+  it('watches for route changes', () => {
+    const services = createServices([
+      {
+        name: 'service-one',
+        port: 3001,
+        rootDir: '/one',
+      },
+      {
+        name: 'service-two',
+        rootDir: '/two',
+      },
+    ]);
+
+    const router = new Router(services, 3000);
+    const mockOn = jest.fn();
+
+    const loadRoutesSpy = jest.spyOn(router, 'loadRoutes').mockReturnValue();
+
+    mockChokidar.watch.mockReturnValue({
+      on: mockOn,
+    } as unknown as FSWatcher);
+
+    router.watchRoutes();
+
+    const [mockOnEvt, mockOnCb] = mockOn.mock.calls[0];
+
+    mockOnCb();
+
+    expect(mockOnEvt).toBe('all');
+    expect(loadRoutesSpy).toHaveBeenCalledTimes(1);
+    expect(mockChokidar.watch).toHaveBeenCalledTimes(1);
+    expect(mockChokidar.watch).toHaveBeenCalledWith(['/one', '/two'], {
+      ignoreInitial: true,
+      ignored: /(^|[/\\])\../,
+    });
   });
 });

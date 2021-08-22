@@ -37,7 +37,7 @@ describe('Config: Load', () => {
     expect(cosmiconfig).toHaveBeenCalledWith('nextmicro', {
       stopDir: appRoot.path,
     });
-    
+
     expect(explorerMock.search).toHaveBeenCalledTimes(1);
     expect(explorerMock.search).toHaveBeenCalledWith(appRoot.path);
     expect(await loadConfig()).toEqual({

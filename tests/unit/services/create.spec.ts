@@ -23,10 +23,12 @@ describe('Services: Create', () => {
   });
 
   it('creates a service based on the root dir alone', () => {
-    mockFs.readFileSync.mockReturnValue(JSON.stringify({
-      name: 'my-service',
-      version: '1.2.3',
-    }));
+    mockFs.readFileSync.mockReturnValue(
+      JSON.stringify({
+        name: 'my-service',
+        version: '1.2.3',
+      }),
+    );
 
     const config: ConcreteNextMicroConfig = {
       port: 3000,

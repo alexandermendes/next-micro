@@ -14,7 +14,12 @@ export const launch = async (devMode = false): Promise<ProxyServer> => {
   const server = new ProxyServer(router, devMode, config.autostart);
 
   router.loadRoutes();
-  await router.assignPorts();
+
+  if (devMode) {
+    router.watchRoutes();
+    await router.assignPorts();
+  }
+
   await server.launch(config.port);
   printServicesTable(services);
 

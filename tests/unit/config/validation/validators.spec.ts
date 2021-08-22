@@ -160,7 +160,10 @@ describe('Config: Validation - Validators', () => {
 
       expect(result).toBe(serviceConfig);
       expect(fileValidatorSpy).toHaveBeenCalledTimes(1);
-      expect(fileValidatorSpy).toHaveBeenCalledWith('/path/to/script/.js', helpers);
+      expect(fileValidatorSpy).toHaveBeenCalledWith(
+        '/path/to/script/.js',
+        helpers,
+      );
     });
 
     it('returns a valid config with a relative script path', () => {

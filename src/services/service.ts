@@ -137,6 +137,10 @@ export class Service {
     return this.version || 'unknown';
   }
 
+  getRootDir(): string {
+    return this.rootDir;
+  }
+
   hasScript(): boolean {
     return !!this.script;
   }
