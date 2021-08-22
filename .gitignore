@@ -9,6 +9,7 @@ yalc.lock
 
 # Build
 dist/
+.next/
 
 # Coverage
 coverage/

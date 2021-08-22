@@ -1,9 +1,12 @@
+import path from 'path';
+import fs, { PathLike } from 'fs';
 import { ChildProcess, spawn } from 'child_process';
 import { mocked } from 'ts-jest/utils';
 import { logger } from '../../../src/logger';
 import { Service } from '../../../src/services/service';
 import { ServiceConfig } from '../../../src/config';
 
+jest.mock('fs');
 jest.mock('child_process');
 jest.useFakeTimers();
 
@@ -15,6 +18,7 @@ const mockChildProcess = {
 };
 
 const mockSpawn = mocked(spawn);
+const mockFs = mocked(fs);
 
 mockSpawn.mockReturnValue(mockChildProcess as unknown as ChildProcess);
 
@@ -32,7 +36,46 @@ describe('Services: Service', () => {
   });
 
   describe('launch', () => {
-    it('launches the service', async () => {
+    it('launches a next.js service', async () => {
+      const serviceConfig: ServiceConfig = {
+        port: 1234,
+        name: 'service-one',
+        rootDir: '/root',
+      };
+
+      mockFs.existsSync.mockImplementationOnce((filePath: PathLike): boolean => {
+        return filePath === '/root/next.config.js';
+      });
+
+      const service = new Service(serviceConfig);
+
+      mockChildProcess.on.mockImplementation((scope, cb) => {
+        if (scope === 'message') {
+          cb('ready');
+        }
+      });
+
+      const launched = await service.launch();
+
+      expect(launched).toBe(true);
+      expect(spawn).toHaveBeenCalledTimes(1);
+      expect(spawn).toHaveBeenCalledWith('node', [
+        path.resolve(__dirname, '../../../src/services/next-worker.js'),
+        '--dir',
+        '/root',
+        '--port',
+        '1234',
+      ], {
+        stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
+        cwd: '/root',
+        env: {
+          ...process.env,
+          PORT: String(serviceConfig.port),
+        },
+      });
+    });
+
+    it('launches a service using the custom script', async () => {
       const serviceConfig: ServiceConfig = {
         port: 1234,
         name: 'service-one',
@@ -115,7 +158,7 @@ describe('Services: Service', () => {
       );
     });
 
-    it('logs an error if there is no startup script', async () => {
+    it('logs an error if there is no startup script and not a next service', async () => {
       logger.error = jest.fn();
 
       const serviceConfig: ServiceConfig = {
@@ -138,7 +181,9 @@ describe('Services: Service', () => {
       expect(spawn).not.toHaveBeenCalled();
       expect(logger.error).toHaveBeenCalledTimes(1);
       expect(logger.error).toHaveBeenCalledWith(
-        new Error('Service has no startup script: service-one'),
+        new Error(
+          'Service has no startup script and is not a Next.js service: service-one',
+        ),
       );
     });
 
@@ -261,7 +306,7 @@ describe('Services: Service', () => {
       expect(mockChildProcess.kill).toHaveBeenCalled();
     });
 
-    it('refreshes the TTLL', async () => {
+    it('refreshes the TLL', async () => {
       const serviceConfig: ServiceConfig = {
         port: 1234,
         name: 'service-one',

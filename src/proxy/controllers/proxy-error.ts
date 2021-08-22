@@ -20,32 +20,24 @@ export const getProxyErrorHandler =
     }
 
     const shouldRunScript = autostart && devMode && err.code === 'ECONNREFUSED';
-    const canRunScript = shouldRunScript && service.hasScript();
 
-    if (shouldRunScript && !canRunScript) {
-      logger.warn(
-        `Service is not running and cannot be started automatically as no script was defined: ${service.getName()}`,
-      );
+    if (!shouldRunScript) {
+      abort(404, res);
+
+      return;
     }
 
-    if (canRunScript) {
-      const launched = await service.launch();
+    const launched = await service.launch();
 
-      if (launched) {
-        service.refreshTTL();
+    if (!launched) {
+      abort(404, res);
 
-        proxy.web(req, res, {
-          target: `http://127.0.0.1:${service.getPort()}`,
-          autoRewrite: true,
-        });
-
-        return;
-      }
+      return;
     }
 
-    // TODO: Handle possible scenarios:
-    // - Service was launched but not waited for
-    // - We could not connect to the service but not because of ECONNREFUSED
-    res.writeHead(404);
-    res.end();
+    service.refreshTTL();
+    proxy.web(req, res, {
+      target: `http://127.0.0.1:${service.getPort()}`,
+      autoRewrite: true,
+    });
   };

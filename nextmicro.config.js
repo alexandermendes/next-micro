@@ -6,6 +6,7 @@ module.exports = {
   services: [
     {
       rootDir: path.join(__dirname, 'example', 'frontend'),
+      routes: ['/home'], // TODO: Determine automatically
     },
     {
       port: 3001,

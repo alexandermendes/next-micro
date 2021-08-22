@@ -5,7 +5,7 @@ const requestListener = (req, res) => {
     'Content-Type': 'application/json',
   });
 
-  res.end(JSON.stringify({ message: 'Hello, World!' }));
+  res.end(JSON.stringify({ message: 'Hello, World! I am the api service.' }));
 };
 
 const serve = () => {

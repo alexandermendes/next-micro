@@ -87,7 +87,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
     });
 
     it('does not attempt to launch the service if no script', async () => {
-      logger.warn = jest.fn();
+      logger.error = jest.fn();
 
       const router = mocked(new Router([], 3000));
 
@@ -114,11 +114,11 @@ describe('Proxy: Controllers - Proxy Error', () => {
       await handler(err, req, res);
 
       expect(res._isEndCalled()).toBe(true);
-      expect(launchSpy).not.toHaveBeenCalled();
+      expect(launchSpy).toHaveBeenCalled();
       expect(proxyMock.web).not.toHaveBeenCalled();
-      expect(logger.warn).toHaveBeenCalledTimes(1);
-      expect(logger.warn).toHaveBeenCalledWith(
-        'Service is not running and cannot be started automatically as no script was defined: my-service',
+      expect(logger.error).toHaveBeenCalledTimes(1);
+      expect(logger.error).toHaveBeenCalledWith(
+        new Error('Service has no startup script and is not a Next.js service: my-service'),
       );
     });
 

@@ -1,4 +1,5 @@
 import path from 'path';
+import fs from 'fs';
 import { spawn, ChildProcess, Serializable } from 'child_process';
 import { Logger, createLogger, createLogStream, logger } from '../logger';
 import { ServiceConfig } from '../config';
@@ -18,6 +19,7 @@ export class Service {
   private childLogger: Logger;
   private childProcess: ChildProcess | undefined;
   private ttlTimer: NodeJS.Timeout | undefined;
+  private isNextService: boolean;
 
   constructor(serviceConfig: ServiceConfig) {
     this.name = serviceConfig.name;
@@ -32,6 +34,9 @@ export class Service {
     this.env = serviceConfig.env || {};
 
     this.childLogger = createLogger({ tag: `service: ${this.name}` });
+    this.isNextService = fs.existsSync(
+      path.join(this.rootDir, 'next.config.js'),
+    );
   }
 
   async launch(): Promise<boolean> {
@@ -42,21 +47,16 @@ export class Service {
       return false;
     }
 
-    // TODO: Watch in dev mode, or with watch option.
-    if (!this.script) {
-      logger.error(new Error(`Service has no startup script: ${this.name}`));
+    const scriptArgs = this.getScriptArgs();
 
+    if (!scriptArgs) {
       return false;
     }
 
     logger.debug(`Launching service: ${this.name}`);
 
-    const scriptPath = path.isAbsolute(this.script)
-      ? this.script
-      : path.join(this.rootDir, this.script);
-
     // TODO: Add watch mode and --watch flag
-    this.childProcess = spawn('node', [scriptPath], {
+    this.childProcess = spawn('node', scriptArgs, {
       stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
       cwd: this.rootDir,
       env: {
@@ -141,7 +141,31 @@ export class Service {
     return this.rootDir;
   }
 
-  hasScript(): boolean {
-    return !!this.script;
+  private getScriptArgs(): string[] | undefined {
+    if (this.isNextService) {
+      return [
+        path.join(__dirname, 'next-worker.js'),
+        '--dir',
+        this.getRootDir(),
+        '--port',
+        String(this.getPort()),
+      ];
+    }
+
+    if (!this.script) {
+      logger.error(
+        new Error(
+          `Service has no startup script and is not a Next.js service: ${this.name}`,
+        ),
+      );
+
+      return;
+    }
+
+    const finalScript = path.isAbsolute(this.script)
+      ? this.script
+      : path.join(this.rootDir, this.script);
+
+    return [finalScript];
   }
 }

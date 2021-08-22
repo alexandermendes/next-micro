@@ -21,6 +21,7 @@ const getNextMicroConfig = async () =>
       {
         port: 3002,
         rootDir: path.join(exampleDir, 'frontend'),
+        routes: ['/home'],
       },
     ],
   } as unknown as ConcreteNextMicroConfig);
@@ -62,7 +63,10 @@ describe('Launch', () => {
     const resTwo = await fetch(`http://127.0.0.1:${nextmicroConfig.port}/home`);
     const textTwo = await resTwo.text();
 
+    expect(resOne.status).toBe(200);
     expect(textOne).toBe('service one replied');
+
+    expect(resTwo.status).toBe(200);
     expect(textTwo).toBe('service two replied');
   });
 });
