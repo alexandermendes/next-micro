@@ -1,3 +1,4 @@
+import appRoot from 'app-root-path';
 import { loadConfig } from './config';
 import { ProxyServer } from './proxy/server';
 import { Router } from './router';
@@ -8,7 +9,7 @@ import { createServices } from './services/create';
  */
 export const launch = async (devMode = false): Promise<ProxyServer> => {
   const config = await loadConfig();
-  const services = createServices(config.services);
+  const services = createServices(config, appRoot.path);
   const router = new Router(services);
   const server = new ProxyServer(router, devMode, config.autostart);
 

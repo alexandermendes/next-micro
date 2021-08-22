@@ -28,7 +28,8 @@ const filterSupportedExtensions = (filePath: string): boolean => {
 /**
  * Filter out any internal Next.js pages (e.g. _document.js).
  */
-const filterNonInternalPages = (filePath: string): boolean => !filePath.match(/^\/_/);
+const filterNonInternalPages = (filePath: string): boolean =>
+  !filePath.match(/^\/_/);
 
 /**
  * Get the the file paths from the pages dir of a Next service.

@@ -1,23 +1,11 @@
 import path from 'path';
-import appRoot from 'app-root-path';
 import { spawn, ChildProcess, Serializable } from 'child_process';
 import { Logger, createLogger, createLogStream, logger } from '../logger';
+import { ServiceConfig } from '../config';
 
-export interface ServiceConfig {
-  name: string;
-  port: number;
-  routes: string[];
-  rootDir?: string,
-  script?: string;
-  scriptWaitTimeout: number;
-  watch?: boolean;
-  ttl?: number;
-  env?: Record<string, unknown>;
-}
-
-export class Service implements ServiceConfig {
-  readonly name: string;
-  readonly port: number;
+export class Service {
+  readonly name: string | undefined;
+  readonly port: number | undefined;
   readonly routes: string[];
   readonly script: string | undefined;
   readonly scriptWaitTimeout: number;
@@ -35,7 +23,7 @@ export class Service implements ServiceConfig {
     this.port = serviceConfig.port;
     this.routes = serviceConfig.routes || [];
     this.script = serviceConfig.script;
-    this.rootDir = serviceConfig.rootDir || appRoot.path;
+    this.rootDir = serviceConfig.rootDir;
     this.watch = serviceConfig.watch || false;
     this.ttl = serviceConfig.ttl;
     this.scriptWaitTimeout = serviceConfig.scriptWaitTimeout || 60000;
@@ -61,12 +49,14 @@ export class Service implements ServiceConfig {
 
     logger.debug(`Launching service: ${this.name}`);
 
-    const scriptPath = path.join(this.rootDir, this.script);
+    const scriptPath = path.isAbsolute(this.script)
+      ? this.script
+      : path.join(this.rootDir, this.script);
 
     // TODO: Add watch mode and --watch flag
     this.childProcess = spawn('node', [scriptPath], {
       stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
-      // cwd: serviceConfig.dir, // TODO: Add root dir option to config
+      cwd: this.rootDir,
       env: {
         ...process.env,
         ...this.env,

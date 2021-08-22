@@ -1,9 +1,8 @@
-import path from 'path';
-import appRoot from 'app-root-path';
 import { ChildProcess, spawn } from 'child_process';
 import { mocked } from 'ts-jest/utils';
 import { logger } from '../../../src/logger';
-import { Service, ServiceConfig } from '../../../src/services/service';
+import { Service } from '../../../src/services/service';
+import { ServiceConfig } from '../../../src/config';
 
 jest.mock('child_process');
 jest.useFakeTimers();
@@ -34,12 +33,12 @@ describe('Services: Service', () => {
 
   describe('launch', () => {
     it('launches the service', async () => {
-      const serviceConfig = {
+      const serviceConfig: ServiceConfig = {
         port: 1234,
         name: 'service-one',
-        script: '/path/to/script.js',
+        script: 'path/to/script.js',
         rootDir: '/root',
-      } as ServiceConfig;
+      };
 
       const service = new Service(serviceConfig);
 
@@ -55,6 +54,7 @@ describe('Services: Service', () => {
       expect(spawn).toHaveBeenCalledTimes(1);
       expect(spawn).toHaveBeenCalledWith('node', ['/root/path/to/script.js'], {
         stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
+        cwd: '/root',
         env: {
           ...process.env,
           PORT: String(serviceConfig.port),
@@ -62,12 +62,13 @@ describe('Services: Service', () => {
       });
     });
 
-    it('runs the script relative to the app root if no rootDir given', async () => {
-      const serviceConfig = {
+    it('runs the script from an absolute path', async () => {
+      const serviceConfig: ServiceConfig = {
         port: 1234,
         name: 'service-one',
-        script: '/path/to/script.js',
-      } as ServiceConfig;
+        script: '/absolute/path/to/script.js',
+        rootDir: '/root',
+      };
 
       const service = new Service(serviceConfig);
 
@@ -79,20 +80,18 @@ describe('Services: Service', () => {
 
       await service.launch();
 
-      expect(mockSpawn.mock.calls[0][1]).toEqual([
-        path.join(appRoot.path, String(serviceConfig.script))
-      ]);
+      expect(mockSpawn.mock.calls[0][1]).toEqual(['/absolute/path/to/script.js']);
     });
 
     it('does not attempt to launch the service twice', async () => {
       logger.error = jest.fn();
 
-      const serviceConfig = {
+      const serviceConfig: ServiceConfig = {
         port: 1234,
         name: 'service-one',
         script: '/path/to/script.js',
         rootDir: '/root',
-      } as ServiceConfig;
+      };
 
       const service = new Service(serviceConfig);
 
@@ -117,10 +116,11 @@ describe('Services: Service', () => {
     it('logs an error if there is no startup script', async () => {
       logger.error = jest.fn();
 
-      const serviceConfig = {
+      const serviceConfig: ServiceConfig = {
         port: 1234,
         name: 'service-one',
-      } as ServiceConfig;
+        rootDir: '/root',
+      };
 
       const service = new Service(serviceConfig);
 
@@ -141,12 +141,12 @@ describe('Services: Service', () => {
     });
 
     it('times out after 60 seconds by default when launching a service with no ready signal', async () => {
-      const serviceConfig = {
+      const serviceConfig: ServiceConfig = {
         port: 1234,
         name: 'service-one',
         script: '/path/to/script.js',
         rootDir: '/root',
-      } as ServiceConfig;
+      };
 
       const service = new Service(serviceConfig);
 
@@ -161,13 +161,13 @@ describe('Services: Service', () => {
     });
 
     it('times out after a custom duration when launching a service with no ready signal', async () => {
-      const serviceConfig = {
+      const serviceConfig: ServiceConfig = {
         port: 1234,
         name: 'service-one',
         script: '/path/to/script.js',
         rootDir: '/root',
         scriptWaitTimeout: 5000,
-      } as ServiceConfig;
+      };
 
       const service = new Service(serviceConfig);
 
@@ -184,12 +184,12 @@ describe('Services: Service', () => {
 
   describe('close', () => {
     it('kills and relaunches the service', async () => {
-      const serviceConfig = {
+      const serviceConfig: ServiceConfig = {
         port: 1234,
         name: 'service-one',
         script: '/path/to/script.js',
         rootDir: '/root',
-      } as ServiceConfig;
+      };
 
       const service = new Service(serviceConfig);
 
@@ -211,12 +211,12 @@ describe('Services: Service', () => {
     });
 
     it('does nothing if the service is not running', async () => {
-      const serviceConfig = {
+      const serviceConfig: ServiceConfig = {
         port: 1234,
         name: 'service-one',
         script: '/path/to/script.js',
         rootDir: '/root',
-      } as ServiceConfig;
+      };
 
       const service = new Service(serviceConfig);
 
@@ -231,12 +231,13 @@ describe('Services: Service', () => {
 
   describe('refreshTTL', () => {
     it('kills the service after the given TTL', async () => {
-      const serviceConfig = {
+      const serviceConfig: ServiceConfig = {
         port: 1234,
         name: 'service-one',
         script: '/path/to/script.js',
+        rootDir: '/root',
         ttl: 1000,
-      } as ServiceConfig;
+      };
 
       const service = new Service(serviceConfig);
 
@@ -257,12 +258,13 @@ describe('Services: Service', () => {
     });
 
     it('refreshes the TTLL', async () => {
-      const serviceConfig = {
+      const serviceConfig: ServiceConfig = {
         port: 1234,
         name: 'service-one',
         script: '/path/to/script.js',
+        rootDir: '/root',
         ttl: 1000,
-      } as ServiceConfig;
+      };
 
       const service = new Service(serviceConfig);
 

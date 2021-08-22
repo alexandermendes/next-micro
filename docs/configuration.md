@@ -62,6 +62,7 @@ export default config;
 The following configuration options are available:
 
 - [`port`](#port-number)
+- [`autoload`](#autoload-boolean)
 - [`autostart`](#autostart-boolean)
 - [`service.name`](#servicename-string)
 - [`service.port`](#serviceport-number)
@@ -88,9 +89,16 @@ requests then, when this setting is enabled, the service will be started
 automatically using the script defined by the [`service.script`](#servicescript-string)
 setting.
 
+### `autoload` [boolean]
+
+Default: `true`
+
+Load the available services automatically by searching for directories with
+`next.config.js` files.
+
 ### `service.name` [string]
 
-Default: `undefined`
+Default: The `name` from the service's `package.json`
 
 A unique name for the service. This is used in log messages and CLI commands.
 

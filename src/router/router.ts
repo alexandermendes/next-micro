@@ -24,10 +24,13 @@ export class Router {
   }
 
   private getRoutesForService(service: Service): Route[] {
-    const routes: Route[] = service.routes.map((pattern) => <Route>{
-      pattern,
-      service,
-    });
+    const routes: Route[] = service.routes.map(
+      (pattern) =>
+        <Route>{
+          pattern,
+          service,
+        },
+    );
 
     return routes;
   }

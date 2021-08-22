@@ -29,9 +29,8 @@ export const uniqueRootPort = (
   config: MicroproxyConfig,
   helpers: Joi.CustomHelpers,
 ): MicroproxyConfig | Joi.ErrorReport => {
-  const collidingIndex = config.services.findIndex(
-    ({ port }) => port === config.port,
-  );
+  const { services = [] } = config;
+  const collidingIndex = services.findIndex(({ port }) => port === config.port);
 
   if (collidingIndex > -1) {
     return helpers.message({

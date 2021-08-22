@@ -1,38 +1,41 @@
+import path from 'path';
 import nock from 'nock';
 import fetch from 'node-fetch';
 import getPort from 'get-port';
 import { launch } from '../../src/launch';
 import { ProxyServer } from '../../src/proxy/server';
-import { MicroproxyConfig } from '../../src/config';
+import { ConcreteMicroproxyConfig } from '../../src/config';
+
+const exampleDir = path.join(__dirname, '..', '..', 'example');
 
 const getMicroproxyConfig = async () => ({
   port: await getPort(),
   services: [
     {
-      name: 'products',
+      name: 'api',
       port: 3001,
-      routes: ['/products'],
+      routes: ['/api/.*'],
+      rootDir: path.join(exampleDir, 'api'),
     },
     {
-      name: 'accounts',
       port: 3002,
-      routes: ['/accounts'],
+      rootDir: path.join(exampleDir, 'frontend'),
     },
   ],
-} as unknown as MicroproxyConfig);
+} as unknown as ConcreteMicroproxyConfig);
 
 nock(`http://127.0.0.1:3001`)
   .persist()
-  .get('/products')
+  .get('/api/hello')
   .reply(200, 'service one replied');
 
 nock(`http://127.0.0.1:3002`)
   .persist()
-  .get('/accounts')
+  .get('/home')
   .reply(200, 'service two replied');
 
 describe('Launch', () => {
-  let microproxyConfig: MicroproxyConfig;
+  let microproxyConfig: ConcreteMicroproxyConfig;
   let proxyServer: ProxyServer;
 
   beforeAll(async () => {
@@ -50,10 +53,10 @@ describe('Launch', () => {
   });
 
   it('routes requests to the correct backend', async () => {
-    const resOne = await fetch(`http://127.0.0.1:${microproxyConfig.port}/products`);
+    const resOne = await fetch(`http://127.0.0.1:${microproxyConfig.port}/api/hello`);
     const textOne = await resOne.text()
 
-    const resTwo = await fetch(`http://127.0.0.1:${microproxyConfig.port}/accounts`);
+    const resTwo = await fetch(`http://127.0.0.1:${microproxyConfig.port}/home`);
     const textTwo = await resTwo.text()
 
     expect(textOne).toBe('service one replied');

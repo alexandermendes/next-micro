@@ -1,7 +1,7 @@
 import { mocked } from 'ts-jest/utils'
 import { cosmiconfig } from 'cosmiconfig';
 import appRoot from 'app-root-path';
-import { loadConfig } from '../../../src/config/load';
+import { loadConfig } from '../../../src/config';
 import { validate } from '../../../src/config/validation';
 
 jest.mock('cosmiconfig');
@@ -39,7 +39,9 @@ describe('Config: Load', () => {
     expect(explorerMock.search).toHaveBeenCalledWith(appRoot.path);
     expect(await loadConfig()).toEqual({
       port: 3000,
+      // TODO: Make this true by default, using next dev etc.
       autostart: false,
+      autoload: true,
       services: [
         {
           name: 'my-service',

@@ -28,7 +28,7 @@ Object {
           },
           "$_super": Object {},
           "$_temp": Object {
-            "ruleset": false,
+            "ruleset": null,
             "whens": Object {},
           },
           "$_terms": Object {
@@ -42,9 +42,7 @@ Object {
             "whens": null,
           },
           "_cache": null,
-          "_flags": Object {
-            "presence": "required",
-          },
+          "_flags": Object {},
           "_ids": Object {
             "_byId": Object {},
             "_byKey": Object {},
@@ -68,6 +66,49 @@ Object {
           "_singleRules": Object {},
           "_valids": null,
           "type": "number",
+        },
+      },
+      Object {
+        "key": "autoload",
+        "schema": Object {
+          "$_root": Object {
+            "_types": Object {},
+            "cache": Object {},
+            "version": "17.4.2",
+          },
+          "$_super": Object {},
+          "$_temp": Object {
+            "ruleset": null,
+            "whens": Object {},
+          },
+          "$_terms": Object {
+            "alterations": null,
+            "examples": null,
+            "externals": null,
+            "falsy": null,
+            "metas": Array [],
+            "notes": Array [],
+            "shared": null,
+            "tags": Array [],
+            "truthy": null,
+            "whens": null,
+          },
+          "_cache": null,
+          "_flags": Object {},
+          "_ids": Object {
+            "_byId": Object {},
+            "_byKey": Object {},
+            "_schemaChain": false,
+          },
+          "_invalids": null,
+          "_preferences": null,
+          "_refs": Object {
+            "refs": Array [],
+          },
+          "_rules": Array [],
+          "_singleRules": Object {},
+          "_valids": null,
+          "type": "boolean",
         },
       },
       Object {
@@ -147,7 +188,7 @@ Object {
                   "externals": null,
                   "keys": Array [
                     Object {
-                      "key": "name",
+                      "key": "rootDir",
                       "schema": Object {
                         "$_root": Object {
                           "_types": Object {},
@@ -156,7 +197,7 @@ Object {
                         },
                         "$_super": Object {},
                         "$_temp": Object {
-                          "ruleset": false,
+                          "ruleset": null,
                           "whens": Object {},
                         },
                         "$_terms": Object {
@@ -184,6 +225,55 @@ Object {
                         "_refs": Object {
                           "refs": Array [],
                         },
+                        "_rules": Array [
+                          Object {
+                            "_resolve": Array [],
+                            "args": Object {},
+                            "method": "custom",
+                            "name": "custom",
+                          },
+                        ],
+                        "_singleRules": Object {},
+                        "_valids": null,
+                        "type": "string",
+                      },
+                    },
+                    Object {
+                      "key": "name",
+                      "schema": Object {
+                        "$_root": Object {
+                          "_types": Object {},
+                          "cache": Object {},
+                          "version": "17.4.2",
+                        },
+                        "$_super": Object {},
+                        "$_temp": Object {
+                          "ruleset": null,
+                          "whens": Object {},
+                        },
+                        "$_terms": Object {
+                          "alterations": null,
+                          "examples": null,
+                          "externals": null,
+                          "metas": Array [],
+                          "notes": Array [],
+                          "replacements": null,
+                          "shared": null,
+                          "tags": Array [],
+                          "whens": null,
+                        },
+                        "_cache": null,
+                        "_flags": Object {},
+                        "_ids": Object {
+                          "_byId": Object {},
+                          "_byKey": Object {},
+                          "_schemaChain": false,
+                        },
+                        "_invalids": null,
+                        "_preferences": null,
+                        "_refs": Object {
+                          "refs": Array [],
+                        },
                         "_rules": Array [],
                         "_singleRules": Object {},
                         "_valids": null,
@@ -200,7 +290,7 @@ Object {
                         },
                         "$_super": Object {},
                         "$_temp": Object {
-                          "ruleset": false,
+                          "ruleset": null,
                           "whens": Object {},
                         },
                         "$_terms": Object {
@@ -214,9 +304,7 @@ Object {
                           "whens": null,
                         },
                         "_cache": null,
-                        "_flags": Object {
-                          "presence": "required",
-                        },
+                        "_flags": Object {},
                         "_ids": Object {
                           "_byId": Object {},
                           "_byKey": Object {},
@@ -351,9 +439,7 @@ Object {
                           "whens": null,
                         },
                         "_cache": null,
-                        "_flags": Object {
-                          "presence": "required",
-                        },
+                        "_flags": Object {},
                         "_ids": Object {
                           "_byId": Object {},
                           "_byKey": Object {},
@@ -518,55 +604,6 @@ Object {
                         "_singleRules": Object {},
                         "_valids": null,
                         "type": "object",
-                      },
-                    },
-                    Object {
-                      "key": "rootDir",
-                      "schema": Object {
-                        "$_root": Object {
-                          "_types": Object {},
-                          "cache": Object {},
-                          "version": "17.4.2",
-                        },
-                        "$_super": Object {},
-                        "$_temp": Object {
-                          "ruleset": null,
-                          "whens": Object {},
-                        },
-                        "$_terms": Object {
-                          "alterations": null,
-                          "examples": null,
-                          "externals": null,
-                          "metas": Array [],
-                          "notes": Array [],
-                          "replacements": null,
-                          "shared": null,
-                          "tags": Array [],
-                          "whens": null,
-                        },
-                        "_cache": null,
-                        "_flags": Object {},
-                        "_ids": Object {
-                          "_byId": Object {},
-                          "_byKey": Object {},
-                          "_schemaChain": false,
-                        },
-                        "_invalids": null,
-                        "_preferences": null,
-                        "_refs": Object {
-                          "refs": Array [],
-                        },
-                        "_rules": Array [
-                          Object {
-                            "_resolve": Array [],
-                            "args": Object {},
-                            "method": "custom",
-                            "name": "custom",
-                          },
-                        ],
-                        "_singleRules": Object {},
-                        "_valids": null,
-                        "type": "string",
                       },
                     },
                   ],
@@ -619,7 +656,7 @@ Object {
                   "externals": null,
                   "keys": Array [
                     Object {
-                      "key": "name",
+                      "key": "rootDir",
                       "schema": Object {
                         "$_root": Object {
                           "_types": Object {},
@@ -628,7 +665,7 @@ Object {
                         },
                         "$_super": Object {},
                         "$_temp": Object {
-                          "ruleset": false,
+                          "ruleset": null,
                           "whens": Object {},
                         },
                         "$_terms": Object {
@@ -656,6 +693,55 @@ Object {
                         "_refs": Object {
                           "refs": Array [],
                         },
+                        "_rules": Array [
+                          Object {
+                            "_resolve": Array [],
+                            "args": Object {},
+                            "method": "custom",
+                            "name": "custom",
+                          },
+                        ],
+                        "_singleRules": Object {},
+                        "_valids": null,
+                        "type": "string",
+                      },
+                    },
+                    Object {
+                      "key": "name",
+                      "schema": Object {
+                        "$_root": Object {
+                          "_types": Object {},
+                          "cache": Object {},
+                          "version": "17.4.2",
+                        },
+                        "$_super": Object {},
+                        "$_temp": Object {
+                          "ruleset": null,
+                          "whens": Object {},
+                        },
+                        "$_terms": Object {
+                          "alterations": null,
+                          "examples": null,
+                          "externals": null,
+                          "metas": Array [],
+                          "notes": Array [],
+                          "replacements": null,
+                          "shared": null,
+                          "tags": Array [],
+                          "whens": null,
+                        },
+                        "_cache": null,
+                        "_flags": Object {},
+                        "_ids": Object {
+                          "_byId": Object {},
+                          "_byKey": Object {},
+                          "_schemaChain": false,
+                        },
+                        "_invalids": null,
+                        "_preferences": null,
+                        "_refs": Object {
+                          "refs": Array [],
+                        },
                         "_rules": Array [],
                         "_singleRules": Object {},
                         "_valids": null,
@@ -672,7 +758,7 @@ Object {
                         },
                         "$_super": Object {},
                         "$_temp": Object {
-                          "ruleset": false,
+                          "ruleset": null,
                           "whens": Object {},
                         },
                         "$_terms": Object {
@@ -686,9 +772,7 @@ Object {
                           "whens": null,
                         },
                         "_cache": null,
-                        "_flags": Object {
-                          "presence": "required",
-                        },
+                        "_flags": Object {},
                         "_ids": Object {
                           "_byId": Object {},
                           "_byKey": Object {},
@@ -823,9 +907,7 @@ Object {
                           "whens": null,
                         },
                         "_cache": null,
-                        "_flags": Object {
-                          "presence": "required",
-                        },
+                        "_flags": Object {},
                         "_ids": Object {
                           "_byId": Object {},
                           "_byKey": Object {},
@@ -990,55 +1072,6 @@ Object {
                         "_singleRules": Object {},
                         "_valids": null,
                         "type": "object",
-                      },
-                    },
-                    Object {
-                      "key": "rootDir",
-                      "schema": Object {
-                        "$_root": Object {
-                          "_types": Object {},
-                          "cache": Object {},
-                          "version": "17.4.2",
-                        },
-                        "$_super": Object {},
-                        "$_temp": Object {
-                          "ruleset": null,
-                          "whens": Object {},
-                        },
-                        "$_terms": Object {
-                          "alterations": null,
-                          "examples": null,
-                          "externals": null,
-                          "metas": Array [],
-                          "notes": Array [],
-                          "replacements": null,
-                          "shared": null,
-                          "tags": Array [],
-                          "whens": null,
-                        },
-                        "_cache": null,
-                        "_flags": Object {},
-                        "_ids": Object {
-                          "_byId": Object {},
-                          "_byKey": Object {},
-                          "_schemaChain": false,
-                        },
-                        "_invalids": null,
-                        "_preferences": null,
-                        "_refs": Object {
-                          "refs": Array [],
-                        },
-                        "_rules": Array [
-                          Object {
-                            "_resolve": Array [],
-                            "args": Object {},
-                            "method": "custom",
-                            "name": "custom",
-                          },
-                        ],
-                        "_singleRules": Object {},
-                        "_valids": null,
-                        "type": "string",
                       },
                     },
                   ],

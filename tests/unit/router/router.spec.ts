@@ -1,6 +1,7 @@
 import httpMocks from 'node-mocks-http';
 import { Router } from '../../../src/router';
-import { Service, ServiceConfig } from '../../../src/services/service';
+import { Service } from '../../../src/services/service';
+import { ServiceConfig } from '../../../src/config';
 
 describe('Router', () => {
   it('returns the service that matches an incoming request url', () => {
