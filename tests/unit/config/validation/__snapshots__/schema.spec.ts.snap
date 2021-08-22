@@ -331,6 +331,48 @@ Object {
                       },
                     },
                     Object {
+                      "key": "version",
+                      "schema": Object {
+                        "$_root": Object {
+                          "_types": Object {},
+                          "cache": Object {},
+                          "version": "17.4.2",
+                        },
+                        "$_super": Object {},
+                        "$_temp": Object {
+                          "ruleset": null,
+                          "whens": Object {},
+                        },
+                        "$_terms": Object {
+                          "alterations": null,
+                          "examples": null,
+                          "externals": null,
+                          "metas": Array [],
+                          "notes": Array [],
+                          "replacements": null,
+                          "shared": null,
+                          "tags": Array [],
+                          "whens": null,
+                        },
+                        "_cache": null,
+                        "_flags": Object {},
+                        "_ids": Object {
+                          "_byId": Object {},
+                          "_byKey": Object {},
+                          "_schemaChain": false,
+                        },
+                        "_invalids": null,
+                        "_preferences": null,
+                        "_refs": Object {
+                          "refs": Array [],
+                        },
+                        "_rules": Array [],
+                        "_singleRules": Object {},
+                        "_valids": null,
+                        "type": "string",
+                      },
+                    },
+                    Object {
                       "key": "routes",
                       "schema": Object {
                         "$_root": Object {
@@ -796,6 +838,48 @@ Object {
                         "_singleRules": Object {},
                         "_valids": null,
                         "type": "number",
+                      },
+                    },
+                    Object {
+                      "key": "version",
+                      "schema": Object {
+                        "$_root": Object {
+                          "_types": Object {},
+                          "cache": Object {},
+                          "version": "17.4.2",
+                        },
+                        "$_super": Object {},
+                        "$_temp": Object {
+                          "ruleset": null,
+                          "whens": Object {},
+                        },
+                        "$_terms": Object {
+                          "alterations": null,
+                          "examples": null,
+                          "externals": null,
+                          "metas": Array [],
+                          "notes": Array [],
+                          "replacements": null,
+                          "shared": null,
+                          "tags": Array [],
+                          "whens": null,
+                        },
+                        "_cache": null,
+                        "_flags": Object {},
+                        "_ids": Object {
+                          "_byId": Object {},
+                          "_byKey": Object {},
+                          "_schemaChain": false,
+                        },
+                        "_invalids": null,
+                        "_preferences": null,
+                        "_refs": Object {
+                          "refs": Array [],
+                        },
+                        "_rules": Array [],
+                        "_singleRules": Object {},
+                        "_valids": null,
+                        "type": "string",
                       },
                     },
                     Object {

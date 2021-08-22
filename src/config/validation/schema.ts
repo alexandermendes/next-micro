@@ -6,6 +6,7 @@ const serviceSchema = Joi.object()
     rootDir: Joi.string().required().custom(dir),
     name: Joi.string(),
     port: Joi.number().positive(),
+    version: Joi.string(),
     routes: Joi.array().items(Joi.string()),
     script: Joi.string(),
     ttl: Joi.number().positive(),

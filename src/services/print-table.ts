@@ -8,8 +8,9 @@ export const printServicesTable = (services: Service[]): void => {
   const table = new Table({
     columns: [
       { name: 'name', alignment: 'left' },
-      { name: 'port', alignment: 'left' },
-      { name: 'watching', alignment: 'left' },
+      { name: 'port', alignment: 'center' },
+      { name: 'version', alignment: 'center' },
+      { name: 'watching', alignment: 'center' },
     ],
   });
 
@@ -18,7 +19,7 @@ export const printServicesTable = (services: Service[]): void => {
       // id: service.id,
       name: service.name,
       port: service.getPort(),
-      // version: service.version,
+      version: service.version || 'unknown',
       // pid: service.getPid(),
       // status: service.getStatus(),
       watching: service.watch,

@@ -23,7 +23,10 @@ describe('Services: Create', () => {
   });
 
   it('creates a service based on the root dir alone', () => {
-    mockFs.readFileSync.mockReturnValue(JSON.stringify({ name: 'my-service' }));
+    mockFs.readFileSync.mockReturnValue(JSON.stringify({
+      name: 'my-service',
+      version: '1.2.3',
+    }));
 
     const config: ConcreteNextMicroConfig = {
       port: 3000,
@@ -42,11 +45,13 @@ describe('Services: Create', () => {
     expect(mockFs.readFileSync).toHaveBeenCalledWith(
       '/path/to/service/package.json',
     );
+
     expect(services).toHaveLength(1);
     expect(services[0]).toBeInstanceOf(Service);
     expect(Service).toHaveBeenCalledTimes(1);
     expect(Service).toHaveBeenCalledWith({
       name: 'my-service',
+      version: '1.2.3',
       rootDir: '/path/to/service',
     });
   });

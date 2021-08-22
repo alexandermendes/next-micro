@@ -5,6 +5,7 @@ import { ServiceConfig } from '../config';
 
 export class Service {
   readonly name: string | undefined;
+  readonly version: string | undefined;
   private port: number | undefined;
   readonly routes: string[];
   readonly script: string | undefined;
@@ -20,6 +21,7 @@ export class Service {
 
   constructor(serviceConfig: ServiceConfig) {
     this.name = serviceConfig.name;
+    this.version = serviceConfig.version;
     this.port = serviceConfig.port;
     this.routes = serviceConfig.routes || [];
     this.script = serviceConfig.script;

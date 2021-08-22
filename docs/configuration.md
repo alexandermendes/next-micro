@@ -66,6 +66,7 @@ The following configuration options are available:
 - [`autoload`](#autoload-boolean)
 - [`service.rootDir`](#servicerootdir-string)
 - [`service.name`](#servicename-string)
+- [`service.version`](#serviceversion-string)
 - [`service.port`](#serviceport-number)
 - [`service.routes`](#serviceroutes-array)
 - [`service.script`](#servicescript-string)
@@ -111,6 +112,12 @@ mode.
 Default: The `name` from the service's `package.json`
 
 A unique name for the service. This is used in log messages and CLI commands.
+
+### `service.version` [string]
+
+Default: The `version` from the service's `package.json`
+
+A version identifier for the service. Used when giving feedback about managed services.
 
 ### `service.port` [number]
 

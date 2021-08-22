@@ -6,6 +6,7 @@ import { validate } from './validation';
 export type ServiceConfig = {
   rootDir: string;
   name?: string;
+  version?: string,
   port?: number;
   routes?: string[];
   script?: string;

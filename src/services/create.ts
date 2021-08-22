@@ -36,10 +36,11 @@ const getPackage = (dir: string): Package => {
  * Apply any defaults to the service configs.
  */
 const applyDefaults = (serviceConfig: ServiceConfig): ServiceConfig => {
-  const { name } = getPackage(serviceConfig.rootDir);
+  const { name, version } = getPackage(serviceConfig.rootDir);
 
   const defaults = {
     name,
+    version,
   };
 
   return {
