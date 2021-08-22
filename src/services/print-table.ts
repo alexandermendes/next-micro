@@ -16,7 +16,6 @@ export const printServicesTable = (services: Service[]): void => {
 
   table.addRows(
     services.map((service) => ({
-      // id: service.id,
       name: service.getName(),
       port: service.getPort(),
       version: service.getVersion(),
