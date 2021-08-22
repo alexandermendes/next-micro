@@ -2,7 +2,6 @@ import { cosmiconfig } from 'cosmiconfig';
 import appRoot from 'app-root-path';
 
 import { validate } from './validation';
-import { logger } from '../logger';
 
 export type ServiceConfig = {
   rootDir: string;
