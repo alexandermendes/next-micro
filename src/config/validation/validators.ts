@@ -1,6 +1,7 @@
 import Joi from 'joi';
 import fs from 'fs';
-import { NextMicroConfig } from '../../config';
+import path from 'path';
+import { NextMicroConfig, ServiceConfig } from '../../config';
 
 /**
  * Get the key to a field from the Joi state.
@@ -87,4 +88,30 @@ export const file = (
   }
 
   return filePath;
+};
+
+/**
+ * Assert that if a script exists its path is script or relative to the root dir.
+ */
+export const script = (
+  config: ServiceConfig,
+  helpers: Joi.CustomHelpers,
+): ServiceConfig | Joi.ErrorReport => {
+  const { rootDir, script } = config;
+
+  if (!script) {
+    return config;
+  }
+
+  const scriptPath = path.isAbsolute(script)
+    ? script
+    : path.join(rootDir, script);
+
+  const result = file(scriptPath, helpers);
+
+  if (typeof result === 'string') {
+    return config;
+  }
+
+  return result;
 };

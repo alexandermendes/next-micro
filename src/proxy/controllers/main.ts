@@ -17,7 +17,7 @@ export const getMainRequestHandler =
     service.refreshTTL();
 
     proxy.web(req, res, {
-      target: `http://127.0.0.1:${service.port}`,
+      target: `http://127.0.0.1:${service.getPort()}`,
       autoRewrite: true,
     });
   };

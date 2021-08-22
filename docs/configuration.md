@@ -62,14 +62,15 @@ export default config;
 The following configuration options are available:
 
 - [`port`](#port-number)
-- [`autoload`](#autoload-boolean)
 - [`autostart`](#autostart-boolean)
+- [`autoload`](#autoload-boolean)
+- [`service.rootDir`](#servicerootdir-string)
 - [`service.name`](#servicename-string)
 - [`service.port`](#serviceport-number)
 - [`service.routes`](#serviceroutes-array)
 - [`service.script`](#servicescript-string)
-- [`service.ttl`](#servicettl-number)
 - [`service.scriptWaitTimeout`](#servicescriptwaittimeout-number)
+- [`service.ttl`](#servicettl-number)
 - [`service.env`](#serviceenv-object)
 
 ## Reference
@@ -96,6 +97,15 @@ Default: `true`
 Load the available services automatically by searching for directories with
 `next.config.js` files.
 
+### `service.rootDir` [string]
+
+Default: `undefined`
+
+The root directory of your service, to be used when running the
+[`service.script`](#servicescript-string) or running in [`service.watch`](#servicewatch-boolean)
+mode.
+
+
 ### `service.name` [string]
 
 Default: The `name` from the service's `package.json`
@@ -104,9 +114,16 @@ A unique name for the service. This is used in log messages and CLI commands.
 
 ### `service.port` [number]
 
-Default: `undefined`
+Default: *Auto-assigned (see below)*
 
 A unique port for the service to listen for requests on.
+
+For ease of initial setup, by default a port will be auto-assigned to each
+service on launch by finding the first available port in a range of 100 starting
+from the main [`port`](#port-number) and falling back to a random port. However,
+there is some risk of race conditions with this approach if another process
+starts using the port before the service is launched. To help avoid confusion
+it is probably best to assign a fixed port to each service.
 
 ### `service.routes` [array]
 
@@ -140,6 +157,12 @@ const { serve } = require('./serve');
 If the ready signal is not sent the request will remain pending until the
 time defined by the [`service.scriptWaitTimeout`](#servicewaittimeout-number) setting.
 
+### `service.scriptWaitTimeout` [number]
+
+Default: `60000`
+
+The length of time to wait when starting a service before timing out.
+
 ### `service.ttl` [number]
 
 Default: `undefined`
@@ -148,22 +171,8 @@ The length of time to keep the service alive after it last received a request.
 Note that this will only work if the service was launched using the
 [`service.script`](#servicescript-string) setting.
 
-### `service.scriptWaitTimeout` [number]
-
-Default: `60000`
-
-The length of time to wait when starting a service before timing out.
-
 ### `service.env` [object]
 
 Default: `{}`
 
 Environment variables to pass to your service in dev mode.
-
-### `service.rootDir` [string]
-
-Default: The root of the current repository
-
-The root directory of your service, to be used when running the
-[`service.script`](#servicescript-string) or running in [`service.watch`](#servicewatch-boolean)
-mode.

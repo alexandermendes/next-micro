@@ -11,12 +11,7 @@ describe('Router: Next - Pages', () => {
     mockGlobSync.mockReturnValue([]);
   });
 
-  it.each([
-    'js',
-    'jsx',
-    'ts',
-    'tsx',
-  ])('includes %s files', (ext) => {
+  it.each(['js', 'jsx', 'ts', 'tsx'])('includes %s files', (ext) => {
     mockGlobSync.mockReturnValue([
       `src/pages/index.${ext}`,
       `src/pages/thing.${ext}`,
@@ -26,15 +21,11 @@ describe('Router: Next - Pages', () => {
 
     const cwd = '/service';
     const pages = getNextPages(cwd);
+    const globPattern = '{src/,}pages/**/*.{j,t}s{,x}';
 
     expect(mockGlobSync).toHaveBeenCalledTimes(1);
-    expect(mockGlobSync).toHaveBeenCalledWith('{src/,}pages/**/*.{j,t}s{,x}', { cwd });
-    expect(pages).toEqual([
-      '/',
-      '/thing',
-      '/stuff',
-      '/stuff/[id]',
-    ]);
+    expect(mockGlobSync).toHaveBeenCalledWith(globPattern, { cwd });
+    expect(pages).toEqual(['/', '/thing', '/stuff', '/stuff/[id]']);
   });
 
   it('filters out internal pages', () => {

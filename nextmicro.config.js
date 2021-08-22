@@ -5,11 +5,13 @@ module.exports = {
   autostart: true,
   services: [
     {
-      name: 'products',
+      rootDir: path.join(__dirname, 'example', 'frontend'),
+    },
+    {
       port: 3001,
-      script: path.join(__dirname, 'example', 'products', 'start.js'),
-      rootDir: './example/products',
-      routes: ['/products/.*'],
+      script: 'start.js',
+      rootDir: path.join(__dirname, 'example', 'api'),
+      routes: ['/api/.*'],
       ttl: 60000,
       env: {
         PORT: 3001,

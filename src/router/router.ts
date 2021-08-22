@@ -1,5 +1,7 @@
+import getPort from 'get-port';
 import { IncomingMessage } from 'http';
-import { Service } from '../services/service';
+import { logger } from '../logger';
+import { Service } from '../services';
 
 type Route = {
   readonly pattern: string | RegExp;
@@ -9,12 +11,47 @@ type Route = {
 export class Router {
   private services: Service[];
   private routes: Route[];
+  private mainPort: number;
 
-  constructor(services: Service[]) {
+  constructor(services: Service[], mainPort: number) {
     this.services = services;
     this.routes = [];
+    this.mainPort = mainPort;
   }
 
+  /**
+   * Assign ports to any services that have none defined.
+   */
+  async assignPorts(): Promise<void> {
+    const servicePorts = this.services
+      .map((service) => service.getPort())
+      .filter((x) => x);
+
+    const servicesWithoutPorts = this.services.filter(
+      (service) => !service.getPort(),
+    );
+
+    const range = Array(100)
+      .fill(null)
+      .map((__, i) => this.mainPort + 1 + i)
+      .filter((port) => !servicePorts.includes(port));
+
+    await Promise.all(
+      servicesWithoutPorts.map(async (service) => {
+        const port = await getPort({ port: range });
+
+        logger.debug(
+          `Auto-assigning port ${port} to service "${service.name}"`,
+        );
+
+        service.setPort(port);
+      }),
+    );
+  }
+
+  /**
+   * Load the routes for all services.
+   */
   loadRoutes(): void {
     this.routes = [];
 
@@ -23,6 +60,9 @@ export class Router {
     });
   }
 
+  /**
+   * Get the routes for a service.
+   */
   private getRoutesForService(service: Service): Route[] {
     const routes: Route[] = service.routes.map(
       (pattern) =>

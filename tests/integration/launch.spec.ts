@@ -8,21 +8,22 @@ import { ConcreteNextMicroConfig } from '../../src/config';
 
 const exampleDir = path.join(__dirname, '..', '..', 'example');
 
-const getNextMicroConfig = async () => ({
-  port: await getPort(),
-  services: [
-    {
-      name: 'api',
-      port: 3001,
-      routes: ['/api/.*'],
-      rootDir: path.join(exampleDir, 'api'),
-    },
-    {
-      port: 3002,
-      rootDir: path.join(exampleDir, 'frontend'),
-    },
-  ],
-} as unknown as ConcreteNextMicroConfig);
+const getNextMicroConfig = async () =>
+  ({
+    port: await getPort(),
+    services: [
+      {
+        name: 'api',
+        port: 3001,
+        routes: ['/api/.*'],
+        rootDir: path.join(exampleDir, 'api'),
+      },
+      {
+        port: 3002,
+        rootDir: path.join(exampleDir, 'frontend'),
+      },
+    ],
+  } as unknown as ConcreteNextMicroConfig);
 
 nock(`http://127.0.0.1:3001`)
   .persist()
@@ -41,7 +42,7 @@ describe('Launch', () => {
   beforeAll(async () => {
     nextmicroConfig = await getNextMicroConfig();
 
-    jest.doMock('../../nextmicro.config', () => (nextmicroConfig))
+    jest.doMock('../../nextmicro.config', () => nextmicroConfig);
   });
 
   beforeAll(async () => {
@@ -53,11 +54,13 @@ describe('Launch', () => {
   });
 
   it('routes requests to the correct backend', async () => {
-    const resOne = await fetch(`http://127.0.0.1:${nextmicroConfig.port}/api/hello`);
-    const textOne = await resOne.text()
+    const resOne = await fetch(
+      `http://127.0.0.1:${nextmicroConfig.port}/api/hello`,
+    );
 
+    const textOne = await resOne.text();
     const resTwo = await fetch(`http://127.0.0.1:${nextmicroConfig.port}/home`);
-    const textTwo = await resTwo.text()
+    const textTwo = await resTwo.text();
 
     expect(textOne).toBe('service one replied');
     expect(textTwo).toBe('service two replied');

@@ -1,9 +1,8 @@
 import appRoot from 'app-root-path';
 import { loadConfig } from './config';
-import { logger } from './logger';
 import { ProxyServer } from './proxy/server';
 import { Router } from './router';
-import { createServices } from './services/create';
+import { createServices, printServicesTable } from './services';
 
 /**
  * Launch the proxy server.
@@ -11,11 +10,13 @@ import { createServices } from './services/create';
 export const launch = async (devMode = false): Promise<ProxyServer> => {
   const config = await loadConfig();
   const services = createServices(config, appRoot.path);
-  const router = new Router(services);
+  const router = new Router(services, config.port);
   const server = new ProxyServer(router, devMode, config.autostart);
 
   router.loadRoutes();
-  logger.info(`Services: ${services.length}`);
+  await router.assignPorts();
+  await server.launch(config.port);
+  printServicesTable(services);
 
-  return server.launch(config.port);
+  return server;
 };

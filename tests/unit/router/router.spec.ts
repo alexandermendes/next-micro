@@ -1,22 +1,28 @@
 import httpMocks from 'node-mocks-http';
 import { Router } from '../../../src/router';
-import { Service } from '../../../src/services/service';
+import { Service } from '../../../src/services';
 import { ServiceConfig } from '../../../src/config';
+
+const createServices = (serviceConfigs: ServiceConfig[]) =>
+  serviceConfigs.map((serviceConfig) => new Service(serviceConfig));
 
 describe('Router', () => {
   it('returns the service that matches an incoming request url', () => {
-    const serviceOne = new Service({
-      name: 'service-one',
-      routes: ['/route/one/.*'],
-    } as ServiceConfig);
+    const services = createServices([
+      {
+        name: 'service-one',
+        routes: ['/route/one/.*'],
+        rootDir: '/one',
+      },
+      {
+        name: 'service-two',
+        routes: ['/route/two/.*'],
+        rootDir: '/two',
+      },
+    ]);
 
-    const serviceTwo = new Service({
-      name: 'service-two',
-      routes: ['/route/two/.*'],
-    } as ServiceConfig);
-
+    const router = new Router(services, 3000);
     const req = httpMocks.createRequest({ url: '/route/one/here' });
-    const router = new Router([serviceOne, serviceTwo]);
 
     router.loadRoutes();
 
@@ -27,18 +33,23 @@ describe('Router', () => {
   });
 
   it('returns the service that matches an incoming request referer header', () => {
-    const serviceOne = new Service({
-      name: 'service-one',
-      routes: ['/route/one/.*'],
-    } as ServiceConfig);
+    const services = createServices([
+      {
+        name: 'service-one',
+        routes: ['/route/one/.*'],
+        rootDir: '/one',
+      },
+      {
+        name: 'service-two',
+        routes: ['/route/two/.*'],
+        rootDir: '/two',
+      },
+    ]);
 
-    const serviceTwo = new Service({
-      name: 'service-two',
-      routes: ['/route/two/.*'],
-    } as ServiceConfig);
-
-    const req = httpMocks.createRequest({ headers: { referer: '/route/two/here' } });
-    const router = new Router([serviceOne, serviceTwo]);
+    const router = new Router(services, 3000);
+    const req = httpMocks.createRequest({
+      headers: { referer: '/route/two/here' },
+    });
 
     router.loadRoutes();
 
@@ -49,13 +60,16 @@ describe('Router', () => {
   });
 
   it('returns null if no service matches a url', () => {
-    const service = new Service({
-      name: 'service-one',
-      routes: ['/route'],
-    } as ServiceConfig);
+    const services = createServices([
+      {
+        name: 'service',
+        routes: ['/route'],
+        rootDir: '/service',
+      },
+    ]);
 
     const req = httpMocks.createRequest({ url: '/unknown' });
-    const router = new Router([service]);
+    const router = new Router(services, 3000);
 
     router.loadRoutes();
 
@@ -65,16 +79,40 @@ describe('Router', () => {
   });
 
   it('returns null if the routes have not been loaded', () => {
-    const service = new Service({
-      name: 'service',
-      routes: ['/route'],
-    } as ServiceConfig);
+    const services = createServices([
+      {
+        name: 'service',
+        routes: ['/route'],
+        rootDir: '/service',
+      },
+    ]);
 
     const req = httpMocks.createRequest({ url: '/route' });
-    const router = new Router([service]);
+    const router = new Router(services, 3000);
 
     const foundService = router.getServiceFromRequest(req);
 
     expect(foundService).toBeNull();
+  });
+
+  it('assigns ports to services that have none', async () => {
+    const services = createServices([
+      {
+        name: 'service-one',
+        port: 3001,
+        rootDir: '/one',
+      },
+      {
+        name: 'service-two',
+        rootDir: '/two',
+      },
+    ]);
+
+    const router = new Router(services, 3000);
+
+    await router.assignPorts();
+
+    expect(services[0].getPort()).toBe(3001);
+    expect(services[1].getPort()).toBe(3002);
   });
 });

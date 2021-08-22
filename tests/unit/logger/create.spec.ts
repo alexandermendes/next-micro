@@ -14,21 +14,18 @@ describe('Logger', () => {
     process.stderr.write = originalStdErrWrite;
   });
 
-  it.each([
-    'warn',
-    'info',
-    'success',
-    'log',
-    'debug',
-  ])('logs %s to stdout', (type) => {
-    const writeSpy = jest.spyOn(process.stdout, 'write');
-    const logger = createLogger({ logLevel: 'DEBUG' });
+  it.each(['warn', 'info', 'success', 'log', 'debug'])(
+    'logs %s to stdout',
+    (type) => {
+      const writeSpy = jest.spyOn(process.stdout, 'write');
+      const logger = createLogger({ logLevel: 'DEBUG' });
 
-    logger[type]('Hello');
+      logger[type]('Hello');
 
-    expect(writeSpy).toHaveBeenCalledTimes(1);
-    expect(writeSpy.mock.calls[0]).toMatchSnapshot();
-  });
+      expect(writeSpy).toHaveBeenCalledTimes(1);
+      expect(writeSpy.mock.calls[0]).toMatchSnapshot();
+    },
+  );
 
   it('logs errors to stderr', () => {
     const writeSpy = jest.spyOn(process.stderr, 'write');
@@ -63,7 +60,7 @@ describe('Logger', () => {
 
     const logger = createLogger({
       logLevel: 'LOG',
-      colours: false
+      colours: false,
     });
 
     logger.log('Hello');

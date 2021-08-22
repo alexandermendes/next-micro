@@ -80,7 +80,9 @@ describe('Services: Service', () => {
 
       await service.launch();
 
-      expect(mockSpawn.mock.calls[0][1]).toEqual(['/absolute/path/to/script.js']);
+      expect(mockSpawn.mock.calls[0][1]).toEqual([
+        '/absolute/path/to/script.js',
+      ]);
     });
 
     it('does not attempt to launch the service twice', async () => {
@@ -109,7 +111,7 @@ describe('Services: Service', () => {
       expect(spawn).toHaveBeenCalledTimes(1);
       expect(logger.error).toHaveBeenCalledTimes(1);
       expect(logger.error).toHaveBeenCalledWith(
-        new Error('Service is already running: service-one')
+        new Error('Service is already running: service-one'),
       );
     });
 
@@ -136,7 +138,7 @@ describe('Services: Service', () => {
       expect(spawn).not.toHaveBeenCalled();
       expect(logger.error).toHaveBeenCalledTimes(1);
       expect(logger.error).toHaveBeenCalledWith(
-        new Error('Service has no startup script: service-one')
+        new Error('Service has no startup script: service-one'),
       );
     });
 
@@ -225,7 +227,9 @@ describe('Services: Service', () => {
 
       expect(mockChildProcess.kill).not.toHaveBeenCalled();
       expect(logger.warn).toHaveBeenCalledTimes(1);
-      expect(logger.warn).toHaveBeenCalledWith('Service is not running: service-one');
+      expect(logger.warn).toHaveBeenCalledWith(
+        'Service is not running: service-one',
+      );
     });
   });
 

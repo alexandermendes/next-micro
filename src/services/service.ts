@@ -5,7 +5,7 @@ import { ServiceConfig } from '../config';
 
 export class Service {
   readonly name: string | undefined;
-  readonly port: number | undefined;
+  private port: number | undefined;
   readonly routes: string[];
   readonly script: string | undefined;
   readonly scriptWaitTimeout: number;
@@ -112,5 +112,13 @@ export class Service {
     this.ttlTimer = setTimeout(() => {
       this.close();
     }, this.ttl);
+  }
+
+  getPort(): number | undefined {
+    return this.port;
+  }
+
+  setPort(port: number): void {
+    this.port = port;
   }
 }

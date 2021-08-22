@@ -4,7 +4,7 @@ import gracefulShutdown from 'http-graceful-shutdown';
 import { mocked } from 'ts-jest/utils';
 import { ProxyServer } from '../../../src/proxy/server';
 import { Router } from '../../../src/router';
-import * as controllers from '../../../src/proxy/controllers'
+import * as controllers from '../../../src/proxy/controllers';
 
 jest.mock('http');
 jest.mock('http-proxy');
@@ -20,7 +20,7 @@ const serverMock = {
     cb();
   }),
   close: jest.fn((cb) => {
-    cb()
+    cb();
   }),
 } as unknown as Server;
 
@@ -36,18 +36,22 @@ createProxyMock.mockReturnValue(proxyMock);
 describe('Proxy: Server', () => {
   describe('launch', () => {
     it('launches the server with the given port', async () => {
-      const router = new Router([]);
+      const router = new Router([], 3000);
       const proxyServer = new ProxyServer(router);
       const port = 3000;
 
       await proxyServer.launch(port);
 
       expect(serverMock.listen).toHaveBeenCalledTimes(1);
-      expect(serverMock.listen).toHaveBeenCalledWith(port, '127.0.0.1', expect.any(Function));
+      expect(serverMock.listen).toHaveBeenCalledWith(
+        port,
+        '127.0.0.1',
+        expect.any(Function),
+      );
     });
 
     it('initiates graceful shutdown', async () => {
-      const router = new Router([]);
+      const router = new Router([], 3000);
       const proxyServer = new ProxyServer(router);
 
       await proxyServer.launch(3000);
@@ -57,7 +61,7 @@ describe('Proxy: Server', () => {
     });
 
     it('throws if launching the server fails', async () => {
-      const router = new Router([]);
+      const router = new Router([], 3000);
       const proxyServer = new ProxyServer(router);
       const port = 3000;
 
@@ -66,7 +70,7 @@ describe('Proxy: Server', () => {
       listenSpy.mockReturnValueOnce({
         on: jest.fn((evt, cb) => {
           if (evt === 'error') {
-            cb(new Error('Bad thing'))
+            cb(new Error('Bad thing'));
           }
         }),
       } as never);
@@ -85,12 +89,15 @@ describe('Proxy: Server', () => {
 
   describe('controllers', () => {
     it('initialises the main request handler', async () => {
-      const router = new Router([]);
+      const router = new Router([], 3000);
       const proxyServer = new ProxyServer(router);
       const port = 3000;
       const mainRequestHandlerMock = jest.fn();
 
-      mockControllers.getMainRequestHandler.mockReturnValueOnce(mainRequestHandlerMock);
+      mockControllers.getMainRequestHandler.mockReturnValueOnce(
+        mainRequestHandlerMock,
+      );
+
       await proxyServer.launch(port);
 
       expect(mockControllers.getMainRequestHandler).toHaveBeenCalledTimes(1);
@@ -111,7 +118,7 @@ describe('Proxy: Server', () => {
       ${'error'}    | ${mockControllers.getProxyErrorHandler}
     `('proxy on.$scope', ({ scope, controller }) => {
       it('initialises the controller', async () => {
-        const router = new Router([]);
+        const router = new Router([], 3000);
         const proxyServer = new ProxyServer(router);
         const port = 3000;
         const handler = jest.fn();
@@ -130,7 +137,7 @@ describe('Proxy: Server', () => {
       });
 
       it('initialises the controller in dev mode', async () => {
-        const router = new Router([]);
+        const router = new Router([], 3000);
         const proxyServer = new ProxyServer(router, true);
         const port = 3000;
         const handler = jest.fn();
@@ -143,7 +150,7 @@ describe('Proxy: Server', () => {
       });
 
       it('initialises the controller in autostart mode', async () => {
-        const router = new Router([]);
+        const router = new Router([], 3000);
         const proxyServer = new ProxyServer(router, false, true);
         const port = 3000;
         const handler = jest.fn();
@@ -159,7 +166,7 @@ describe('Proxy: Server', () => {
 
   describe('close', () => {
     it('closes the server', async () => {
-      const router = new Router([]);
+      const router = new Router([], 3000);
       const proxyServer = new ProxyServer(router);
 
       await proxyServer.launch(3000);
@@ -169,7 +176,7 @@ describe('Proxy: Server', () => {
     });
 
     it('does nothing if the server is not running', async () => {
-      const router = new Router([]);
+      const router = new Router([], 3000);
       const proxyServer = new ProxyServer(router);
       await proxyServer.close();
 

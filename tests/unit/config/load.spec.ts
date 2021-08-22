@@ -1,4 +1,4 @@
-import { mocked } from 'ts-jest/utils'
+import { mocked } from 'ts-jest/utils';
 import { cosmiconfig } from 'cosmiconfig';
 import appRoot from 'app-root-path';
 import { loadConfig } from '../../../src/config';
@@ -34,7 +34,10 @@ describe('Config: Load', () => {
     await loadConfig();
 
     expect(cosmiconfig).toHaveBeenCalledTimes(1);
-    expect(cosmiconfig).toHaveBeenCalledWith('nextmicro', { stopDir: appRoot.path });
+    expect(cosmiconfig).toHaveBeenCalledWith('nextmicro', {
+      stopDir: appRoot.path,
+    });
+    
     expect(explorerMock.search).toHaveBeenCalledTimes(1);
     expect(explorerMock.search).toHaveBeenCalledWith(appRoot.path);
     expect(await loadConfig()).toEqual({

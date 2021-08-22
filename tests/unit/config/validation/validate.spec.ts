@@ -15,9 +15,9 @@ describe('Config: Validation - Validate', () => {
       error: null,
     } as unknown as ValidationResult);
 
-    mockGetSchema.mockReturnValue(({
-      validate: mockValidate
-    } as unknown as Joi.ObjectSchema));
+    mockGetSchema.mockReturnValue({
+      validate: mockValidate,
+    } as unknown as Joi.ObjectSchema);
   });
 
   it('does not throw for a valid config', () => {

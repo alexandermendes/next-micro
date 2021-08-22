@@ -1,7 +1,7 @@
 import HttpProxy from 'http-proxy';
 import { mocked } from 'ts-jest/utils';
 import httpMocks from 'node-mocks-http';
-import { Service } from '../../../../src/services/service';
+import { Service } from '../../../../src/services';
 import { getMainRequestHandler } from '../../../../src/proxy/controllers';
 import { Router } from '../../../../src/router';
 
@@ -17,7 +17,7 @@ createProxyMock.mockReturnValue(proxyMock);
 
 describe('Proxy: Controllers - Main', () => {
   it('proxies requests to the matched service', () => {
-    const router = mocked(new Router([]));
+    const router = mocked(new Router([], 3000));
 
     const handler = getMainRequestHandler({
       router,
@@ -31,6 +31,7 @@ describe('Proxy: Controllers - Main', () => {
     const service = {
       port: 1234,
       refreshTTL: jest.fn(() => true),
+      getPort: () => 1000,
     } as unknown as Service;
 
     router.getServiceFromRequest.mockReturnValue(service);
@@ -39,13 +40,13 @@ describe('Proxy: Controllers - Main', () => {
     expect(service.refreshTTL).toHaveBeenCalledTimes(1);
     expect(proxyMock.web).toHaveBeenCalledTimes(1);
     expect(proxyMock.web).toHaveBeenCalledWith(req, res, {
-      target: `http://127.0.0.1:${service.port}`,
+      target: 'http://127.0.0.1:1000',
       autoRewrite: true,
     });
   });
 
   it('aborts with a 404 if there is no matching service', () => {
-    const router = mocked(new Router([]));
+    const router = mocked(new Router([], 3000));
 
     const handler = getMainRequestHandler({
       router,

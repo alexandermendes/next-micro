@@ -39,7 +39,9 @@ describe('Services: Create', () => {
     const services = createServices(config, '/root');
 
     expect(mockFs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(mockFs.readFileSync).toHaveBeenCalledWith('/path/to/service/package.json');
+    expect(mockFs.readFileSync).toHaveBeenCalledWith(
+      '/path/to/service/package.json',
+    );
     expect(services).toHaveLength(1);
     expect(services[0]).toBeInstanceOf(Service);
     expect(Service).toHaveBeenCalledTimes(1);
