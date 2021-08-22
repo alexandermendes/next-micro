@@ -45,10 +45,6 @@ export const loadConfig = async (): Promise<ConcreteMicroproxyConfig> => {
   const explorer = cosmiconfig('microproxy', { stopDir: dir });
   const { config } = (await explorer.search(dir)) || {};
 
-  if (!config) {
-    logger.warn('No Microproxy config file was detected.');
-  }
-
   validate(config);
 
   return {
