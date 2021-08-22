@@ -1,16 +1,16 @@
 
 # Configuration
 
-Microproxy can be configured from a `microproxy.config.js`, or
-`microproxy.config.ts` file in the root of your repository, or via the
-`microproxy` property of your `package.json` file.
+Next Micro can be configured from a `nextmicro.config.js`, or
+`nextmicro.config.ts` file in the root of your repository, or via the
+`nextmicro` property of your `package.json` file.
 
 A `package.json` example might look something like this:
 
 ```json
 {
   "name": "my-microservices",
-  "microproxy": {
+  "nextmicro": {
     "port": 3000,
     "services": [
       {
@@ -23,7 +23,7 @@ A `package.json` example might look something like this:
 };
 ```
 
-A `microproxy.config.js` (JavaScript) example might look something like this:
+A `nextmicro.config.js` (JavaScript) example might look something like this:
 
 ```js
 module.exports = {
@@ -38,12 +38,12 @@ module.exports = {
 };
 ```
 
-A `microproxy.config.ts` (TypeScript) example might look something like this:
+A `nextmicro.config.ts` (TypeScript) example might look something like this:
 
 ```js
-import type { MicroproxyConfig } from 'microproxy';
+import type { NextMicroConfig } from 'nextmicro';
 
-const config: MicroproxyConfig = {
+const config: NextMicroConfig = {
   port: 3000,
   services: [
     {
@@ -145,8 +145,8 @@ time defined by the [`service.scriptWaitTimeout`](#servicewaittimeout-number) se
 Default: `undefined`
 
 The length of time to keep the service alive after it last received a request.
-Note that this will only work if the service was launched via Microproxy by
-using the [`service.script`](#servicescript-string) setting.
+Note that this will only work if the service was launched using the
+[`service.script`](#servicescript-string) setting.
 
 ### `service.scriptWaitTimeout` [number]
 

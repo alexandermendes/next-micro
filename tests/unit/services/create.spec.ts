@@ -1,7 +1,7 @@
 import fs from 'fs';
 import glob from 'glob';
 import { mocked } from 'ts-jest/utils';
-import { ConcreteMicroproxyConfig } from '../../../src/config';
+import { ConcreteNextMicroConfig } from '../../../src/config';
 import { createServices } from '../../../src/services/create';
 import { Service } from '../../../src/services/service';
 
@@ -25,7 +25,7 @@ describe('Services: Create', () => {
   it('creates a service based on the root dir alone', () => {
     mockFs.readFileSync.mockReturnValue(JSON.stringify({ name: 'my-service' }));
 
-    const config: ConcreteMicroproxyConfig = {
+    const config: ConcreteNextMicroConfig = {
       port: 3000,
       autoload: true,
       autostart: true,
@@ -52,7 +52,7 @@ describe('Services: Create', () => {
   it('creates a service with specified overrides', () => {
     mockFs.readFileSync.mockReturnValue(JSON.stringify({ name: 'my-service' }));
 
-    const config: ConcreteMicroproxyConfig = {
+    const config: ConcreteNextMicroConfig = {
       port: 3000,
       autoload: true,
       autostart: true,
@@ -81,7 +81,7 @@ describe('Services: Create', () => {
 
     mockFs.readFileSync.mockReturnValue(JSON.stringify({ name: 'my-service' }));
 
-    const config: ConcreteMicroproxyConfig = {
+    const config: ConcreteNextMicroConfig = {
       port: 3000,
       autoload: true,
       autostart: true,

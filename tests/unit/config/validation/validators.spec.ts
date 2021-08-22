@@ -1,7 +1,7 @@
 import fs from 'fs';
 import Joi from 'joi';
 import { mocked } from 'ts-jest/utils'
-import { MicroproxyConfig } from '../../../../src/config';
+import { NextMicroConfig } from '../../../../src/config';
 import { dir, file, uniqueRootPort } from '../../../../src/config/validation/validators';
 
 jest.mock('fs');
@@ -113,7 +113,7 @@ describe('Config: Validation - Validators', () => {
             port: 2000,
           },
         ],
-      } as unknown as MicroproxyConfig;
+      } as unknown as NextMicroConfig;
 
       const helpers = getHelpers({ path: 'my-field' })
       const result = uniqueRootPort(config, helpers);
@@ -129,7 +129,7 @@ describe('Config: Validation - Validators', () => {
             port: 1000,
           },
         ],
-      } as unknown as MicroproxyConfig;
+      } as unknown as NextMicroConfig;
 
       const helpers = getHelpers({ path: 'my-field' })
       const result = uniqueRootPort(config, helpers);
