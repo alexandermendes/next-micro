@@ -1,6 +1,6 @@
 # Next Micro
 
-[![npm version](https://badge.fury.io/js/nextmicro.svg)](https://badge.fury.io/js/nextmicro)
+[![npm version](https://badge.fury.io/js/next-micro.svg)](https://badge.fury.io/js/next-micro)
 
 An HTTP router, reverse-proxy and process manager for composing Next.js microservices.
 
