@@ -26,15 +26,19 @@ export const launch = async (
 
   await server.launch(config.port);
 
-  await Promise.all(serviceNames.map(async (serviceName) => {
-    const service = services.find((service) => service.getName() === serviceName)
+  await Promise.all(
+    serviceNames.map(async (serviceName) => {
+      const service = services.find(
+        (service) => service.getName() === serviceName,
+      );
 
-    if (!service) {
-      logger.warn(`Not a valid service name: ${serviceName}`);
-    }
+      if (!service) {
+        logger.warn(`Not a valid service name: ${serviceName}`);
+      }
 
-    return service?.launch();
-  }))
+      return service?.launch();
+    }),
+  );
 
   printServicesTable(services);
 

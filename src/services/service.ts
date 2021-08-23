@@ -49,7 +49,11 @@ export class Service {
         }, 500);
 
         setTimeout(() => {
-          logger.debug(new Error(`Timed out waiting for service to launch: ${this.getName()}`));
+          logger.debug(
+            new Error(
+              `Timed out waiting for service to launch: ${this.getName()}`,
+            ),
+          );
           resolve(false);
         }, launchTimeout);
       });

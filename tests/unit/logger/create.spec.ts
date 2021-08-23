@@ -24,8 +24,8 @@ describe('Logger', () => {
 
       expect(writeSpy).toHaveBeenCalledTimes(1);
       expect(writeSpy.mock.calls[0][0]).toEqual(
-        expect.stringContaining('Hello')
-      )
+        expect.stringContaining('Hello'),
+      );
     },
   );
 
@@ -37,8 +37,8 @@ describe('Logger', () => {
 
     expect(writeSpy).toHaveBeenCalledTimes(1);
     expect(String(writeSpy.mock.calls[0][0])).toEqual(
-      expect.stringContaining('bad thing')
-    )
+      expect.stringContaining('bad thing'),
+    );
   });
 
   it('does not log messages below the log level', () => {

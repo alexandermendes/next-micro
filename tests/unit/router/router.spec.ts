@@ -13,7 +13,9 @@ const mockChokidar = mocked(chokidar);
 const mockGlobSync = mocked(glob.sync);
 
 const createServices = (serviceConfigs: ServiceConfig[]) =>
-  serviceConfigs.map((serviceConfig) => new Service(1, serviceConfig, null, null));
+  serviceConfigs.map(
+    (serviceConfig) => new Service(1, serviceConfig, null, null),
+  );
 
 describe('Router', () => {
   beforeEach(() => {
