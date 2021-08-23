@@ -21,8 +21,6 @@ Add the following section to your `package.json`:
 {
   "scripts": {
     "dev": "nextmicro dev",
-    "build": "nextmicro build",
-    "start": "nextmicro start",
   }
 }
 ```
