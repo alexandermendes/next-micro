@@ -87,8 +87,6 @@ const getNextPages = (cwd: string): string[] => {
  */
 const getNextRoutes = (services: Service[]): Route[] => {
   const nextServices = services.filter(filterNextService);
-  console.log(nextServices);
-
   const nextPages = nextServices.reduce(
     (acc: Record<string, Service>, service) => {
       const pageKeys = getNextPages(service.getRootDir());
