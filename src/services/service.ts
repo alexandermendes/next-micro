@@ -63,7 +63,7 @@ export class Service {
 
     logger.debug(`Launching service: ${this.getName()}`);
 
-    // TODO: Add watch mode and --watch flag
+    // TODO: Add watch mode for non Next.js services.
     this.childProcess = spawn('node', scriptArgs, {
       stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
       cwd: this.serviceConfig.rootDir,
