@@ -4,7 +4,7 @@
 
 An HTTP router, reverse-proxy and process manager for composing Next.js microservices.
 
-[**View the docs**](https://pages.github.com/alexandermendes/next-micro)
+[**View the docs**](https://alexandermendes.github.io/next-micro/)
 
 ## Getting Started
 
@@ -37,5 +37,5 @@ When we make requests to this address traffic will be routed to the Next.js
 service that handles that route. If the service is not running it will be
 launched automatically.
 
-[View the full docs](https://pages.github.com/alexandermendes/next-micro) for
+[View the full docs](https://alexandermendes.github.io/next-micro/) for
 details of how to configure further.
