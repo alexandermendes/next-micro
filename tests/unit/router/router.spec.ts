@@ -1,4 +1,5 @@
 import httpMocks from 'node-mocks-http';
+import glob from 'glob';
 import { mocked } from 'ts-jest/utils';
 import chokidar, { FSWatcher } from 'chokidar';
 import { Router } from '../../../src/router';
@@ -6,14 +7,20 @@ import { Service } from '../../../src/services';
 import { ServiceConfig } from '../../../src/config';
 
 jest.mock('chokidar');
+jest.mock('glob');
 
 const mockChokidar = mocked(chokidar);
+const mockGlobSync = mocked(glob.sync);
 
 const createServices = (serviceConfigs: ServiceConfig[]) =>
-  serviceConfigs.map((serviceConfig) => new Service(serviceConfig));
+  serviceConfigs.map((serviceConfig) => new Service(serviceConfig, null, null));
 
 describe('Router', () => {
-  it('returns the service that matches an incoming request url', () => {
+  beforeEach(() => {
+    mockGlobSync.mockReturnValue([]);
+  });
+
+  it('returns the service that matches an incoming request url', async () => {
     const services = createServices([
       {
         name: 'service-one',
@@ -30,7 +37,7 @@ describe('Router', () => {
     const router = new Router(services, 3000);
     const req = httpMocks.createRequest({ url: '/route/one/here' });
 
-    router.loadRoutes();
+    await router.loadRoutes();
 
     const foundService = router.getServiceFromRequest(req);
 
@@ -38,7 +45,7 @@ describe('Router', () => {
     expect(foundService?.getName()).toBe('service-one');
   });
 
-  it('returns the service that matches an incoming request referer header', () => {
+  it('returns the service that matches an incoming request referer header', async () => {
     const services = createServices([
       {
         name: 'service-one',
@@ -57,7 +64,7 @@ describe('Router', () => {
       headers: { referer: '/route/two/here' },
     });
 
-    router.loadRoutes();
+    await router.loadRoutes();
 
     const foundService = router.getServiceFromRequest(req);
 
@@ -65,7 +72,7 @@ describe('Router', () => {
     expect(foundService?.getName()).toBe('service-two');
   });
 
-  it('returns null if no service matches a url', () => {
+  it('returns null if no service matches a url', async () => {
     const services = createServices([
       {
         name: 'service',
@@ -77,7 +84,7 @@ describe('Router', () => {
     const req = httpMocks.createRequest({ url: '/unknown' });
     const router = new Router(services, 3000);
 
-    router.loadRoutes();
+    await router.loadRoutes();
 
     const foundService = router.getServiceFromRequest(req);
 
@@ -138,7 +145,7 @@ describe('Router', () => {
     const router = new Router(services, 3000);
     const mockOn = jest.fn();
 
-    const loadRoutesSpy = jest.spyOn(router, 'loadRoutes').mockReturnValue();
+    const loadRoutesSpy = jest.spyOn(router, 'loadRoutes').mockResolvedValue();
 
     mockChokidar.watch.mockReturnValue({
       on: mockOn,

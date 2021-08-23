@@ -32,7 +32,7 @@ describe('Proxy: Controllers - Main', () => {
       name: 'my-service',
       port: 1000,
       rootDir: '/root',
-    });
+    }, null, null);
 
     const refreshTTLSpy = jest.spyOn(service, 'refreshTTL');
 

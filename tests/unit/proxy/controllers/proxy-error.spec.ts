@@ -60,11 +60,15 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const req = httpMocks.createRequest();
       const res = httpMocks.createResponse();
       const err = new Error() as NodeJS.ErrnoException;
-      const service = new Service({
-        name: 'my-service',
-        script: 'script.js',
-        rootDir: '/service',
-      });
+      const service = new Service(
+        {
+          name: 'my-service',
+          script: 'script.js',
+          rootDir: '/service',
+        },
+        null,
+        null,
+      );
 
       const launchSpy = jest.spyOn(service, 'launch');
       const refreshTTLSpy = jest.spyOn(service, 'refreshTTL');
@@ -101,10 +105,14 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const req = httpMocks.createRequest();
       const res = httpMocks.createResponse();
       const err = new Error() as NodeJS.ErrnoException;
-      const service = new Service({
-        name: 'my-service',
-        rootDir: '/service',
-      });
+      const service = new Service(
+        {
+          name: 'my-service',
+          rootDir: '/service',
+        },
+        null,
+        null,
+      );
 
       const launchSpy = jest.spyOn(service, 'launch');
 
@@ -118,7 +126,9 @@ describe('Proxy: Controllers - Proxy Error', () => {
       expect(proxyMock.web).not.toHaveBeenCalled();
       expect(logger.error).toHaveBeenCalledTimes(1);
       expect(logger.error).toHaveBeenCalledWith(
-        new Error('Service has no startup script and is not a Next.js service: my-service'),
+        new Error(
+          'Service has no startup script and is not a Next.js service: my-service',
+        ),
       );
     });
 
@@ -135,11 +145,15 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const req = httpMocks.createRequest();
       const res = httpMocks.createResponse();
       const err = new Error() as NodeJS.ErrnoException;
-      const service = new Service({
-        name: 'my-service',
-        script: 'script.js',
-        rootDir: '/service',
-      });
+      const service = new Service(
+        {
+          name: 'my-service',
+          script: 'script.js',
+          rootDir: '/service',
+        },
+        null,
+        null,
+      );
 
       const launchSpy = jest.spyOn(service, 'launch');
 
@@ -166,11 +180,15 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const req = httpMocks.createRequest();
       const res = httpMocks.createResponse();
       const err = new Error() as NodeJS.ErrnoException;
-      const service = new Service({
-        name: 'my-service',
-        script: 'script.js',
-        rootDir: '/service',
-      });
+      const service = new Service(
+        {
+          name: 'my-service',
+          script: 'script.js',
+          rootDir: '/service',
+        },
+        null,
+        null,
+      );
 
       const launchSpy = jest.spyOn(service, 'launch');
 
@@ -197,11 +215,15 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const req = httpMocks.createRequest();
       const res = httpMocks.createResponse();
       const err = new Error() as NodeJS.ErrnoException;
-      const service = new Service({
-        name: 'my-service',
-        script: 'script.js',
-        rootDir: '/service',
-      });
+      const service = new Service(
+        {
+          name: 'my-service',
+          script: 'script.js',
+          rootDir: '/service',
+        },
+        null,
+        null,
+      );
 
       const launchSpy = jest.spyOn(service, 'launch');
 

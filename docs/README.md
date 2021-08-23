@@ -18,20 +18,3 @@ traffic to the appropriate backend.
 In development mode, Next Micro can be configured to automatically launch the
 service responsible for serving a particular route only once it is hit then, to
 help manage resources, close it down after a specified time to live (TTL).
-
-Routing can be handled by maintaining static lists of regex patterns, via a
-custom routing function, or via a set of plugins that help establish routes
-automatically for popular frameworks such as Next.js and Express.
-
-## Features
-
-- Provides a single portal for accessing a site built from multiple microservices.
-- Launches services automatically in development mode
-and brings them down after a given time to live (TTL) to save resources.
-- Enables static or dynamic routing (e.g. based on settings retrieved via
-an API call).
-- Includes a plugin system to auto-detect routes for particular applications,
-such as those built with Next.js.
-
----
-

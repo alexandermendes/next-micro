@@ -11,6 +11,7 @@ const exampleDir = path.join(__dirname, '..', '..', 'example');
 const getNextMicroConfig = async () =>
   ({
     port: await getPort(),
+    autoload: false,
     services: [
       {
         name: 'api',
@@ -21,7 +22,6 @@ const getNextMicroConfig = async () =>
       {
         port: 3002,
         rootDir: path.join(exampleDir, 'frontend'),
-        routes: ['/home'],
       },
     ],
   } as unknown as ConcreteNextMicroConfig);

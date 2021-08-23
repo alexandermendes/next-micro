@@ -43,11 +43,15 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      mockFs.existsSync.mockImplementationOnce((filePath: PathLike): boolean => {
-        return filePath === '/root/next.config.js';
-      });
+      const nextConfig = {};
 
-      const service = new Service(serviceConfig);
+      mockFs.existsSync.mockImplementationOnce(
+        (filePath: PathLike): boolean => {
+          return filePath === '/root/next.config.js';
+        },
+      );
+
+      const service = new Service(serviceConfig, nextConfig, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -59,20 +63,24 @@ describe('Services: Service', () => {
 
       expect(launched).toBe(true);
       expect(spawn).toHaveBeenCalledTimes(1);
-      expect(spawn).toHaveBeenCalledWith('node', [
-        path.resolve(__dirname, '../../../src/services/next-worker.js'),
-        '--dir',
-        '/root',
-        '--port',
-        '1234',
-      ], {
-        stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
-        cwd: '/root',
-        env: {
-          ...process.env,
-          PORT: String(serviceConfig.port),
+      expect(spawn).toHaveBeenCalledWith(
+        'node',
+        [
+          path.resolve(__dirname, '../../../src/services/next-worker.js'),
+          '--dir',
+          '/root',
+          '--port',
+          '1234',
+        ],
+        {
+          stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
+          cwd: '/root',
+          env: {
+            ...process.env,
+            PORT: String(serviceConfig.port),
+          },
         },
-      });
+      );
     });
 
     it('launches a service using the custom script', async () => {
@@ -83,7 +91,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig);
+      const service = new Service(serviceConfig, null, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -113,7 +121,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig);
+      const service = new Service(serviceConfig, null, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -138,7 +146,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig);
+      const service = new Service(serviceConfig, null, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -167,7 +175,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig);
+      const service = new Service(serviceConfig, null, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -195,7 +203,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig);
+      const service = new Service(serviceConfig, null, null);
 
       const promise = service.launch();
 
@@ -216,7 +224,7 @@ describe('Services: Service', () => {
         scriptWaitTimeout: 5000,
       };
 
-      const service = new Service(serviceConfig);
+      const service = new Service(serviceConfig, null, null);
 
       const promise = service.launch();
 
@@ -238,7 +246,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig);
+      const service = new Service(serviceConfig, null, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -265,7 +273,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig);
+      const service = new Service(serviceConfig, null, null);
 
       logger.warn = jest.fn();
       service.close();
@@ -288,7 +296,7 @@ describe('Services: Service', () => {
         ttl: 1000,
       };
 
-      const service = new Service(serviceConfig);
+      const service = new Service(serviceConfig, null, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -315,7 +323,7 @@ describe('Services: Service', () => {
         ttl: 1000,
       };
 
-      const service = new Service(serviceConfig);
+      const service = new Service(serviceConfig, null, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -334,6 +342,71 @@ describe('Services: Service', () => {
       jest.advanceTimersByTime(500);
 
       expect(mockChildProcess.kill).toHaveBeenCalled();
+    });
+  });
+
+  describe('name', () => {
+    it('returns the name when a custom name is given', async () => {
+      const serviceConfig: ServiceConfig = {
+        name: 'my-service',
+        rootDir: '/root',
+      };
+
+      const service = new Service(serviceConfig, null, null);
+
+      expect(service.getName()).toBe('my-service');
+    });
+
+    it('returns the name from the package.json', async () => {
+      const serviceConfig: ServiceConfig = {
+        rootDir: '/root',
+      };
+
+      const service = new Service(serviceConfig, null, {
+        name: 'my-service',
+        version: '1.2.3',
+      });
+
+      expect(service.getName()).toBe('my-service');
+    });
+
+    it('prefers a custom name', async () => {
+      const serviceConfig: ServiceConfig = {
+        name: 'custom-name',
+        rootDir: '/root',
+      };
+
+      const service = new Service(serviceConfig, null, {
+        name: 'my-service',
+        version: '1.2.3',
+      });
+
+      expect(service.getName()).toBe('custom-name');
+    });
+  });
+
+  describe('version', () => {
+    it('returns the version from the package.json', async () => {
+      const serviceConfig: ServiceConfig = {
+        rootDir: '/root',
+      };
+
+      const service = new Service(serviceConfig, null, {
+        name: 'my-service',
+        version: '1.2.3',
+      });
+
+      expect(service.getVersion()).toBe('1.2.3');
+    });
+
+    it('returns unknown if no version found in the package.json', async () => {
+      const serviceConfig: ServiceConfig = {
+        rootDir: '/root',
+      };
+
+      const service = new Service(serviceConfig, null, null);
+
+      expect(service.getVersion()).toBe('unknown');
     });
   });
 });

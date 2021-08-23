@@ -1,94 +1,32 @@
-import fs from 'fs';
 import glob from 'glob';
 import { mocked } from 'ts-jest/utils';
 import { ConcreteNextMicroConfig } from '../../../src/config';
 import { createServices } from '../../../src/services/create';
 import { Service } from '../../../src/services/service';
+import { getPackage } from '../../../src/package';
+import { getNextConfig } from '../../../src/next-config';
 
-jest.mock('fs');
 jest.mock('glob');
 jest.mock('../../../src/services/service');
+jest.mock('../../../src/package');
+jest.mock('../../../src/next-config');
 
-const mockFs = mocked(fs);
 const mockGlobSync = mocked(glob.sync);
-const MockService = mocked(Service);
+const mockGetPackage = mocked(getPackage);
+const mockGetNextConfig = mocked(getNextConfig);
 
 describe('Services: Create', () => {
   beforeEach(() => {
-    mockFs.readFileSync.mockImplementation(() => {
-      throw new Error('No file here');
-    });
-
     mockGlobSync.mockReturnValue([]);
-  });
-
-  it('creates a service based on the root dir alone', () => {
-    mockFs.readFileSync.mockReturnValue(
-      JSON.stringify({
-        name: 'my-service',
-        version: '1.2.3',
-      }),
-    );
-
-    const config: ConcreteNextMicroConfig = {
-      port: 3000,
-      autoload: true,
-      autostart: true,
-      services: [
-        {
-          rootDir: '/path/to/service',
-        },
-      ],
-    };
-
-    const services = createServices(config, '/root');
-
-    expect(mockFs.readFileSync).toHaveBeenCalledTimes(1);
-    expect(mockFs.readFileSync).toHaveBeenCalledWith(
-      '/path/to/service/package.json',
-    );
-
-    expect(services).toHaveLength(1);
-    expect(services[0]).toBeInstanceOf(Service);
-    expect(Service).toHaveBeenCalledTimes(1);
-    expect(Service).toHaveBeenCalledWith({
-      name: 'my-service',
-      version: '1.2.3',
-      rootDir: '/path/to/service',
-    });
-  });
-
-  it('creates a service with specified overrides', () => {
-    mockFs.readFileSync.mockReturnValue(JSON.stringify({ name: 'my-service' }));
-
-    const config: ConcreteNextMicroConfig = {
-      port: 3000,
-      autoload: true,
-      autostart: true,
-      services: [
-        {
-          name: 'service-one',
-          port: 1234,
-          rootDir: '/path/to/service',
-        },
-      ],
-    };
-
-    createServices(config, '/root');
-
-    expect(MockService.mock.calls[0][0]).toMatchObject({
-      name: 'service-one',
-      port: 1234,
-    });
+    mockGetPackage.mockReturnValue(null);
+    mockGetNextConfig.mockReturnValue(null);
   });
 
   it('autoloads Next.js services', () => {
     mockGlobSync.mockReturnValue([
-      '/one/next.config.js',
-      '/two/next.config.js',
+      '/path/to/service/one/next.config.js',
+      '/path/to/service/two/next.config.js',
     ]);
-
-    mockFs.readFileSync.mockReturnValue(JSON.stringify({ name: 'my-service' }));
 
     const config: ConcreteNextMicroConfig = {
       port: 3000,
@@ -100,15 +38,96 @@ describe('Services: Create', () => {
     const services = createServices(config, '/root');
 
     expect(services).toHaveLength(2);
+    expect(services[0]).toBeInstanceOf(Service);
+    expect(services[1]).toBeInstanceOf(Service);
     expect(Service).toHaveBeenCalledTimes(2);
-    expect(Service).toHaveBeenCalledWith({
-      name: 'my-service',
-      rootDir: '/one',
-    });
+    expect(Service).toHaveBeenCalledWith(
+      { rootDir: '/path/to/service/one' },
+      null,
+      null,
+    );
 
-    expect(Service).toHaveBeenCalledWith({
+    expect(Service).toHaveBeenCalledWith(
+      { rootDir: '/path/to/service/two' },
+      null,
+      null,
+    );
+  });
+
+  it('loads defined services', () => {
+    const config: ConcreteNextMicroConfig = {
+      port: 3000,
+      autoload: true,
+      autostart: true,
+      services: [
+        { rootDir: '/path/to/service/one' },
+        { rootDir: '/path/to/service/two' },
+      ],
+    };
+
+    const services = createServices(config, '/root');
+
+    expect(services).toHaveLength(2);
+    expect(services[0]).toBeInstanceOf(Service);
+    expect(services[1]).toBeInstanceOf(Service);
+    expect(Service).toHaveBeenCalledTimes(2);
+    expect(Service).toHaveBeenCalledWith(
+      { rootDir: '/path/to/service/one' },
+      null,
+      null,
+    );
+
+    expect(Service).toHaveBeenCalledWith(
+      { rootDir: '/path/to/service/two' },
+      null,
+      null,
+    );
+  });
+
+  it('includes the package.json when creating services', () => {
+    const pkg = {
       name: 'my-service',
-      rootDir: '/two',
-    });
+      version: '1.2.3',
+    };
+
+    mockGetPackage.mockReturnValue(pkg);
+
+    const config: ConcreteNextMicroConfig = {
+      port: 3000,
+      autoload: true,
+      autostart: true,
+      services: [{ rootDir: '/path/to/service/one' }],
+    };
+
+    createServices(config, '/root');
+
+    expect(Service).toHaveBeenCalledWith(
+      { rootDir: '/path/to/service/one' },
+      null,
+      pkg,
+    );
+  });
+
+  it('includes the next config when creating services', () => {
+    const nextConfig = {
+      distDir: 'my-next-service/dist',
+    };
+
+    mockGetNextConfig.mockReturnValue(nextConfig);
+
+    const config: ConcreteNextMicroConfig = {
+      port: 3000,
+      autoload: true,
+      autostart: true,
+      services: [{ rootDir: '/path/to/service/one' }],
+    };
+
+    createServices(config, '/root');
+
+    expect(Service).toHaveBeenCalledWith(
+      { rootDir: '/path/to/service/one' },
+      nextConfig,
+      null,
+    );
   });
 });

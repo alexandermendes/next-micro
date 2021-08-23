@@ -3,11 +3,8 @@ import chokidar from 'chokidar';
 import { IncomingMessage } from 'http';
 import { logger } from '../logger';
 import { Service } from '../services';
-
-type Route = {
-  readonly pattern: string | RegExp;
-  readonly service: Service;
-};
+import { Route } from './route';
+import { loadRoutes } from './load-routes';
 
 export class Router {
   private services: Service[];
@@ -53,12 +50,8 @@ export class Router {
   /**
    * Load the routes for all services.
    */
-  loadRoutes(): void {
-    this.routes = [];
-
-    this.services.forEach((service) => {
-      this.routes.push(...this.getRoutesForService(service));
-    });
+  async loadRoutes(): Promise<void> {
+    this.routes = await loadRoutes(this.services);
   }
 
   /**
@@ -76,18 +69,17 @@ export class Router {
   }
 
   /**
-   * Get the routes for a service.
+   * Get the service that matches an incoming request.
+   *
+   * If the request URL cannot be matched directly try the referer header. The
+   * later could be a subsequent request made by a particular service requesting
+   * an internal resource, such as a static asset.
    */
-  private getRoutesForService(service: Service): Route[] {
-    const routes: Route[] = service.getRoutes().map(
-      (pattern) =>
-        <Route>{
-          pattern,
-          service,
-        },
+  getServiceFromRequest(req: IncomingMessage): Service | null {
+    return (
+      this.getServiceFromUrl(req.url) ||
+      this.getServiceFromUrl(req.headers?.referer)
     );
-
-    return routes;
   }
 
   /**
@@ -107,18 +99,4 @@ export class Router {
 
     return matchingRoute ? matchingRoute.service : null;
   };
-
-  /**
-   * Get the service that matches an incoming request.
-   *
-   * If the request URL cannot be matched directly try the referer header. The
-   * later could be a subsequent request made by a particular service requesting
-   * an internal resource, such as a static asset.
-   */
-  getServiceFromRequest(req: IncomingMessage): Service | null {
-    return (
-      this.getServiceFromUrl(req.url) ||
-      this.getServiceFromUrl(req.headers?.referer)
-    );
-  }
 }

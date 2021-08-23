@@ -29,11 +29,15 @@ describe('Proxy: Controllers - Proxy Res', () => {
 
       const proxyRes = httpMocks.createRequest();
       const req = httpMocks.createRequest();
-      const service = new Service({
-        name: 'my-service',
-        port: 1234,
-        rootDir: '/root',
-      });
+      const service = new Service(
+        {
+          name: 'my-service',
+          port: 1234,
+          rootDir: '/root',
+        },
+        null,
+        null,
+      );
 
       router.getServiceFromRequest.mockReturnValue(service);
       handler(proxyRes, req);

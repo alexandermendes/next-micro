@@ -1,11 +1,7 @@
 # Getting Started
 
-Depending on how you prefer to organise your code you may choose to install
-Next Micro in a standalone repo containing the routing logic for your
-microservices, or you may choose to install it in a monorepo that contains
-the routing logic *and* your microservices.
-
-In either case, install Next Micro as a dev dependency:
+Given a monorepo containing multiple Next.js microservices the easiest way
+to get started is to install Next Micro in the root of the monorepo:
 
 ```sh
 npm install nextmicro -D
@@ -23,34 +19,14 @@ Add the following section to your `package.json`:
 }
 ```
 
-And add a configuration file to the root of your repository (example services shown):
-
-```js
-// nextmicro.config.js
-module.exports = {
-  port: 3000,
-  services: [
-    {
-      name: 'my-first-service',
-      port: 7000,
-      routes: ['/some/pages/.*'],
-    },
-    {
-      name: 'my-second-service',
-      port: 7001,
-      routes: ['/some/more/pages/.*'],
-    },
-  ]
-};
-```
-
-To bring Next Micro up in development mode run:
+And run:
 
 ```sh
-yarn nextmicro dev
+yarn dev
 ```
 
-The proxy should be up and running at `http://127.0.0.1:3000`. When we make
-requests to this address all traffic that matches `/some/pages/.*` will be
-routed to the first service and all traffic that matches `/some/more/pages/.*`
-to the second.
+The proxy should now be up and running at `http://127.0.0.1:3000`.
+
+When we make requests to this address traffic will be routed to the Next.js
+service that handles that route. If the service is not running it will be
+launched automatically.

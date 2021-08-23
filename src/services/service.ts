@@ -1,12 +1,12 @@
 import path from 'path';
-import fs from 'fs';
 import { spawn, ChildProcess, Serializable } from 'child_process';
 import { Logger, createLogger, createLogStream, logger } from '../logger';
 import { ServiceConfig } from '../config';
+import { Package } from '../package';
 
 export class Service {
+  // TODO: Simplify args and just use config.
   private name: string | undefined;
-  private version: string | undefined;
   private port: number | undefined;
   private routes: string[];
   private script: string | undefined;
@@ -19,11 +19,15 @@ export class Service {
   private childLogger: Logger;
   private childProcess: ChildProcess | undefined;
   private ttlTimer: NodeJS.Timeout | undefined;
-  private isNextService: boolean;
+  private nextConfig: Record<string, unknown> | null;
+  private pkg: Package | null;
 
-  constructor(serviceConfig: ServiceConfig) {
+  constructor(
+    serviceConfig: ServiceConfig,
+    nextConfig: Record<string, unknown> | null,
+    pkg: Package | null,
+  ) {
     this.name = serviceConfig.name;
-    this.version = serviceConfig.version;
     this.port = serviceConfig.port;
     this.routes = serviceConfig.routes || [];
     this.script = serviceConfig.script;
@@ -34,9 +38,8 @@ export class Service {
     this.env = serviceConfig.env || {};
 
     this.childLogger = createLogger({ tag: `service: ${this.name}` });
-    this.isNextService = fs.existsSync(
-      path.join(this.rootDir, 'next.config.js'),
-    );
+    this.nextConfig = nextConfig;
+    this.pkg = pkg;
   }
 
   async launch(): Promise<boolean> {
@@ -126,7 +129,7 @@ export class Service {
 
   // TODO: assign default name, based on assigned id.
   getName(): string | undefined {
-    return this.name;
+    return this.name || this.pkg?.name;
   }
 
   getRoutes(): string[] {
@@ -134,15 +137,19 @@ export class Service {
   }
 
   getVersion(): string {
-    return this.version || 'unknown';
+    return this.pkg?.version || 'unknown';
   }
 
   getRootDir(): string {
     return this.rootDir;
   }
 
+  getNextConfig(): Record<string, unknown> | null {
+    return this.nextConfig;
+  }
+
   private getScriptArgs(): string[] | undefined {
-    if (this.isNextService) {
+    if (this.nextConfig) {
       return [
         path.join(__dirname, 'next-worker.js'),
         '--dir',

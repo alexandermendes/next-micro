@@ -5,10 +5,6 @@ module.exports = {
   autostart: true,
   services: [
     {
-      rootDir: path.join(__dirname, 'example', 'frontend'),
-      routes: ['/home'], // TODO: Determine automatically
-    },
-    {
       port: 3001,
       script: 'start.js',
       rootDir: path.join(__dirname, 'example', 'api'),
