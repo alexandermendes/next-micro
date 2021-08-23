@@ -41,9 +41,9 @@ export class ProxyServer {
 
     this.proxy.on('error', getProxyErrorHandler(controllerContext));
     this.proxy.on('proxyRes', getProxyResHandler(controllerContext));
-    // server.on('close', getShutdownHandler(proxy, watcher));
 
     gracefulShutdown(this.server);
+    this.server.on('close', () => this.proxy.close());
 
     await new Promise((resolve, reject) => {
       this.server
