@@ -4,7 +4,7 @@ Given a monorepo containing multiple Next.js microservices the easiest way
 to get started is to install Next Micro in the root of the monorepo:
 
 ```sh
-npm install nextmicro -D
+npm install next-micro -D
 ```
 
 Add the following section to your `package.json`:
