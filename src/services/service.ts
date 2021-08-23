@@ -5,6 +5,7 @@ import { ServiceConfig } from '../config';
 import { Package } from '../package';
 
 export class Service {
+  private id: number;
   private serviceConfig: ServiceConfig;
   private port: number | undefined;
   private childLogger: Logger;
@@ -15,10 +16,12 @@ export class Service {
   private running: boolean;
 
   constructor(
+    id: number,
     serviceConfig: ServiceConfig,
     nextConfig: Record<string, unknown> | null,
     pkg: Package | null,
   ) {
+    this.id = id;
     this.serviceConfig = serviceConfig;
     this.port = serviceConfig.port;
     this.nextConfig = nextConfig;
@@ -135,9 +138,8 @@ export class Service {
     this.running = value;
   }
 
-  // TODO: assign default name, based on assigned id.
-  getName(): string | undefined {
-    return this.serviceConfig.name || this.pkg?.name;
+  getName(): string {
+    return this.serviceConfig.name || this.pkg?.name || `service ${this.id}`;
   }
 
   getRoutes(): string[] {

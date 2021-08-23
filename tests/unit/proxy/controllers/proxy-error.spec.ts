@@ -61,6 +61,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const res = httpMocks.createResponse();
       const err = new Error() as NodeJS.ErrnoException;
       const service = new Service(
+        1,
         {
           name: 'my-service',
           script: 'script.js',
@@ -106,6 +107,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const res = httpMocks.createResponse();
       const err = new Error() as NodeJS.ErrnoException;
       const service = new Service(
+        1,
         {
           name: 'my-service',
           rootDir: '/service',
@@ -146,6 +148,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const res = httpMocks.createResponse();
       const err = new Error() as NodeJS.ErrnoException;
       const service = new Service(
+        1,
         {
           name: 'my-service',
           script: 'script.js',
@@ -181,6 +184,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const res = httpMocks.createResponse();
       const err = new Error() as NodeJS.ErrnoException;
       const service = new Service(
+        1,
         {
           name: 'my-service',
           script: 'script.js',
@@ -216,6 +220,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
       const res = httpMocks.createResponse();
       const err = new Error() as NodeJS.ErrnoException;
       const service = new Service(
+        1,
         {
           name: 'my-service',
           script: 'script.js',

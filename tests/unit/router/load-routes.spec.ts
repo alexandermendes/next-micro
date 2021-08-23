@@ -37,6 +37,7 @@ describe('Router: Load routes', () => {
 
       const nextConfig = {};
       const service = new Service(
+        1,
         {
           name: 'my-service',
           rootDir: '/path/to/service',
@@ -81,6 +82,7 @@ describe('Router: Load routes', () => {
 
       const nextConfig = {};
       const service = new Service(
+        1,
         {
           name: 'my-service',
           rootDir: '/path/to/service',
@@ -106,6 +108,7 @@ describe('Router: Load routes', () => {
 
       const nextConfig = {};
       const serviceOne = new Service(
+        1,
         {
           name: 'service-one',
           rootDir: '/path/to/service',
@@ -115,6 +118,7 @@ describe('Router: Load routes', () => {
       );
 
       const serviceTwo = new Service(
+        1,
         {
           name: 'service-two',
           rootDir: '/path/to/service',
@@ -124,6 +128,7 @@ describe('Router: Load routes', () => {
       );
 
       const serviceThree = new Service(
+        1,
         {
           name: 'service-three',
           rootDir: '/path/to/service',
@@ -159,6 +164,7 @@ describe('Router: Load routes', () => {
 
       const nextConfig = {};
       const serviceOne = new Service(
+        1,
         {
           name: 'service-one',
           rootDir: '/path/to/service',
@@ -168,6 +174,7 @@ describe('Router: Load routes', () => {
       );
 
       const serviceTwo = new Service(
+        1,
         {
           name: 'service-two',
           rootDir: '/path/to/service',
@@ -202,6 +209,7 @@ describe('Router: Load routes', () => {
       };
 
       const service = new Service(
+        1,
         {
           name: 'service-one',
           rootDir: '/path/to/service',
@@ -238,6 +246,7 @@ describe('Router: Load routes', () => {
       };
 
       const service = new Service(
+        1,
         {
           name: 'service-one',
           rootDir: '/path/to/service',
@@ -267,6 +276,7 @@ describe('Router: Load routes', () => {
         };
 
         const service = new Service(
+          1,
           {
             name: 'service-one',
             rootDir: '/path/to/service',
@@ -287,6 +297,7 @@ describe('Router: Load routes', () => {
     it('includes any routes specified for each service', async () => {
       const nextConfig = {};
       const serviceOne = new Service(
+        1,
         {
           name: 'service-one',
           rootDir: '/path/to/service',
@@ -297,6 +308,7 @@ describe('Router: Load routes', () => {
       );
 
       const serviceTwo = new Service(
+        1,
         {
           name: 'service-two',
           rootDir: '/path/to/service',

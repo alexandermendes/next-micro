@@ -34,8 +34,9 @@ export const createServices = (
   }
 
   return serviceConfigs.map(
-    (serviceConfig) =>
+    (serviceConfig, index) =>
       new Service(
+        index,
         serviceConfig,
         getNextConfig(serviceConfig.rootDir),
         getPackage(serviceConfig.rootDir),

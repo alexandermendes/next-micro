@@ -29,6 +29,7 @@ describe('Proxy: Controllers - Main', () => {
     const req = httpMocks.createRequest();
     const res = httpMocks.createResponse();
     const service = new Service(
+      1,
       {
         name: 'my-service',
         port: 1000,

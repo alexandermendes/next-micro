@@ -51,7 +51,7 @@ describe('Services: Service', () => {
         },
       );
 
-      const service = new Service(serviceConfig, nextConfig, null);
+      const service = new Service(1, serviceConfig, nextConfig, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -91,7 +91,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig, null, null);
+      const service = new Service(1, serviceConfig, null, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -121,7 +121,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig, null, null);
+      const service = new Service(1, serviceConfig, null, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -146,7 +146,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig, null, null);
+      const service = new Service(1, serviceConfig, null, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -172,7 +172,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig, null, null);
+      const service = new Service(1, serviceConfig, null, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -204,7 +204,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig, null, null);
+      const service = new Service(1, serviceConfig, null, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -234,7 +234,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig, null, null);
+      const service = new Service(1, serviceConfig, null, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -262,7 +262,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig, null, null);
+      const service = new Service(1, serviceConfig, null, null);
 
       const promise = service.launch();
 
@@ -283,7 +283,7 @@ describe('Services: Service', () => {
         scriptWaitTimeout: 5000,
       };
 
-      const service = new Service(serviceConfig, null, null);
+      const service = new Service(1, serviceConfig, null, null);
 
       const promise = service.launch();
 
@@ -305,7 +305,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig, null, null);
+      const service = new Service(1, serviceConfig, null, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -337,7 +337,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig, null, null);
+      const service = new Service(1, serviceConfig, null, null);
 
       logger.warn = jest.fn();
       service.close();
@@ -360,7 +360,7 @@ describe('Services: Service', () => {
         ttl: 1000,
       };
 
-      const service = new Service(serviceConfig, null, null);
+      const service = new Service(1, serviceConfig, null, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -387,7 +387,7 @@ describe('Services: Service', () => {
         ttl: 1000,
       };
 
-      const service = new Service(serviceConfig, null, null);
+      const service = new Service(1, serviceConfig, null, null);
 
       mockChildProcess.on.mockImplementation((scope, cb) => {
         if (scope === 'message') {
@@ -416,7 +416,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig, null, null);
+      const service = new Service(1, serviceConfig, null, null);
 
       expect(service.getName()).toBe('my-service');
     });
@@ -426,7 +426,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig, null, {
+      const service = new Service(1, serviceConfig, null, {
         name: 'my-service',
         version: '1.2.3',
       });
@@ -440,12 +440,22 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig, null, {
+      const service = new Service(1, serviceConfig, null, {
         name: 'my-service',
         version: '1.2.3',
       });
 
       expect(service.getName()).toBe('custom-name');
+    });
+
+    it('returns a name based on the id as a fallback', async () => {
+      const serviceConfig: ServiceConfig = {
+        rootDir: '/root',
+      };
+
+      const service = new Service(1, serviceConfig, null, null);
+
+      expect(service.getName()).toBe('service 1');
     });
   });
 
@@ -455,7 +465,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig, null, {
+      const service = new Service(1, serviceConfig, null, {
         name: 'my-service',
         version: '1.2.3',
       });
@@ -468,7 +478,7 @@ describe('Services: Service', () => {
         rootDir: '/root',
       };
 
-      const service = new Service(serviceConfig, null, null);
+      const service = new Service(1, serviceConfig, null, null);
 
       expect(service.getVersion()).toBe('unknown');
     });

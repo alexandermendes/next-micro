@@ -42,12 +42,14 @@ describe('Services: Create', () => {
     expect(services[1]).toBeInstanceOf(Service);
     expect(Service).toHaveBeenCalledTimes(2);
     expect(Service).toHaveBeenCalledWith(
+      0,
       { rootDir: '/path/to/service/one' },
       null,
       null,
     );
 
     expect(Service).toHaveBeenCalledWith(
+      1,
       { rootDir: '/path/to/service/two' },
       null,
       null,
@@ -72,12 +74,14 @@ describe('Services: Create', () => {
     expect(services[1]).toBeInstanceOf(Service);
     expect(Service).toHaveBeenCalledTimes(2);
     expect(Service).toHaveBeenCalledWith(
+      0,
       { rootDir: '/path/to/service/one' },
       null,
       null,
     );
 
     expect(Service).toHaveBeenCalledWith(
+      1,
       { rootDir: '/path/to/service/two' },
       null,
       null,
@@ -102,6 +106,7 @@ describe('Services: Create', () => {
     createServices(config, '/root');
 
     expect(Service).toHaveBeenCalledWith(
+      0,
       { rootDir: '/path/to/service/one' },
       null,
       pkg,
@@ -125,6 +130,7 @@ describe('Services: Create', () => {
     createServices(config, '/root');
 
     expect(Service).toHaveBeenCalledWith(
+      0,
       { rootDir: '/path/to/service/one' },
       nextConfig,
       null,
