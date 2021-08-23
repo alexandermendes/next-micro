@@ -42,8 +42,7 @@ describe('Config: Load', () => {
     expect(explorerMock.search).toHaveBeenCalledWith(appRoot.path);
     expect(await loadConfig()).toEqual({
       port: 3000,
-      // TODO: Make this true by default, using next dev etc.
-      autostart: false,
+      autostart: true,
       autoload: true,
       services: [
         {

@@ -17,7 +17,7 @@ export class ProxyServer {
   private devMode: boolean;
   private autostart: boolean;
 
-  constructor(router: Router, devMode = false, autostart = false) {
+  constructor(router: Router, devMode = false, autostart = true) {
     this.router = router;
     this.proxy = HttpProxy.createProxyServer();
     this.server = null;

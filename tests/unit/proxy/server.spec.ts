@@ -105,7 +105,7 @@ describe('Proxy: Server', () => {
         router,
         proxy: proxyMock,
         devMode: false,
-        autostart: false,
+        autostart: true,
       });
 
       expect(createServer).toHaveBeenCalledTimes(1);
@@ -132,7 +132,7 @@ describe('Proxy: Server', () => {
           router,
           proxy: proxyMock,
           devMode: false,
-          autostart: false,
+          autostart: true,
         });
       });
 

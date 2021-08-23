@@ -31,9 +31,9 @@ export type ConcreteNextMicroConfig = {
 };
 
 const defaults = {
-  autoload: true,
   port: 3000,
-  autostart: false,
+  autoload: true,
+  autostart: true,
   services: [],
 };
 

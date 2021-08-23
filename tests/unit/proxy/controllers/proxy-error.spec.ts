@@ -167,7 +167,7 @@ describe('Proxy: Controllers - Proxy Error', () => {
       expect(proxyMock.web).not.toHaveBeenCalled();
     });
 
-    it('does not attempt to launch the service if not in automock mode', async () => {
+    it('does not attempt to launch the service if not in autostart mode', async () => {
       const router = mocked(new Router([], 3000));
 
       const handler = getProxyErrorHandler({

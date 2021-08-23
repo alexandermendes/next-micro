@@ -2,7 +2,6 @@ const path = require('path');
 
 module.exports = {
   port: 3000,
-  autostart: true,
   services: [
     {
       port: 3001,
@@ -10,9 +9,6 @@ module.exports = {
       rootDir: path.join(__dirname, 'example', 'api'),
       routes: ['/api/.*'],
       ttl: 60000,
-      env: {
-        PORT: 3001,
-      },
     },
   ],
 }
