@@ -37,6 +37,11 @@
     "dist",
     "bin"
   ],
+  "keywords": [
+    "next",
+    "react",
+    "microservices"
+  ],
   "peerDependencies": {
     "next": ">=9"
   },
