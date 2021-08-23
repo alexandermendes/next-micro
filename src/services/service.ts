@@ -12,6 +12,7 @@ export class Service {
   private ttlTimer: NodeJS.Timeout | undefined;
   private nextConfig: Record<string, unknown> | null;
   private pkg: Package | null;
+  private running: boolean;
 
   constructor(
     serviceConfig: ServiceConfig,
@@ -23,14 +24,32 @@ export class Service {
     this.nextConfig = nextConfig;
     this.pkg = pkg;
     this.childLogger = createLogger({ tag: `service: ${this.getName()}` });
+    this.running = false;
   }
 
   async launch(): Promise<boolean> {
-    // TODO: Handle calls in quick succession - redirect
-    if (this.childProcess) {
-      logger.error(new Error(`Service is already running: ${this.getName()}`));
+    const launchTimeout = this.serviceConfig.scriptWaitTimeout || 60000;
 
-      return false;
+    if (this.isRunning()) {
+      logger.debug(`Service is already running: ${this.getName()}`);
+
+      return true;
+    }
+
+    // Launch may be in progress, wait.
+    if (this.childProcess) {
+      return new Promise((resolve) => {
+        setInterval(() => {
+          if (this.isRunning()) {
+            resolve(true);
+          }
+        }, 500);
+
+        setTimeout(() => {
+          logger.debug(new Error(`Timed out waiting for service to launch: ${this.getName()}`));
+          resolve(false);
+        }, launchTimeout);
+      });
     }
 
     const scriptArgs = this.getScriptArgs();
@@ -62,12 +81,13 @@ export class Service {
         );
 
         resolve(false);
-      }, this.serviceConfig.scriptWaitTimeout);
+      }, launchTimeout);
 
       this.childProcess?.on('message', (event: Serializable) => {
         if (event === 'ready') {
           logger.success(`Service launched: ${this.getName()}`);
 
+          this.running = true;
           clearTimeout(scriptWaitTimer);
           resolve(true);
         }
@@ -86,6 +106,7 @@ export class Service {
 
     this.childProcess.kill();
     this.childProcess = undefined;
+    this.running = false;
   }
 
   refreshTTL(): void {
@@ -110,6 +131,10 @@ export class Service {
     this.port = port;
   }
 
+  setRunning(value: boolean): void {
+    this.running = value;
+  }
+
   // TODO: assign default name, based on assigned id.
   getName(): string | undefined {
     return this.serviceConfig.name || this.pkg?.name;
@@ -132,7 +157,7 @@ export class Service {
   }
 
   isRunning(): boolean {
-    return !!this.childProcess;
+    return this.running;
   }
 
   private getScriptArgs(): string[] | undefined {

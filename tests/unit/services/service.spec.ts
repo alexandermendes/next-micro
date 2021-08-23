@@ -158,12 +158,71 @@ describe('Services: Service', () => {
       const launchedTwo = await service.launch();
 
       expect(launchedOne).toBe(true);
-      expect(launchedTwo).toBe(false);
+      expect(launchedTwo).toBe(true);
       expect(spawn).toHaveBeenCalledTimes(1);
-      expect(logger.error).toHaveBeenCalledTimes(1);
-      expect(logger.error).toHaveBeenCalledWith(
-        new Error('Service is already running: service-one'),
-      );
+    });
+
+    it('waits in case the child process is being launched from another request', async () => {
+      logger.error = jest.fn();
+
+      const serviceConfig: ServiceConfig = {
+        port: 1234,
+        name: 'service-one',
+        script: '/path/to/script.js',
+        rootDir: '/root',
+      };
+
+      const service = new Service(serviceConfig, null, null);
+
+      mockChildProcess.on.mockImplementation((scope, cb) => {
+        if (scope === 'message') {
+          cb('ready');
+        }
+      });
+
+      await service.launch();
+      service.setRunning(false);
+
+      const promise = service.launch();
+
+      expect(promise).toBeInstanceOf(Object);
+      expect(promise.then).toBeInstanceOf(Function);
+
+      service.setRunning(true);
+      jest.advanceTimersByTime(500);
+
+      expect(await promise).toBe(true);
+    });
+
+    it('times out while waiting for the service to be launched from another request', async () => {
+      logger.error = jest.fn();
+
+      const serviceConfig: ServiceConfig = {
+        port: 1234,
+        name: 'service-one',
+        script: '/path/to/script.js',
+        rootDir: '/root',
+      };
+
+      const service = new Service(serviceConfig, null, null);
+
+      mockChildProcess.on.mockImplementation((scope, cb) => {
+        if (scope === 'message') {
+          cb('ready');
+        }
+      });
+
+      await service.launch();
+      service.setRunning(false);
+
+      const promise = service.launch();
+
+      expect(promise).toBeInstanceOf(Object);
+      expect(promise.then).toBeInstanceOf(Function);
+
+      jest.advanceTimersByTime(60000);
+
+      expect(await promise).toBe(false);
     });
 
     it('logs an error if there is no startup script and not a next service', async () => {
@@ -255,14 +314,19 @@ describe('Services: Service', () => {
       });
 
       await service.launch();
+
+      expect(service.isRunning()).toBe(true);
+
       service.close();
 
       expect(mockChildProcess.kill).toHaveBeenCalledTimes(1);
       expect(mockChildProcess.kill).toHaveBeenCalledWith();
+      expect(service.isRunning()).toBe(false);
 
       const relaunched = await service.launch();
 
       expect(relaunched).toBe(true);
+      expect(service.isRunning()).toBe(true);
     });
 
     it('does nothing if the service is not running', async () => {

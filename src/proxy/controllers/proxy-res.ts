@@ -11,6 +11,10 @@ export const getProxyResHandler =
       return;
     }
 
+    // In case the service is running but the process is not being managed
+    // by Next Micro.
+    service.setRunning(true);
+
     // Assign headers to help us identify the backend service for debugging.
     Object.assign(proxyRes.headers, {
       'x-service-name': service.getName(),

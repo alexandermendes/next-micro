@@ -67,4 +67,35 @@ describe('Proxy: Controllers - Proxy Res', () => {
       expect(proxyRes.headers).toEqual({});
     });
   });
+
+  it('marks the service as running', () => {
+    const router = mocked(new Router([], 3000));
+
+    const handler = getProxyResHandler({
+      router,
+      proxy: proxyMock,
+      devMode: false,
+      autostart: true,
+    });
+
+    const proxyRes = httpMocks.createRequest();
+    const req = httpMocks.createRequest();
+    const service = new Service(
+      {
+        name: 'my-service',
+        port: 1234,
+        rootDir: '/root',
+      },
+      null,
+      null,
+    );
+
+    router.getServiceFromRequest.mockReturnValue(service);
+
+    expect(service.isRunning()).toBe(false);
+
+    handler(proxyRes, req);
+
+    expect(service.isRunning()).toBe(true);
+  });
 });
