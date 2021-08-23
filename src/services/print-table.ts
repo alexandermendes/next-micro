@@ -10,6 +10,7 @@ export const printServicesTable = (services: Service[]): void => {
       { name: 'name', alignment: 'left' },
       { name: 'port', alignment: 'center' },
       { name: 'version', alignment: 'center' },
+      { name: 'running', alignment: 'center' },
     ],
   });
 
@@ -18,6 +19,7 @@ export const printServicesTable = (services: Service[]): void => {
       name: service.getName(),
       port: service.getPort(),
       version: service.getVersion(),
+      running: service.isRunning(),
     })),
   );
 

@@ -1,13 +1,15 @@
-import { program } from 'commander';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 import { Command, dev } from './commands';
+import { DevArgs } from './commands/dev';
 import { logger } from './logger';
 
 /**
  * Wrap async commands and ensure we exit the CLI with a non-zero exit code.
  */
-const wrapAsync = (cmd: Command) => async () => {
+const wrapAsync = (cmd: Command) => async (args: DevArgs) => {
   try {
-    await cmd();
+    await cmd(args);
   } catch (err) {
     // eslint-disable-next-line no-console
     logger.error(err);
@@ -20,10 +22,17 @@ const wrapAsync = (cmd: Command) => async () => {
  * Run the CLI.
  */
 export const cli = (): void => {
-  program
-    .command('dev')
-    .description('launch the local dev server')
-    .action(wrapAsync(dev));
-
-  program.parseAsync(process.argv);
+  yargs(hideBin(process.argv))
+    .command(
+      'dev [names...]',
+      'launch the local dev server',
+      (yargs: yargs.Argv) =>
+        yargs.positional('names', {
+          describe: 'a list of service names',
+          default: [],
+        }),
+      wrapAsync(dev),
+    )
+    .strictCommands()
+    .demandCommand(1).argv;
 };

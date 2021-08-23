@@ -48,7 +48,6 @@
   "dependencies": {
     "app-root-path": "^3.0.0",
     "chokidar": "^3.5.2",
-    "commander": "^8.1.0",
     "console-table-printer": "^2.10.0",
     "cosmiconfig": "^7.0.0",
     "get-port": "^5.1.1",

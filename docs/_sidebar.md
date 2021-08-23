@@ -1,4 +1,5 @@
 * [About](/)
 * [Getting Started](getting-started.md)
 * [Configuration](configuration.md)
+* [CLI](cli.md)
 * [Services](services.md)

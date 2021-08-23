@@ -37,15 +37,15 @@ export class Service {
     this.scriptWaitTimeout = serviceConfig.scriptWaitTimeout || 60000;
     this.env = serviceConfig.env || {};
 
-    this.childLogger = createLogger({ tag: `service: ${this.name}` });
     this.nextConfig = nextConfig;
     this.pkg = pkg;
+    this.childLogger = createLogger({ tag: `service: ${this.getName()}` });
   }
 
   async launch(): Promise<boolean> {
     // TODO: Handle calls in quick succession - redirect
     if (this.childProcess) {
-      logger.error(new Error(`Service is already running: ${this.name}`));
+      logger.error(new Error(`Service is already running: ${this.getName()}`));
 
       return false;
     }
@@ -56,7 +56,7 @@ export class Service {
       return false;
     }
 
-    logger.debug(`Launching service: ${this.name}`);
+    logger.debug(`Launching service: ${this.getName()}`);
 
     // TODO: Add watch mode and --watch flag
     this.childProcess = spawn('node', scriptArgs, {
@@ -75,7 +75,7 @@ export class Service {
     return await new Promise((resolve) => {
       const scriptWaitTimer = setTimeout(() => {
         logger.debug(
-          `Timed out while waiting for service to launch: ${this.name}`,
+          `Timed out while waiting for service to launch: ${this.getName()}`,
         );
 
         resolve(false);
@@ -83,7 +83,7 @@ export class Service {
 
       this.childProcess?.on('message', (event: Serializable) => {
         if (event === 'ready') {
-          logger.success(`Service launched: ${this.name}`);
+          logger.success(`Service launched: ${this.getName()}`);
 
           clearTimeout(scriptWaitTimer);
           resolve(true);
@@ -94,12 +94,12 @@ export class Service {
 
   close(): void {
     if (!this.childProcess) {
-      logger.warn(`Service is not running: ${this.name}`);
+      logger.warn(`Service is not running: ${this.getName()}`);
 
       return;
     }
 
-    logger.debug(`Shutting down service: ${this.name}`);
+    logger.debug(`Shutting down service: ${this.getName()}`);
 
     this.childProcess.kill();
     this.childProcess = undefined;
@@ -148,6 +148,10 @@ export class Service {
     return this.nextConfig;
   }
 
+  isRunning(): boolean {
+    return !!this.childProcess;
+  }
+
   private getScriptArgs(): string[] | undefined {
     if (this.nextConfig) {
       return [
@@ -162,7 +166,7 @@ export class Service {
     if (!this.script) {
       logger.error(
         new Error(
-          `Service has no startup script and is not a Next.js service: ${this.name}`,
+          `Service has no startup script and is not a Next.js service: ${this.getName()}`,
         ),
       );
 

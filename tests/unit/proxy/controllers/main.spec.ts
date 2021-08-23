@@ -28,11 +28,15 @@ describe('Proxy: Controllers - Main', () => {
 
     const req = httpMocks.createRequest();
     const res = httpMocks.createResponse();
-    const service = new Service({
-      name: 'my-service',
-      port: 1000,
-      rootDir: '/root',
-    }, null, null);
+    const service = new Service(
+      {
+        name: 'my-service',
+        port: 1000,
+        rootDir: '/root',
+      },
+      null,
+      null,
+    );
 
     const refreshTTLSpy = jest.spyOn(service, 'refreshTTL');
 
