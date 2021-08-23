@@ -25,6 +25,9 @@ export class ProxyServer {
     this.autostart = autostart;
   }
 
+  /**
+   * Launch the reverse-proxy.
+   */
   async launch(port: number): Promise<ProxyServer> {
     const controllerContext: ControllerContext = {
       router: this.router,
@@ -53,6 +56,9 @@ export class ProxyServer {
     return this;
   }
 
+  /**
+   * Clost the reverse-proxy.
+   */
   async close(): Promise<void> {
     if (!this.server) {
       return;

@@ -14,6 +14,11 @@ const serviceSchema = Joi.object()
   })
   .custom(script);
 
+/**
+ * Get the Joi schema.
+ *
+ * See https://joi.dev
+ */
 export const getSchema = (): Joi.ObjectSchema =>
   Joi.object({
     port: Joi.number().positive(),

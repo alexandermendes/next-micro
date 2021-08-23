@@ -150,7 +150,6 @@ const getNextRewrites = async (service: Service): Promise<Route[]> => {
     return [];
   }
 
-  // Append custom Next.js rewrites
   const routes: Route[] = [];
 
   rewritesResult.forEach(({ source }: NextRewrite) => {
@@ -174,7 +173,7 @@ const getNextRewrites = async (service: Service): Promise<Route[]> => {
 };
 
 /**
- * Get the routes for a service.
+ * Get the custom routes for a service.
  */
 const getRoutesForService = (service: Service): Route[] => {
   const routes: Route[] = service

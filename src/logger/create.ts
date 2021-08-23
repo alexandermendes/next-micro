@@ -22,6 +22,9 @@ type LoggerOptions =
       colours?: boolean;
     };
 
+/**
+ * Format a stack trace.
+ */
 const formatStack = (stack: string) => {
   const cwd = process.cwd() + sep;
 
@@ -33,6 +36,9 @@ const formatStack = (stack: string) => {
   return `  ${lines.join('\n  ')}`;
 };
 
+/**
+ * Format log arguments.
+ */
 const formatArgs = (args: ConsoleArg[]) => {
   const _args = args.map((arg: ConsoleArg) => {
     if (arg instanceof Error && typeof arg.stack === 'string') {
@@ -45,6 +51,9 @@ const formatArgs = (args: ConsoleArg[]) => {
   return format(..._args);
 };
 
+/**
+ * Write a log message to the appropriate stream.
+ */
 const writeStream = (level: number, msg: string) => {
   if (level < 1) {
     process.stderr.write(msg);
@@ -55,12 +64,18 @@ const writeStream = (level: number, msg: string) => {
   process.stdout.write(msg);
 };
 
+/**
+ * Get the current log level.
+ */
 const getActiveLogLevel = (logOpts: LoggerOptions): LogLevel => {
   const activeLevelKey = String(logOpts.logLevel).toUpperCase();
 
   return LogLevel[<LogLevelStrings>activeLevelKey];
 };
 
+/**
+ * Create a log function.
+ */
 const createLogFunction =
   (logOpts: LoggerOptions, level: LogLevel, color = chalk.white): LogFunction =>
   (...args: ConsoleArg[]) => {
