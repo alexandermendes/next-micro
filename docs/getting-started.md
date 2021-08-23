@@ -13,8 +13,6 @@ Add the following section to your `package.json`:
 {
   "scripts": {
     "dev": "nextmicro dev",
-    "build": "nextmicro build",
-    "start": "nextmicro start",
   }
 }
 ```
@@ -30,3 +28,5 @@ The proxy should now be up and running at `http://127.0.0.1:3000`.
 When we make requests to this address traffic will be routed to the Next.js
 service that handles that route. If the service is not running it will be
 launched automatically.
+
+See the [Configuration](configuration.md) page for more fine-grained options.

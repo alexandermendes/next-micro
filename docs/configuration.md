@@ -23,7 +23,7 @@ A `package.json` example might look something like this:
 };
 ```
 
-A `nextmicro.config.js` (JavaScript) example might look something like this:
+A `nextmicro.config.js` example might look something like this:
 
 ```js
 module.exports = {
@@ -38,7 +38,7 @@ module.exports = {
 };
 ```
 
-A `nextmicro.config.ts` (TypeScript) example might look something like this:
+A `nextmicro.config.ts` example might look something like this:
 
 ```js
 import type { NextMicroConfig } from 'nextmicro';
@@ -88,34 +88,34 @@ Default: `true`
 
 In development mode, if a route is hit for a service that is not accepting
 requests then, when this setting is enabled, the service will be started
-automatically using the script defined by the [`service.script`](#servicescript-string)
-setting.
+automatically.
+
+For non Next.js sevices, or Next.js services that use some custom server,
+[`service.script`](#servicescript-string) must also be set for this to work.
 
 ### `autoload` [boolean]
 
 Default: `true`
 
-Load the available services automatically by searching for directories with
-`next.config.js` files.
+Load the available Next.js services automatically by searching for directories
+with `next.config.js` files.
 
 ### `service.rootDir` [string]
 
 Default: `undefined`
 
 The root directory of your service, to be used when running the
-[`service.script`](#servicescript-string) or running in [`service.watch`](#servicewatch-boolean)
-mode.
-
+[`service.script`](#servicescript-string).
 
 ### `service.name` [string]
 
-Default: The `name` from the service's `package.json`
+Default: *The `name` from the service's `package.json`*
 
 A unique name for the service. This is used in log messages and CLI commands.
 
 ### `service.version` [string]
 
-Default: The `version` from the service's `package.json`
+Default: *The `version` from the service's `package.json`*
 
 A version identifier for the service. Used when giving feedback about managed services.
 
@@ -125,12 +125,13 @@ Default: *Auto-assigned (see below)*
 
 A unique port for the service to listen for requests on.
 
-For ease of initial setup, by default a port will be auto-assigned to each
-service on launch by finding the first available port in a range of 100 starting
-from the main [`port`](#port-number) and falling back to a random port. However,
-there is some risk of race conditions with this approach if another process
-starts using the port before the service is launched. To help avoid confusion
-it is probably best to assign a fixed port to each service.
+By default, a port will be auto-assigned to each service on launch by finding
+the first available port in a range of 100 starting from the main
+[`port`](#port-number) and falling back to a random port. This makes initial
+setup a little easier, however, this approach does lead to a risk of race
+conditions if another process starts using the port before the service is
+launched. To help avoid confusion it may be best to assign a fixed port
+to each service.
 
 ### `service.routes` [array]
 
@@ -139,12 +140,16 @@ Default: `undefined`
 An array of regular expression patterns denoting the routes served by the
 service. Any routes not defined here will not be made available via the proxy.
 
+Note that it is not necessary to set the routes for Next.js services. The
+exception to this is where not all routes are defined from the pages directory
+(e.g. you are running some kind of custom server).
+
 ### `service.script` [string]
 
 Default: `undefined`
 
-A path to a script used to launch the service. This is required for
-[`autostart`](#autostart-boolean) to work.
+A path to a script used to launch the service. For non Next.js services this is
+required for [`autostart`](#autostart-boolean) to work.
 
 The script should call `process.send('ready')` once the service is ready to
 accept requests, for example:
@@ -162,27 +167,25 @@ const { serve } = require('./serve');
 ```
 
 If the ready signal is not sent the request will remain pending until the
-time defined by the [`service.scriptWaitTimeout`](#servicewaittimeout-number) setting.
+time defined by the [`service.scriptWaitTimeout`](#servicescriptwaittimeout-number) setting.
 
 ### `service.scriptWaitTimeout` [number]
 
 Default: `60000`
 
-The length of time to wait when starting a service before timing out.
+The length of time to wait while launching a service before timing out.
 
 ### `service.ttl` [number]
 
 Default: `undefined`
 
 The length of time to keep the service alive after it last received a request.
-Note that this will only work if the service was launched using the
-[`service.script`](#servicescript-string) setting.
+Note that this will only work if the process is being managed by Next Micro.
 
 ### `service.env` [object]
 
 Default: `{}`
 
-Environment variables to pass to your service in dev mode.
-
-Note that the `PORT` variable will always be passed to the service with the
-value set via the [`service.port`](#serviceport-number) option.
+Environment variables to pass to your service in dev mode. Note that the `PORT`
+variable will always be passed to the service with the value set via the
+[`service.port`](#serviceport-number) option.

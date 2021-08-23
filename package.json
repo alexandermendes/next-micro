@@ -11,7 +11,7 @@
     "preexample": "yarn run build",
     "build": "tsc -d",
     "prebuild": "rimraf dist",
-    "docs:serve": "docsify serve ./docs",
+    "docs": "docsify serve ./docs",
     "prepublishOnly": "yarn run build"
   },
   "bin": {
