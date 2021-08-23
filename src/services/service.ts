@@ -5,17 +5,8 @@ import { ServiceConfig } from '../config';
 import { Package } from '../package';
 
 export class Service {
-  // TODO: Simplify args and just use config.
-  private name: string | undefined;
+  private serviceConfig: ServiceConfig;
   private port: number | undefined;
-  private routes: string[];
-  private script: string | undefined;
-  private scriptWaitTimeout: number;
-  private rootDir: string;
-  private watch: boolean;
-  private ttl: number | undefined;
-  private env: Record<string, unknown>;
-
   private childLogger: Logger;
   private childProcess: ChildProcess | undefined;
   private ttlTimer: NodeJS.Timeout | undefined;
@@ -27,16 +18,8 @@ export class Service {
     nextConfig: Record<string, unknown> | null,
     pkg: Package | null,
   ) {
-    this.name = serviceConfig.name;
+    this.serviceConfig = serviceConfig;
     this.port = serviceConfig.port;
-    this.routes = serviceConfig.routes || [];
-    this.script = serviceConfig.script;
-    this.rootDir = serviceConfig.rootDir;
-    this.watch = serviceConfig.watch || false;
-    this.ttl = serviceConfig.ttl;
-    this.scriptWaitTimeout = serviceConfig.scriptWaitTimeout || 60000;
-    this.env = serviceConfig.env || {};
-
     this.nextConfig = nextConfig;
     this.pkg = pkg;
     this.childLogger = createLogger({ tag: `service: ${this.getName()}` });
@@ -61,11 +44,11 @@ export class Service {
     // TODO: Add watch mode and --watch flag
     this.childProcess = spawn('node', scriptArgs, {
       stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
-      cwd: this.rootDir,
+      cwd: this.serviceConfig.rootDir,
       env: {
         ...process.env,
-        ...this.env,
-        PORT: String(this.port), // TODO: Document or remove
+        ...this.serviceConfig.env,
+        PORT: String(this.port),
       },
     });
 
@@ -79,7 +62,7 @@ export class Service {
         );
 
         resolve(false);
-      }, this.scriptWaitTimeout);
+      }, this.serviceConfig.scriptWaitTimeout);
 
       this.childProcess?.on('message', (event: Serializable) => {
         if (event === 'ready') {
@@ -106,7 +89,7 @@ export class Service {
   }
 
   refreshTTL(): void {
-    if (!this.ttl) {
+    if (!this.serviceConfig.ttl) {
       return;
     }
 
@@ -116,7 +99,7 @@ export class Service {
 
     this.ttlTimer = setTimeout(() => {
       this.close();
-    }, this.ttl);
+    }, this.serviceConfig.ttl);
   }
 
   getPort(): number | undefined {
@@ -129,11 +112,11 @@ export class Service {
 
   // TODO: assign default name, based on assigned id.
   getName(): string | undefined {
-    return this.name || this.pkg?.name;
+    return this.serviceConfig.name || this.pkg?.name;
   }
 
   getRoutes(): string[] {
-    return this.routes;
+    return this.serviceConfig.routes || [];
   }
 
   getVersion(): string {
@@ -141,7 +124,7 @@ export class Service {
   }
 
   getRootDir(): string {
-    return this.rootDir;
+    return this.serviceConfig.rootDir;
   }
 
   getNextConfig(): Record<string, unknown> | null {
@@ -163,7 +146,7 @@ export class Service {
       ];
     }
 
-    if (!this.script) {
+    if (!this.serviceConfig.script) {
       logger.error(
         new Error(
           `Service has no startup script and is not a Next.js service: ${this.getName()}`,
@@ -173,9 +156,10 @@ export class Service {
       return;
     }
 
-    const finalScript = path.isAbsolute(this.script)
-      ? this.script
-      : path.join(this.rootDir, this.script);
+    const { rootDir, script } = this.serviceConfig;
+    const finalScript = path.isAbsolute(script)
+      ? script
+      : path.join(rootDir, script);
 
     return [finalScript];
   }

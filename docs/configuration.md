@@ -183,3 +183,6 @@ Note that this will only work if the service was launched using the
 Default: `{}`
 
 Environment variables to pass to your service in dev mode.
+
+Note that the `PORT` variable will always be passed to the service with the
+value set via the [`service.port`](#serviceport-number) option.
