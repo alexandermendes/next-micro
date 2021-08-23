@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/alexandermendes/next-micro/compare/v1.0.0...v1.0.1) (2021-08-23)
+
+
+### Bug Fixes
+
+* close the proxy when the main server closes ([0ccb231](https://github.com/alexandermendes/next-micro/commit/0ccb2313cd4b32d30c28b17d53121133fe3332e2))
+
 # 1.0.0 (2021-08-23)
 
 
