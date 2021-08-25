@@ -1,3 +1,16 @@
+# [1.1.0](https://github.com/alexandermendes/next-micro/compare/v1.0.1...v1.1.0) (2021-08-25)
+
+
+### Bug Fixes
+
+* support route matching for older next versions ([e6a3765](https://github.com/alexandermendes/next-micro/commit/e6a3765b20ec1ca057d5eea2a7f870d202cd3e85))
+
+
+### Features
+
+* add better feedback for clashing page routes ([a752cd5](https://github.com/alexandermendes/next-micro/commit/a752cd53d6f2b2093622a8096cb868d2593e6314))
+* add ignore setting ([19fc95d](https://github.com/alexandermendes/next-micro/commit/19fc95d15834b0abe976aa64b8b65c0f2ca325d1))
+
 ## [1.0.1](https://github.com/alexandermendes/next-micro/compare/v1.0.0...v1.0.1) (2021-08-23)
 
 
