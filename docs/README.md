@@ -8,7 +8,7 @@ Microservices are all the rage nowadays. Next.js is a popular web framework.
 Next Micro aims to address the scenario where we have a frontend comprising
 various Next.js microservices and make working with those microservices easier.
 
-Next Micro launches a reverse-proxy server that becomes the entry point via
+Next Micro launches a reverse-proxy that becomes the entry point via
 which all underlying services are accessed. When a route is hit Next Micro will
 launch the responsible service automatically then, to help manage resources,
 close it down after a specified time to live (TTL).

@@ -4,6 +4,15 @@
 
 An HTTP router, reverse-proxy and process manager for composing Next.js microservices.
 
+Next Micro launches a reverse-proxy that becomes the entry point via which all
+underlying services are accessed. When a route is hit Next Micro will launch
+the responsible service automatically then, to help manage resources, close it
+down after a specified time to live (TTL).
+
+The available routes for each Next.js service are determined by parsing the
+file system. Any additional routes can be specified directly in the configuration
+file, as can any supplementary non Next.js services.
+
 [**View the docs**](https://alexandermendes.github.io/next-micro/)
 
 ## Getting Started
