@@ -64,6 +64,7 @@ The following configuration options are available:
 - [`port`](#port-number)
 - [`autostart`](#autostart-boolean)
 - [`autoload`](#autoload-boolean)
+- [`ignore`](#ignore-array)
 - [`service.rootDir`](#servicerootdir-string)
 - [`service.name`](#servicename-string)
 - [`service.version`](#serviceversion-string)
@@ -99,6 +100,13 @@ Default: `true`
 
 Load the available Next.js services automatically by searching for directories
 with `next.config.js` files.
+
+### `ignore` [array]
+
+Default: `['/node_modules/']`
+
+An array of regexp pattern strings that are matched against the paths of
+discovered services. If a path matches any of the patterns, it will be skipped.
 
 ### `service.rootDir` [string]
 

@@ -24,7 +24,7 @@ export const createServices = (
   config: ConcreteNextMicroConfig,
   cwd: string,
 ): Service[] => {
-  const { autoload, services } = config;
+  const { autoload, services, ignore } = config;
   const serviceConfigs = [...services];
 
   if (autoload) {
@@ -33,7 +33,11 @@ export const createServices = (
     });
   }
 
-  return serviceConfigs.map(
+  const filteredServiceConfigs = serviceConfigs.filter(({ rootDir }) => (
+    !ignore.some((pattern) => new RegExp(pattern).test(rootDir))
+  ))
+
+  return filteredServiceConfigs.map(
     (serviceConfig, index) =>
       new Service(
         index,

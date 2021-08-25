@@ -44,11 +44,8 @@ describe('Config: Load', () => {
       port: 3000,
       autostart: true,
       autoload: true,
-      services: [
-        {
-          name: 'my-service',
-        },
-      ],
+      services: [{ name: 'my-service' }],
+      ignore: ['/node_modules/'],
     });
   });
 

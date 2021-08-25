@@ -33,6 +33,7 @@ describe('Services: Create', () => {
       autoload: true,
       autostart: true,
       services: [],
+      ignore: [],
     };
 
     const services = createServices(config, '/root');
@@ -65,6 +66,7 @@ describe('Services: Create', () => {
         { rootDir: '/path/to/service/one' },
         { rootDir: '/path/to/service/two' },
       ],
+      ignore: [],
     };
 
     const services = createServices(config, '/root');
@@ -101,6 +103,7 @@ describe('Services: Create', () => {
       autoload: true,
       autostart: true,
       services: [{ rootDir: '/path/to/service/one' }],
+      ignore: [],
     };
 
     createServices(config, '/root');
@@ -125,6 +128,7 @@ describe('Services: Create', () => {
       autoload: true,
       autostart: true,
       services: [{ rootDir: '/path/to/service/one' }],
+      ignore: [],
     };
 
     createServices(config, '/root');
@@ -135,5 +139,32 @@ describe('Services: Create', () => {
       nextConfig,
       null,
     );
+  });
+
+  it('ignores services using the ignore setting', () => {
+    const nextConfig = {
+      distDir: 'my-next-service/dist',
+    };
+
+    mockGetNextConfig.mockReturnValue(nextConfig);
+
+    const config: ConcreteNextMicroConfig = {
+      port: 3000,
+      autoload: true,
+      autostart: true,
+      services: [
+        { rootDir: '/path/to/one/service-one' },
+        { rootDir: '/path/to/two/service-two' },
+      ],
+      ignore: [
+        'path/to/one',
+        'service-two',
+      ],
+    };
+
+    const result = createServices(config, '/root');
+
+    expect(result).toEqual([]);
+    expect(Service).not.toHaveBeenCalled();
   });
 });

@@ -25,4 +25,5 @@ export const getSchema = (): Joi.ObjectSchema =>
     autoload: Joi.boolean(),
     autostart: Joi.boolean(),
     services: Joi.array().items(serviceSchema),
+    ignore: Joi.array().items(Joi.string()),
   }).custom(uniqueRootPort);

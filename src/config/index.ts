@@ -21,6 +21,7 @@ export type NextMicroConfig = {
   autoload?: boolean;
   autostart?: boolean;
   services?: ServiceConfig[];
+  ignore?: string[];
 };
 
 export type ConcreteNextMicroConfig = {
@@ -28,6 +29,7 @@ export type ConcreteNextMicroConfig = {
   autoload: boolean;
   autostart: boolean;
   services: ServiceConfig[];
+  ignore: string[];
 };
 
 const defaults = {
@@ -35,6 +37,7 @@ const defaults = {
   autoload: true,
   autostart: true,
   services: [],
+  ignore: ['/node_modules/'],
 };
 
 /**
