@@ -45,20 +45,17 @@ export class Service {
     // Launch may be in progress, wait.
     if (this.childProcess) {
       return new Promise((resolve) => {
+        const timer = setTimeout(() => {
+          logger.debug(`Timed out waiting for service to launch: ${this.getName()}`);
+          resolve(false);
+        }, launchTimeout);
+
         setInterval(() => {
           if (this.isRunning()) {
+            clearTimeout(timer);
             resolve(true);
           }
         }, 500);
-
-        setTimeout(() => {
-          logger.debug(
-            new Error(
-              `Timed out waiting for service to launch: ${this.getName()}`,
-            ),
-          );
-          resolve(false);
-        }, launchTimeout);
       });
     }
 
