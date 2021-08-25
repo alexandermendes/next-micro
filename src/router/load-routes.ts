@@ -94,9 +94,12 @@ const getNextRoutes = (services: Service[]): Route[] => {
       // Map page keys to services so we can sort them together before
       // creating the routes for each service.
       pageKeys.forEach((pageKey: string) => {
-        if (pageKey in acc) {
+        const existingService = acc[pageKey];
+
+        if (existingService) {
           throw new Error(
-            `The "${pageKey}" route has been defined multiple times. ` +
+            `The "${pageKey}" route has been defined multiple times, ` +
+            `in both ${existingService.getRootDir()} and ${service.getRootDir()}. ` +
               'Please check the pages directories of your Next.js services.',
           );
         }

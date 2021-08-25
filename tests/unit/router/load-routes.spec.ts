@@ -167,7 +167,7 @@ describe('Router: Load routes', () => {
         1,
         {
           name: 'service-one',
-          rootDir: '/path/to/service',
+          rootDir: '/path/to/service-one',
         },
         nextConfig,
         null,
@@ -177,7 +177,7 @@ describe('Router: Load routes', () => {
         1,
         {
           name: 'service-two',
-          rootDir: '/path/to/service',
+          rootDir: '/path/to/service-two',
         },
         nextConfig,
         null,
@@ -185,7 +185,11 @@ describe('Router: Load routes', () => {
 
       await expect(async () =>
         loadRoutes([serviceOne, serviceTwo]),
-      ).rejects.toThrow(/The "\/" route has been defined multiple times.*/);
+      ).rejects.toThrow(
+        `The "/" route has been defined multiple times, ` +
+        `in both /path/to/service-one and /path/to/service-two. ` +
+          'Please check the pages directories of your Next.js services.',
+      );
     });
   });
 
