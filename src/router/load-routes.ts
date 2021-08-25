@@ -1,13 +1,29 @@
 import path from 'path';
 import glob from 'glob';
 import { pathToRegexp } from 'path-to-regexp';
-import {
-  getRouteRegex,
-  getSortedRoutes,
-} from 'next/dist/shared/lib/router/utils';
 import { Service } from '../services';
 import { createRoute, Route } from './route';
 import { logger } from '../logger';
+
+type getRouteRegexFunction = {
+  (normalizedRoute: string): {
+    re: RegExp;
+  }
+}
+
+type getSortedRoutesFunction = {
+  (normalizedPages: string[]): string[];
+}
+
+let getRouteRegex: getRouteRegexFunction;
+let getSortedRoutes: getSortedRoutesFunction;
+
+try {
+  // Utils were moved to this dir in https://github.com/vercel/next.js/pull/26734
+  ({ getRouteRegex, getSortedRoutes } = require('next/dist/shared/lib/router/utils'));
+} catch (error) {
+  ({ getRouteRegex, getSortedRoutes } = require('next/dist/next-server/lib/router/utils'));
+}
 
 type NextRewrite = {
   source: string;
