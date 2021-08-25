@@ -97,17 +97,13 @@ describe('Services: Create', () => {
   it('does not also autoload specifically defined Next.js services', () => {
     const serviceDir = '/path/to/service';
 
-    mockGlobSync.mockReturnValue([
-      `${serviceDir}/next.config.js`,
-    ]);
+    mockGlobSync.mockReturnValue([`${serviceDir}/next.config.js`]);
 
     const config: ConcreteNextMicroConfig = {
       port: 3000,
       autoload: true,
       autostart: true,
-      services: [
-        { rootDir: serviceDir },
-      ],
+      services: [{ rootDir: serviceDir }],
       ignore: [],
     };
 

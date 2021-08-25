@@ -198,9 +198,7 @@ export class Service {
 
     const { rootDir, script } = this.serviceConfig;
 
-    return path.isAbsolute(script)
-      ? script
-      : path.join(rootDir, script);
+    return path.isAbsolute(script) ? script : path.join(rootDir, script);
   };
 
   /**

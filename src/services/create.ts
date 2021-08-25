@@ -14,7 +14,9 @@ const findNextServices = (cwd: string, ignore: string[]): string[] => {
     absolute: true,
   });
 
-  return nextConfigFiles.map(path.dirname).filter((dir) => !ignore.includes(dir));
+  return nextConfigFiles
+    .map(path.dirname)
+    .filter((dir) => !ignore.includes(dir));
 };
 
 /**

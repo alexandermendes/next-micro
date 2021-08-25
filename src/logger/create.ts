@@ -50,7 +50,17 @@ const formatArgs = (args: ConsoleArg[], tag: string | undefined) => {
     return arg;
   });
 
-  return format(..._args);
+  const str = format(..._args);
+  const prepend = tag ? `[${tag}]` : '';
+
+  if (!prepend) {
+    return str;
+  }
+
+  return str
+    .split(/\r?\n/)
+    .map((line) => `${prepend} ${line}`)
+    .join('\n');
 };
 
 /**

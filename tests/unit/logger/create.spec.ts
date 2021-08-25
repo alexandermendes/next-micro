@@ -95,7 +95,7 @@ describe('Logger', () => {
     );
   });
 
-  it('adds the tag to all stderr lines', () => {
+  it('adds the tag to all stderr lines for an Error object', () => {
     const writeSpy = jest.spyOn(process.stderr, 'write');
     const logger = createLogger({
       tag: 'service: my-service',
@@ -103,6 +103,44 @@ describe('Logger', () => {
     });
 
     logger.error(new Error('bad thing'));
+
+    const lines = String(writeSpy.mock.calls[0][0]).split('\n');
+    const populatedLines = lines.filter((x) => x);
+
+    expect(writeSpy).toHaveBeenCalledTimes(1);
+    expect(populatedLines.length).toBeGreaterThan(1);
+    expect(
+      populatedLines.every((line) => line.startsWith('[service: my-service]')),
+    ).toBe(true);
+  });
+
+  it('adds the tag to all stderr lines for a string with newlines', () => {
+    const writeSpy = jest.spyOn(process.stderr, 'write');
+    const logger = createLogger({
+      tag: 'service: my-service',
+      colours: false,
+    });
+
+    logger.error('I\nhave\nmultiple\nlines');
+
+    const lines = String(writeSpy.mock.calls[0][0]).split('\n');
+    const populatedLines = lines.filter((x) => x);
+
+    expect(writeSpy).toHaveBeenCalledTimes(1);
+    expect(populatedLines.length).toBeGreaterThan(1);
+    expect(
+      populatedLines.every((line) => line.startsWith('[service: my-service]')),
+    ).toBe(true);
+  });
+
+  it('adds the tag to all stdout lines for a string with newlines', () => {
+    const writeSpy = jest.spyOn(process.stdout, 'write');
+    const logger = createLogger({
+      tag: 'service: my-service',
+      colours: false,
+    });
+
+    logger.log('I\nhave\nmultiple\nlines');
 
     const lines = String(writeSpy.mock.calls[0][0]).split('\n');
     const populatedLines = lines.filter((x) => x);
