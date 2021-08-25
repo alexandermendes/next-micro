@@ -82,4 +82,33 @@ describe('Logger', () => {
     expect(writeSpy).toHaveBeenCalledTimes(1);
     expect(String(writeSpy.mock.calls[0][0])).toContain('log');
   });
+
+  it('creates a logger with a tag', () => {
+    const writeSpy = jest.spyOn(process.stdout, 'write');
+    const logger = createLogger({ tag: 'service: my-service' });
+
+    logger.log('Hello');
+
+    expect(writeSpy).toHaveBeenCalledTimes(1);
+    expect(writeSpy.mock.calls[0][0]).toEqual(
+      expect.stringContaining('[service: my-service] Hello'),
+    );
+  });
+
+  it('adds the tag to all stderr lines', () => {
+    const writeSpy = jest.spyOn(process.stderr, 'write');
+    const logger = createLogger({
+      tag: 'service: my-service',
+      colours: false,
+    });
+
+    logger.error(new Error('bad thing'));
+
+    const lines = String(writeSpy.mock.calls[0][0]).split('\n');
+    const populatedLines = lines.filter(x => x);
+
+    expect(writeSpy).toHaveBeenCalledTimes(1);
+    expect(populatedLines.length).toBeGreaterThan(1);
+    expect(populatedLines.every((line) => line.startsWith('[service: my-service]'))).toBe(true);
+  });
 });

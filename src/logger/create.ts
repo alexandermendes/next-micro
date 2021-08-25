@@ -25,7 +25,7 @@ type LoggerOptions =
 /**
  * Format a stack trace.
  */
-const formatStack = (stack: string) => {
+const formatStack = (stack: string, tag: string | undefined) => {
   const cwd = process.cwd() + sep;
 
   const lines = stack
@@ -33,16 +33,18 @@ const formatStack = (stack: string) => {
     .splice(1)
     .map((line: string) => line.trim().replace('file://', '').replace(cwd, ''));
 
-  return `  ${lines.join('\n  ')}`;
+  const prepend = tag ? `[${tag}]` : '';
+
+  return `${prepend} ${lines.join(`\n${prepend} `)}`;
 };
 
 /**
  * Format log arguments.
  */
-const formatArgs = (args: ConsoleArg[]) => {
+const formatArgs = (args: ConsoleArg[], tag: string | undefined) => {
   const _args = args.map((arg: ConsoleArg) => {
     if (arg instanceof Error && typeof arg.stack === 'string') {
-      return arg.message + '\n' + formatStack(arg.stack);
+      return arg.message + '\n' + formatStack(arg.stack, tag);
     }
 
     return arg;
@@ -79,9 +81,10 @@ const getActiveLogLevel = (logOpts: LoggerOptions): LogLevel => {
 const createLogFunction =
   (logOpts: LoggerOptions, level: LogLevel, color = chalk.white): LogFunction =>
   (...args: ConsoleArg[]) => {
-    let message = formatArgs(args);
+    const { tag } = logOpts;
+    let message = formatArgs(args, tag);
 
-    if (logOpts.tag) {
+    if (tag) {
       message = `[${logOpts.tag}] ${message}`;
     }
 
