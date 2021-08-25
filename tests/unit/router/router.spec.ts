@@ -1,16 +1,13 @@
 import httpMocks from 'node-mocks-http';
-import glob from 'glob';
 import { mocked } from 'ts-jest/utils';
-import chokidar, { FSWatcher } from 'chokidar';
 import { Router } from '../../../src/router';
+import { watchNextRoutes } from '../../../src/router/watch';
 import { Service } from '../../../src/services';
 import { ServiceConfig } from '../../../src/config';
 
-jest.mock('chokidar');
-jest.mock('glob');
+jest.mock('../../../src/router/watch');
 
-const mockChokidar = mocked(chokidar);
-const mockGlobSync = mocked(glob.sync);
+const mockWatchNextRoutes = mocked(watchNextRoutes);
 
 const createServices = (serviceConfigs: ServiceConfig[]) =>
   serviceConfigs.map(
@@ -18,10 +15,6 @@ const createServices = (serviceConfigs: ServiceConfig[]) =>
   );
 
 describe('Router', () => {
-  beforeEach(() => {
-    mockGlobSync.mockReturnValue([]);
-  });
-
   it('returns the service that matches an incoming request url', async () => {
     const services = createServices([
       {
@@ -131,40 +124,28 @@ describe('Router', () => {
     expect(services[1].getPort()).toBe(3002);
   });
 
-  it('watches for route changes', () => {
+  it('watches for Next.js route changes', async () => {
     const services = createServices([
       {
         name: 'service-one',
-        port: 3001,
         rootDir: '/one',
-      },
-      {
-        name: 'service-two',
-        rootDir: '/two',
       },
     ]);
 
     const router = new Router(services, 3000);
-    const mockOn = jest.fn();
-
     const loadRoutesSpy = jest.spyOn(router, 'loadRoutes').mockResolvedValue();
 
-    mockChokidar.watch.mockReturnValue({
-      on: mockOn,
-    } as unknown as FSWatcher);
+    await router.watchRoutes();
 
-    router.watchRoutes();
+    const [, mockCb] = mockWatchNextRoutes.mock.calls[0];
 
-    const [mockOnEvt, mockOnCb] = mockOn.mock.calls[0];
+    mockCb();
 
-    mockOnCb();
-
-    expect(mockOnEvt).toBe('all');
+    expect(mockWatchNextRoutes).toHaveBeenCalledTimes(1);
+    expect(mockWatchNextRoutes).toHaveBeenCalledWith(
+      services,
+      expect.any(Function),
+    );
     expect(loadRoutesSpy).toHaveBeenCalledTimes(1);
-    expect(mockChokidar.watch).toHaveBeenCalledTimes(1);
-    expect(mockChokidar.watch).toHaveBeenCalledWith(['/one', '/two'], {
-      ignoreInitial: true,
-      ignored: /(^|[/\\])\../,
-    });
   });
 });

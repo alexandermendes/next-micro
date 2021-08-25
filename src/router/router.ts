@@ -1,10 +1,10 @@
 import getPort from 'get-port';
-import chokidar from 'chokidar';
 import { IncomingMessage } from 'http';
 import { logger } from '../logger';
 import { Service } from '../services';
 import { Route } from './route';
 import { loadRoutes } from './load-routes';
+import { watchNextRoutes } from './watch';
 
 export class Router {
   private services: Service[];
@@ -57,15 +57,8 @@ export class Router {
   /**
    * Watch for potential route changes.
    */
-  watchRoutes(): void {
-    const serviceDirs = this.services.map((service) => service.getRootDir());
-
-    chokidar
-      .watch(serviceDirs, {
-        ignoreInitial: true,
-        ignored: /(^|[/\\])\../, // ignore dotfiles
-      })
-      .on('all', this.loadRoutes);
+  async watchRoutes(): Promise<void> {
+    await watchNextRoutes(this.services, this.loadRoutes);
   }
 
   /**

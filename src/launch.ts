@@ -17,13 +17,13 @@ export const launch = async (
   const router = new Router(services, config.port);
   const server = new ProxyServer(router, devMode, config.autostart);
 
-  await router.loadRoutes();
+  const preConditions = [router.loadRoutes()];
 
   if (devMode) {
-    router.watchRoutes();
-    await router.assignPorts();
+    preConditions.push(router.watchRoutes(), router.assignPorts());
   }
 
+  await Promise.all(preConditions);
   await server.launch(config.port);
 
   await Promise.all(
