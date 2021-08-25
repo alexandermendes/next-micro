@@ -1,3 +1,12 @@
+## [1.2.2](https://github.com/alexandermendes/next-micro/compare/v1.2.1...v1.2.2) (2021-08-25)
+
+
+### Bug Fixes
+
+* add service tag to stdout and stderr streams ([839f75f](https://github.com/alexandermendes/next-micro/commit/839f75fb54d4a229f3be2e5703617fec664cb68c))
+* clear timeout when waiting for service to load ([4e1919f](https://github.com/alexandermendes/next-micro/commit/4e1919f216c3c1be73c1895311768404216e3ed6))
+* do not load services twice when using `autoload` with `services` ([9dd4f40](https://github.com/alexandermendes/next-micro/commit/9dd4f4077d2e1b8a5506ce95e7bf995fee8ab5bd))
+
 ## [1.2.1](https://github.com/alexandermendes/next-micro/compare/v1.2.0...v1.2.1) (2021-08-25)
 
 
