@@ -1,3 +1,17 @@
+# [1.2.0](https://github.com/alexandermendes/next-micro/compare/v1.1.0...v1.2.0) (2021-08-25)
+
+
+### Bug Fixes
+
+* close route watchers when the server closes ([7b0ba59](https://github.com/alexandermendes/next-micro/commit/7b0ba592e1f1587de88cab8546c24421ba5864e0))
+
+
+### Features
+
+* add env_* setting ([b69f3b7](https://github.com/alexandermendes/next-micro/commit/b69f3b70ae10e8aa349c3421c94ecb194adfc828))
+* make logging for tagged services clearer ([5e4eb71](https://github.com/alexandermendes/next-micro/commit/5e4eb719dfb421a0fbae185f8892a8987c64fc9e))
+* optimize watching for next route changes ([7cf38aa](https://github.com/alexandermendes/next-micro/commit/7cf38aa0941b0179ffc8c17954c9d7b95ff1c607))
+
 # [1.1.0](https://github.com/alexandermendes/next-micro/compare/v1.0.1...v1.1.0) (2021-08-25)
 
 
