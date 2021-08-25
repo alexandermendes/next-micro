@@ -201,7 +201,7 @@ variable will always be passed to the service with the value set via the
 
 ### `service.env_*` [object]
 
-Default: `undefined`
+Default: *None*
 
 Environment variables can be configured for different environments using this
 option, for example:
