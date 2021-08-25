@@ -94,6 +94,37 @@ describe('Services: Create', () => {
     );
   });
 
+  it('does not also autoload specifically defined Next.js services', () => {
+    const serviceDir = '/path/to/service';
+
+    mockGlobSync.mockReturnValue([
+      `${serviceDir}/next.config.js`,
+    ]);
+
+    const config: ConcreteNextMicroConfig = {
+      port: 3000,
+      autoload: true,
+      autostart: true,
+      services: [
+        { rootDir: serviceDir },
+      ],
+      ignore: [],
+    };
+
+    const services = createServices(config, '/root');
+
+    expect(services).toHaveLength(1);
+    expect(services[0]).toBeInstanceOf(Service);
+    expect(Service).toHaveBeenCalledTimes(1);
+    expect(Service).toHaveBeenCalledWith(
+      0,
+      { rootDir: serviceDir },
+      null,
+      null,
+      undefined,
+    );
+  });
+
   it('includes the package.json when creating services', () => {
     const pkg = {
       name: 'my-service',

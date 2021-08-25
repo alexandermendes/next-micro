@@ -8,13 +8,13 @@ import { getNextConfig } from '../next-config';
 /**
  * Find directories that contain a Next.js config file.
  */
-const findNextServices = (cwd: string): string[] => {
+const findNextServices = (cwd: string, ignore: string[]): string[] => {
   const nextConfigFiles = glob.sync('**/next.config.js', {
     cwd,
     absolute: true,
   });
 
-  return nextConfigFiles.map(path.dirname);
+  return nextConfigFiles.map(path.dirname).filter((dir) => !ignore.includes(dir));
 };
 
 /**
@@ -27,9 +27,10 @@ export const createServices = (
 ): Service[] => {
   const { autoload, services, ignore } = config;
   const serviceConfigs = [...services];
+  const serviceDirs = serviceConfigs.map(({ rootDir }) => rootDir);
 
   if (autoload) {
-    findNextServices(cwd).forEach((rootDir) => {
+    findNextServices(cwd, serviceDirs).forEach((rootDir) => {
       serviceConfigs.push({ rootDir });
     });
   }
