@@ -1,7 +1,7 @@
 {
   "name": "next-micro",
   "description": "An HTTP router, reverse-proxy and process manager for composing Next.js microservices.",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "scripts": {
     "lint": "eslint .",
     "format": "prettier --config .prettierrc '{src,tests}/**/*.ts' --write",
