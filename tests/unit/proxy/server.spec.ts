@@ -16,8 +16,12 @@ const mockControllers = mocked(controllers);
 
 const createServerMock = mocked(createServer);
 const serverMock = {
-  listen: jest.fn((host, port, cb) => { cb(); }),
-  close: jest.fn((cb) => { cb(); }),
+  listen: jest.fn((host, port, cb) => {
+    cb();
+  }),
+  close: jest.fn((cb) => {
+    cb();
+  }),
   on: jest.fn(),
 } as unknown as Server;
 

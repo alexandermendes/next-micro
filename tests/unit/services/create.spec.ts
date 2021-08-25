@@ -156,10 +156,7 @@ describe('Services: Create', () => {
         { rootDir: '/path/to/one/service-one' },
         { rootDir: '/path/to/two/service-two' },
       ],
-      ignore: [
-        'path/to/one',
-        'service-two',
-      ],
+      ignore: ['path/to/one', 'service-two'],
     };
 
     const result = createServices(config, '/root');

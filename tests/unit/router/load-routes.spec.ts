@@ -187,7 +187,7 @@ describe('Router: Load routes', () => {
         loadRoutes([serviceOne, serviceTwo]),
       ).rejects.toThrow(
         `The "/" route has been defined multiple times, ` +
-        `in both /path/to/service-one and /path/to/service-two. ` +
+          `in both /path/to/service-one and /path/to/service-two. ` +
           'Please check the pages directories of your Next.js services.',
       );
     });

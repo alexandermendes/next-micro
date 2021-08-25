@@ -105,10 +105,12 @@ describe('Logger', () => {
     logger.error(new Error('bad thing'));
 
     const lines = String(writeSpy.mock.calls[0][0]).split('\n');
-    const populatedLines = lines.filter(x => x);
+    const populatedLines = lines.filter((x) => x);
 
     expect(writeSpy).toHaveBeenCalledTimes(1);
     expect(populatedLines.length).toBeGreaterThan(1);
-    expect(populatedLines.every((line) => line.startsWith('[service: my-service]'))).toBe(true);
+    expect(
+      populatedLines.every((line) => line.startsWith('[service: my-service]')),
+    ).toBe(true);
   });
 });

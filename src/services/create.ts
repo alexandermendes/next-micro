@@ -33,9 +33,10 @@ export const createServices = (
     });
   }
 
-  const filteredServiceConfigs = serviceConfigs.filter(({ rootDir }) => (
-    !ignore.some((pattern) => new RegExp(pattern).test(rootDir))
-  ))
+  const filteredServiceConfigs = serviceConfigs.filter(
+    ({ rootDir }) =>
+      !ignore.some((pattern) => new RegExp(pattern).test(rootDir)),
+  );
 
   return filteredServiceConfigs.map(
     (serviceConfig, index) =>

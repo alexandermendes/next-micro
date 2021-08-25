@@ -8,21 +8,27 @@ import { logger } from '../logger';
 type getRouteRegexFunction = {
   (normalizedRoute: string): {
     re: RegExp;
-  }
-}
+  };
+};
 
 type getSortedRoutesFunction = {
   (normalizedPages: string[]): string[];
-}
+};
 
 let getRouteRegex: getRouteRegexFunction;
 let getSortedRoutes: getSortedRoutesFunction;
 
 try {
   // Utils were moved to this dir in https://github.com/vercel/next.js/pull/26734
-  ({ getRouteRegex, getSortedRoutes } = require('next/dist/shared/lib/router/utils'));
+  ({
+    getRouteRegex,
+    getSortedRoutes,
+  } = require('next/dist/shared/lib/router/utils'));
 } catch (error) {
-  ({ getRouteRegex, getSortedRoutes } = require('next/dist/next-server/lib/router/utils'));
+  ({
+    getRouteRegex,
+    getSortedRoutes,
+  } = require('next/dist/next-server/lib/router/utils'));
 }
 
 type NextRewrite = {
@@ -115,7 +121,7 @@ const getNextRoutes = (services: Service[]): Route[] => {
         if (existingService) {
           throw new Error(
             `The "${pageKey}" route has been defined multiple times, ` +
-            `in both ${existingService.getRootDir()} and ${service.getRootDir()}. ` +
+              `in both ${existingService.getRootDir()} and ${service.getRootDir()}. ` +
               'Please check the pages directories of your Next.js services.',
           );
         }
