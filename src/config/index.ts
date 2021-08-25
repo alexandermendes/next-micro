@@ -4,6 +4,7 @@ import appRoot from 'app-root-path';
 import { validate } from './validation';
 
 export type ServiceConfig = {
+  [x: string]: unknown;
   rootDir: string;
   name?: string;
   version?: string;

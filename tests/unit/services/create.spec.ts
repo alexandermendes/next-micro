@@ -47,6 +47,7 @@ describe('Services: Create', () => {
       { rootDir: '/path/to/service/one' },
       null,
       null,
+      undefined,
     );
 
     expect(Service).toHaveBeenCalledWith(
@@ -54,6 +55,7 @@ describe('Services: Create', () => {
       { rootDir: '/path/to/service/two' },
       null,
       null,
+      undefined,
     );
   });
 
@@ -80,6 +82,7 @@ describe('Services: Create', () => {
       { rootDir: '/path/to/service/one' },
       null,
       null,
+      undefined,
     );
 
     expect(Service).toHaveBeenCalledWith(
@@ -87,6 +90,7 @@ describe('Services: Create', () => {
       { rootDir: '/path/to/service/two' },
       null,
       null,
+      undefined,
     );
   });
 
@@ -113,6 +117,7 @@ describe('Services: Create', () => {
       { rootDir: '/path/to/service/one' },
       null,
       pkg,
+      undefined,
     );
   });
 
@@ -138,6 +143,27 @@ describe('Services: Create', () => {
       { rootDir: '/path/to/service/one' },
       nextConfig,
       null,
+      undefined,
+    );
+  });
+
+  it('includes the env when creating services', () => {
+    const config: ConcreteNextMicroConfig = {
+      port: 3000,
+      autoload: true,
+      autostart: true,
+      services: [{ rootDir: '/path/to/service/one' }],
+      ignore: [],
+    };
+
+    createServices(config, '/root', 'production');
+
+    expect(Service).toHaveBeenCalledWith(
+      0,
+      { rootDir: '/path/to/service/one' },
+      null,
+      null,
+      'production',
     );
   });
 

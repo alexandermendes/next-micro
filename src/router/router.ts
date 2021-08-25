@@ -64,7 +64,10 @@ export class Router {
       return;
     }
 
-    this.nextRouteWatcher = await watchNextRoutes(this.services, this.loadRoutes);
+    this.nextRouteWatcher = await watchNextRoutes(
+      this.services,
+      this.loadRoutes,
+    );
   }
 
   /**

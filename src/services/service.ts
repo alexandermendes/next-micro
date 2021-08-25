@@ -12,6 +12,7 @@ export class Service {
   private childProcess: ChildProcess | undefined;
   private ttlTimer: NodeJS.Timeout | undefined;
   private nextConfig: Record<string, unknown> | null;
+  private env: string | undefined;
   private pkg: Package | null;
   private running: boolean;
 
@@ -20,12 +21,14 @@ export class Service {
     serviceConfig: ServiceConfig,
     nextConfig: Record<string, unknown> | null,
     pkg: Package | null,
+    env?: string,
   ) {
     this.id = id;
     this.serviceConfig = serviceConfig;
     this.port = serviceConfig.port;
     this.nextConfig = nextConfig;
     this.pkg = pkg;
+    this.env = env;
     this.childLogger = createLogger({ tag: `service: ${this.getName()}` });
     this.running = false;
   }
@@ -71,11 +74,7 @@ export class Service {
     this.childProcess = spawn('node', scriptArgs, {
       stdio: ['pipe', 'pipe', 'pipe', 'ipc'],
       cwd: this.serviceConfig.rootDir,
-      env: {
-        ...process.env,
-        ...this.serviceConfig.env,
-        PORT: String(this.port),
-      },
+      env: this.getEnvVars(),
     });
 
     this.childProcess.stdout?.pipe(createLogStream(this.childLogger.log));
@@ -193,5 +192,31 @@ export class Service {
       : path.join(rootDir, script);
 
     return [finalScript];
+  }
+
+  /**
+   * Get env vars to pass to the child process.
+   */
+  private getEnvVars(): NodeJS.ProcessEnv {
+    const starEnvVarKeys = Object.keys(this.serviceConfig).filter((key) =>
+      key.startsWith('env_'),
+    );
+
+    const starEnvVarKey = starEnvVarKeys.find(
+      (key) => key.replace(/^env_/, '') === this.env,
+    );
+
+    const starEnvVars = starEnvVarKey ? this.serviceConfig[starEnvVarKey] : {};
+
+    if (this.env && !starEnvVarKey) {
+      logger.warn(`Unknown environment: ${this.env}`);
+    }
+
+    return {
+      ...process.env,
+      ...this.serviceConfig.env,
+      ...(typeof starEnvVars === 'object' ? starEnvVars : {}),
+      PORT: String(this.port),
+    };
   }
 }

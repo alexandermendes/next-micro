@@ -140,7 +140,9 @@ describe('Router', () => {
       ]);
 
       const router = new Router(services, 3000);
-      const loadRoutesSpy = jest.spyOn(router, 'loadRoutes').mockResolvedValue();
+      const loadRoutesSpy = jest
+        .spyOn(router, 'loadRoutes')
+        .mockResolvedValue();
 
       await router.watchRoutes();
 

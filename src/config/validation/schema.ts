@@ -12,7 +12,8 @@ const serviceSchema = Joi.object()
     ttl: Joi.number().positive(),
     env: Joi.object(),
   })
-  .custom(script);
+  .custom(script)
+  .pattern(/^env_/, Joi.object());
 
 /**
  * Get the Joi schema.

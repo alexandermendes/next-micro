@@ -23,6 +23,7 @@ const findNextServices = (cwd: string): string[] => {
 export const createServices = (
   config: ConcreteNextMicroConfig,
   cwd: string,
+  env?: string,
 ): Service[] => {
   const { autoload, services, ignore } = config;
   const serviceConfigs = [...services];
@@ -45,6 +46,7 @@ export const createServices = (
         serviceConfig,
         getNextConfig(serviceConfig.rootDir),
         getPackage(serviceConfig.rootDir),
+        env,
       ),
   );
 };

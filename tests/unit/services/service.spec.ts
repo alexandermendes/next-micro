@@ -113,6 +113,49 @@ describe('Services: Service', () => {
       });
     });
 
+    it('includes env vars from the settings', async () => {
+      const serviceConfig: ServiceConfig = {
+        port: 1234,
+        name: 'service-one',
+        rootDir: '/root',
+        script: 'path/to/script.js',
+        env: {
+          COMMON_VAR: 'this',
+          OVERRIDDEN_VAR: 'default',
+        },
+        env_production: {
+          SPECIFIC_VAR: 'that',
+          OVERRIDDEN_VAR: 'overridden',
+        },
+      };
+
+      mockFs.existsSync.mockImplementationOnce(
+        (filePath: PathLike): boolean => {
+          return filePath === '/root/next.config.js';
+        },
+      );
+
+      const service = new Service(1, serviceConfig, null, null, 'production');
+
+      mockChildProcess.on.mockImplementation((scope, cb) => {
+        if (scope === 'message') {
+          cb('ready');
+        }
+      });
+
+      const launched = await service.launch();
+
+      expect(launched).toBe(true);
+      expect(spawn).toHaveBeenCalledTimes(1);
+      expect(mocked(spawn).mock.calls[0][2].env).toEqual({
+        ...process.env,
+        COMMON_VAR: 'this',
+        SPECIFIC_VAR: 'that',
+        OVERRIDDEN_VAR: 'overridden',
+        PORT: String(serviceConfig.port),
+      });
+    });
+
     it('runs the script from an absolute path', async () => {
       const serviceConfig: ServiceConfig = {
         port: 1234,

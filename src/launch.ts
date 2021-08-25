@@ -11,9 +11,10 @@ import { createServices, printServicesTable } from './services';
 export const launch = async (
   devMode = false,
   serviceNames: string[] = [],
+  env?: string,
 ): Promise<ProxyServer> => {
   const config = await loadConfig();
-  const services = createServices(config, appRoot.path);
+  const services = createServices(config, appRoot.path, env);
   const router = new Router(services, config.port);
   const server = new ProxyServer(router, devMode, config.autostart);
 

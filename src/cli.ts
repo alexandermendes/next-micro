@@ -26,13 +26,18 @@ export const cli = (): void => {
     .command(
       'dev [names...]',
       'launch the local dev server',
-      (yargs: yargs.Argv) =>
-        yargs.positional('names', {
+      (yargs: yargs.Argv) => {
+        return yargs.positional('names', {
           describe: 'a list of service names',
           default: [],
-        }),
+        });
+      },
       wrapAsync(dev),
     )
+    .option('env', {
+      type: 'string',
+      description: 'an environment name (see the env_* config setting)',
+    })
     .strictCommands()
     .demandCommand(1).argv;
 };

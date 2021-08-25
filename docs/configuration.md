@@ -74,6 +74,7 @@ The following configuration options are available:
 - [`service.scriptWaitTimeout`](#servicescriptwaittimeout-number)
 - [`service.ttl`](#servicettl-number)
 - [`service.env`](#serviceenv-object)
+- [`service.env_*`](#serviceenv_*-object)
 
 ## Reference
 
@@ -194,6 +195,37 @@ Note that this will only work if the process is being managed by Next Micro.
 
 Default: `{}`
 
-Environment variables to pass to your service in dev mode. Note that the `PORT`
+Environment variables to pass to your service. Note that the `PORT`
 variable will always be passed to the service with the value set via the
 [`service.port`](#serviceport-number) option.
+
+### `service.env_*` [object]
+
+Default: `undefined`
+
+Environment variables can be configured for different environments using this
+option, for example:
+
+```js
+module.exports = {
+  port: 3000,
+  services: [
+    {
+      name: 'my-service',
+      env_development: {
+        NODE_ENV: 'development',
+      },
+      env_production: {
+        NODE_ENV: 'production',
+      },
+    },
+  ]
+};
+```
+
+To switch environments call `nextmicro dev` with the `--env [env name]` option,
+for example:
+
+```
+nextmicro dev --env production
+```
