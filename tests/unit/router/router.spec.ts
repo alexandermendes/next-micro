@@ -4,10 +4,16 @@ import { Router } from '../../../src/router';
 import { watchNextRoutes } from '../../../src/router/watch';
 import { Service } from '../../../src/services';
 import { ServiceConfig } from '../../../src/config';
+import { FSWatcher } from 'chokidar';
 
 jest.mock('../../../src/router/watch');
 
 const mockWatchNextRoutes = mocked(watchNextRoutes);
+const mockWatcher = {
+  close: jest.fn(),
+} as unknown as FSWatcher;
+
+mockWatchNextRoutes.mockResolvedValue(mockWatcher);
 
 const createServices = (serviceConfigs: ServiceConfig[]) =>
   serviceConfigs.map(
@@ -124,28 +130,62 @@ describe('Router', () => {
     expect(services[1].getPort()).toBe(3002);
   });
 
-  it('watches for Next.js route changes', async () => {
-    const services = createServices([
-      {
-        name: 'service-one',
-        rootDir: '/one',
-      },
-    ]);
+  describe('watch', () => {
+    it('watches for Next.js route changes', async () => {
+      const services = createServices([
+        {
+          name: 'service-one',
+          rootDir: '/one',
+        },
+      ]);
 
-    const router = new Router(services, 3000);
-    const loadRoutesSpy = jest.spyOn(router, 'loadRoutes').mockResolvedValue();
+      const router = new Router(services, 3000);
+      const loadRoutesSpy = jest.spyOn(router, 'loadRoutes').mockResolvedValue();
 
-    await router.watchRoutes();
+      await router.watchRoutes();
 
-    const [, mockCb] = mockWatchNextRoutes.mock.calls[0];
+      const [, mockCb] = mockWatchNextRoutes.mock.calls[0];
 
-    mockCb();
+      mockCb();
 
-    expect(mockWatchNextRoutes).toHaveBeenCalledTimes(1);
-    expect(mockWatchNextRoutes).toHaveBeenCalledWith(
-      services,
-      expect.any(Function),
-    );
-    expect(loadRoutesSpy).toHaveBeenCalledTimes(1);
+      expect(mockWatchNextRoutes).toHaveBeenCalledTimes(1);
+      expect(mockWatchNextRoutes).toHaveBeenCalledWith(
+        services,
+        expect.any(Function),
+      );
+      expect(loadRoutesSpy).toHaveBeenCalledTimes(1);
+    });
+
+    it('does not create multiple watchers', async () => {
+      const services = createServices([
+        {
+          name: 'service-one',
+          rootDir: '/one',
+        },
+      ]);
+
+      const router = new Router(services, 3000);
+
+      await router.watchRoutes();
+      await router.watchRoutes();
+
+      expect(mockWatchNextRoutes).toHaveBeenCalledTimes(1);
+    });
+
+    it('closes any watchers', async () => {
+      const services = createServices([
+        {
+          name: 'service-one',
+          rootDir: '/one',
+        },
+      ]);
+
+      const router = new Router(services, 3000);
+
+      await router.watchRoutes();
+      router.closeWatchers();
+
+      expect(mockWatcher.close).toHaveBeenCalledTimes(1);
+    });
   });
 });

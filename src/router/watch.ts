@@ -1,5 +1,5 @@
 import glob from 'glob';
-import chokidar from 'chokidar';
+import chokidar, { FSWatcher } from 'chokidar';
 import { Service } from '../services';
 
 type WatchNextRoutesCallback = {
@@ -27,10 +27,10 @@ const getPageDirs = (services: Service[]): Promise<string[]> => {
 export const watchNextRoutes = async (
   services: Service[],
   callback: WatchNextRoutesCallback,
-): Promise<void> => {
+): Promise<FSWatcher> => {
   const pagesDirs = await getPageDirs(services);
 
-  chokidar
+  return chokidar
     .watch(
       pagesDirs.filter((x) => x),
       {

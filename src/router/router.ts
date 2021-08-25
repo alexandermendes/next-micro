@@ -1,5 +1,6 @@
 import getPort from 'get-port';
 import { IncomingMessage } from 'http';
+import { FSWatcher } from 'chokidar';
 import { logger } from '../logger';
 import { Service } from '../services';
 import { Route } from './route';
@@ -10,6 +11,7 @@ export class Router {
   private services: Service[];
   private routes: Route[];
   private mainPort: number;
+  private nextRouteWatcher: FSWatcher | undefined;
 
   constructor(services: Service[], mainPort: number) {
     this.services = services;
@@ -58,7 +60,22 @@ export class Router {
    * Watch for potential route changes.
    */
   async watchRoutes(): Promise<void> {
-    await watchNextRoutes(this.services, this.loadRoutes);
+    if (this.nextRouteWatcher) {
+      return;
+    }
+
+    this.nextRouteWatcher = await watchNextRoutes(this.services, this.loadRoutes);
+  }
+
+  /**
+   * Close any route watchers.
+   */
+  closeWatchers(): void {
+    if (!this.nextRouteWatcher) {
+      return;
+    }
+
+    this.nextRouteWatcher.close();
   }
 
   /**
