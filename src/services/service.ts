@@ -165,7 +165,13 @@ export class Service {
     return this.running;
   }
 
-  private getScriptArgs(): string[] | undefined {
+  private getScriptArgs(): string[] | null {
+    const customScript = this.getCustomScript();
+
+    if (customScript) {
+      return [customScript];
+    }
+
     if (this.nextConfig) {
       return [
         path.join(__dirname, 'next-worker.js'),
@@ -176,23 +182,26 @@ export class Service {
       ];
     }
 
-    if (!this.serviceConfig.script) {
-      logger.error(
-        new Error(
-          `Service has no startup script and is not a Next.js service: ${this.getName()}`,
-        ),
-      );
+    logger.error(
+      new Error(
+        `Service has no startup script and is not a Next.js service: ${this.getName()}`,
+      ),
+    );
 
-      return;
+    return null;
+  }
+
+  private getCustomScript = (): string | null => {
+    if (!this.serviceConfig.script) {
+      return null;
     }
 
     const { rootDir, script } = this.serviceConfig;
-    const finalScript = path.isAbsolute(script)
+
+    return path.isAbsolute(script)
       ? script
       : path.join(rootDir, script);
-
-    return [finalScript];
-  }
+  };
 
   /**
    * Get env vars to pass to the child process.

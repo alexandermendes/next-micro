@@ -179,6 +179,28 @@ describe('Services: Service', () => {
       ]);
     });
 
+    it('prefers a custom script for next services', async () => {
+      const serviceConfig: ServiceConfig = {
+        port: 1234,
+        name: 'service-one',
+        script: 'script.js',
+        rootDir: '/root',
+      };
+
+      const nextConfig = {};
+      const service = new Service(1, serviceConfig, nextConfig, null);
+
+      mockChildProcess.on.mockImplementation((scope, cb) => {
+        if (scope === 'message') {
+          cb('ready');
+        }
+      });
+
+      await service.launch();
+
+      expect(mockSpawn.mock.calls[0][1]).toEqual(['/root/script.js']);
+    });
+
     it('does not attempt to launch the service twice', async () => {
       logger.error = jest.fn();
 
